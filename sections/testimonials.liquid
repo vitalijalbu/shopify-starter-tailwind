@@ -1,0 +1,256 @@
+{% comment %}
+  Testimonials section with GSAP horizontal scroll
+{% endcomment %}
+
+<section class="py-[108px] md:py-[216px] flex flex-col gap-20 bg-gray-50" id="testimonials-{{ section.id }}">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      {% if section.settings.heading %}
+        <h2 class="text-4xl leading-10 font-bold">{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-6">
+    <!-- Testimonials Scroller -->
+    {% if section.blocks.size > 0 %}
+      <div class="overflow-hidden w-full">
+        <div class="flex w-max will-change-transform" id="testimonials-track-1-{{ section.id }}">
+          {% for i in (1..2) %}
+            {% for block in section.blocks %}
+              <div class="w-[280px] md:w-[620px] shrink-0 flex flex-col gap-6 mx-4 bg-white rounded-2xl p-6" {{ block.shopify_attributes }}>
+                <div class="flex md:flex-row gap-2 flex-col md:items-center justify-between">
+                  <!-- Author -->
+                  <div>
+                    <div class="text-[25px] md:text-xl leading-[30px] font-medium">{{ block.settings.author_name }}</div>
+                    {% if block.settings.author_title %}
+                      <div class="text-xl md:text-base leading-[25px] text-[#717276]">{{ block.settings.author_title }}</div>
+                    {% endif %}
+                  </div>
+
+                  <!-- Rating -->
+                  {% if block.settings.rating > 0 %}
+                    <div class="flex items-center">
+                      {% for i in (1..5) %}
+                        {% if i <= block.settings.rating %}
+                          {% render 'icon', icon: 'star', class: 'size-5 text-yellow-400' %}
+                        {% else %}
+                          {% render 'icon', icon: 'star-outline', class: 'size-5 text-gray-300' %}
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="bg-gray-200 h-px"></div>
+
+                <!-- Quote -->
+                <blockquote class="text-xl md:text-base leading-[25px]">"{{ block.settings.quote }}"</blockquote>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="overflow-hidden w-full">
+        <div class="flex w-max will-change-transform" id="testimonials-track-2-{{ section.id }}">
+          {% for i in (1..2) %}
+            {% for block in section.blocks reversed %}
+              <div class="w-[620px] md:w-[280px] shrink-0 flex flex-col gap-6 mx-4 bg-white rounded-2xl p-6" {{ block.shopify_attributes }}>
+                <div class="flex md:flex-row gap-2 flex-col md:items-center justify-between">
+                  <!-- Author -->
+                  <div>
+                    <div class="text-[25px] md:text-xl leading-[30px] font-medium">{{ block.settings.author_name }}</div>
+                    {% if block.settings.author_title %}
+                      <div class="text-xl md:text-base leading-[25px] text-[#717276]">{{ block.settings.author_title }}</div>
+                    {% endif %}
+                  </div>
+
+                  <!-- Rating -->
+                  {% if block.settings.rating > 0 %}
+                    <div class="flex items-center">
+                      {% for i in (1..5) %}
+                        {% if i <= block.settings.rating %}
+                          {% render 'icon', icon: 'star', class: 'size-5 text-yellow-400' %}
+                        {% else %}
+                          {% render 'icon', icon: 'star-outline', class: 'size-5 text-gray-300' %}
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="bg-gray-200 h-px"></div>
+
+                <!-- Quote -->
+                <blockquote class="text-xl md:text-base leading-[25px]">"{{ block.settings.quote }}"</blockquote>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+
+    {% else %}
+      <div class="text-center py-12">
+        <p class="text-gray-500">Aggiungi alcune recensioni per mostrare i testimonial dei clienti.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const track1 = document.getElementById('testimonials-track-1-{{ section.id }}');
+    const track2 = document.getElementById('testimonials-track-2-{{ section.id }}');
+
+    if (track1) {
+      const trackWidth1 = track1.scrollWidth / 2;
+      gsap.to(track1, {
+        x: -trackWidth1,
+        ease: 'none',
+        duration: 80, // Adjust duration for speed
+        repeat: -1,
+        modifiers: {
+          x: gsap.utils.unitize((x) => parseFloat(x) % trackWidth1),
+        },
+      });
+    }
+
+    if (track2) {
+      const trackWidth2 = track2.scrollWidth / 2;
+      gsap.fromTo(
+        track2,
+        { x: -trackWidth2 },
+        {
+          x: 0,
+          ease: 'none',
+          duration: 80, // Adjust duration for speed
+          repeat: -1,
+        }
+      );
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "section-testimonials",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cosa dicono di Skimofestival"
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-play carousel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop carousel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show navigation arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show pagination dots",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "placeholder": "Enter customer testimonial..."
+        },
+        {
+          "type": "text",
+          "id": "author_name",
+          "label": "Author name",
+          "placeholder": "Customer name"
+        },
+        {
+          "type": "text",
+          "id": "author_title",
+          "label": "Author title",
+          "placeholder": "Job title or location (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "author_image",
+          "label": "Author image"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating (stars)",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Amazing products and excellent customer service. I couldn't be happier with my purchase!",
+            "author_name": "Sarah Johnson",
+            "author_title": "Verified Customer",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fast shipping and great quality. Highly recommend this store to anyone looking for reliable products.",
+            "author_name": "Mike Chen",
+            "author_title": "Repeat Customer",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The best online shopping experience I've had. Professional, fast, and reliable.",
+            "author_name": "Emma Wilson",
+            "author_title": "First-time Buyer",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

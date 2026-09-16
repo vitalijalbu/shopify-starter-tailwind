@@ -1,0 +1,32 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart
+Disallow: /orders/
+Disallow: /checkouts/
+Disallow: /checkout
+Disallow: /carts/
+Disallow: /account
+Disallow: /addresses
+Disallow: /customer/
+Disallow: /password
+Disallow: /*.json$
+Disallow: /*?*
+Disallow: /search?*
+Disallow: /apps/
+Allow: /apps/seo
+
+# Allow common crawlers
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Slurp
+User-agent: DuckDuckBot
+User-agent: Baiduspider
+User-agent: YandexBot
+User-agent: facebookexternalhit
+Allow: /
+
+# Sitemap
+Sitemap: {{ shop.url }}/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

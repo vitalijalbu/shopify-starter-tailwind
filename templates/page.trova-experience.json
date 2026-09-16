@@ -1,0 +1,121 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_fUXepD": {
+      "type": "page-hero",
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "Scopri le emozionanti gare e sfide",
+        "custom_subtitle": "Unisciti a noi per vivere l'adrenalina delle competizioni. Partecipa alle sfide uniche che il festival ha da offrire!",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/36ef84137ed200b22006ad58e740a90c15e79399.jpg",
+        "section_size": "large",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "testimonials_4fQyQb": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_Cp8mcY": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Amazing products and excellent customer service. I couldn't be happier with my purchase!",
+            "author_name": "Sarah Johnson",
+            "author_title": "Verified Customer",
+            "rating": 5
+          }
+        },
+        "testimonial_fUAyFJ": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fast shipping and great quality. Highly recommend this store to anyone looking for reliable products.",
+            "author_name": "Mike Chen",
+            "author_title": "Repeat Customer",
+            "rating": 5
+          }
+        },
+        "testimonial_8g8QKK": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The best online shopping experience I've had. Professional, fast, and reliable.",
+            "author_name": "Emma Wilson",
+            "author_title": "First-time Buyer",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_Cp8mcY",
+        "testimonial_fUAyFJ",
+        "testimonial_8g8QKK"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "heading": "Cosa dicono di Skimofestival",
+        "autoplay": true,
+        "loop": true,
+        "show_navigation": true,
+        "show_pagination": true
+      }
+    },
+    "hero_Vk3Qyj": {
+      "type": "hero",
+      "blocks": {
+        "heading_3Cym8z": {
+          "type": "heading",
+          "settings": {
+            "heading": "Partecipa a Skimofestival",
+            "heading_color": "#0f0b0c"
+          }
+        },
+        "text_K6BV8p": {
+          "type": "text",
+          "settings": {
+            "text": "Scopri le emozioni delle gare e sfide",
+            "text_color": "",
+            "text_color_hex": "#0f0b0c"
+          }
+        },
+        "button_TedBpx": {
+          "type": "button",
+          "settings": {
+            "button_text": "Iscriviti Ora",
+            "button_url": "shopify://pages/iscriviti",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_3Cym8z",
+        "text_K6BV8p",
+        "button_TedBpx"
+      ],
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": false,
+        "text_position": "bottom",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "left",
+        "background_color": "#72d6c0"
+      }
+    }
+  },
+  "order": [
+    "page_hero_fUXepD",
+    "testimonials_4fQyQb",
+    "hero_Vk3Qyj"
+  ]
+}

@@ -1,0 +1,55 @@
+{% comment %}
+  Product media gallery with Swiper
+  Usage: {% render 'product-media-gallery', product: product %}
+{% endcomment %}
+
+{% liquid
+  assign gallery_id = 'product-gallery-' | append: product.id
+  assign thumbs_id = 'product-thumbs-' | append: product.id
+%}
+
+<div class="product-media-gallery relative">
+  <!-- Main gallery -->
+  <div class="swiper relative overflow-hidden" id="{{ gallery_id }}">
+    <div class="swiper-wrapper relative">
+      {% for media in product.media %}
+        <div class="swiper-slide relative">
+          {% case media.media_type %}
+            {% when 'image' %}
+              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
+                {{
+                  media
+                  | image_url: width: 800
+                  | image_tag: alt: media.alt, class: 'w-full h-full object-cover', width: '800', height: '800'
+                }}
+                <div
+                  class="absolute inset-0 bg-linear-to-t from-black/10 via-transparent to-transparent pointer-events-none"
+                ></div>
+              </div>
+
+            {% when 'video' %}
+              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
+                <video
+                  controls
+                  class="w-full h-full object-cover"
+                  poster="{{ media.preview_image | image_url: width: 800 }}"
+                >
+                  {% for source in media.sources %}
+                    <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                  {% endfor %}
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+
+            {% when 'external_video' %}
+              <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                <div class="w-full h-full">
+                  {{ media | external_video_tag: class: 'w-full h-full object-cover' }}
+                </div>
+              </div>
+          {% endcase %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

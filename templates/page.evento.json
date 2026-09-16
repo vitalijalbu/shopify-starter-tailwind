@@ -1,0 +1,151 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_bQDTRP": {
+      "type": "page-hero",
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "Skimofestival, la quarta edizione.",
+        "custom_subtitle": "Un evento unico dedicato agli appassionati di scialpinismo, con esperienze indimenticabili e test di prodotto.",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/dacaf15bc2718f9db44f2b16db6450b54295edd9.png",
+        "section_size": "large",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "hero_event_JNzbXt": {
+      "type": "hero-event",
+      "blocks": {
+        "image_hwxVnP": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_GM-25-09442-scaled.jpg"
+          }
+        },
+        "image_bV7ck9": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_Domenica_GM-25-09317.jpg"
+          }
+        },
+        "image_ViFjB8": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_Domenica_GM-25-09456.jpg"
+          }
+        },
+        "image_JYBhNw": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/667a9a50799de145340f0015a79f6f85cc6e397a.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "image_hwxVnP",
+        "image_bV7ck9",
+        "image_ViFjB8",
+        "image_JYBhNw"
+      ],
+      "name": "Festival Hero",
+      "settings": {
+        "event_info": "",
+        "main_title": "La nostra storia e visione",
+        "primary_button_text": "",
+        "primary_button_link": "",
+        "secondary_button_text": "",
+        "secondary_button_link": "",
+        "subtitle_highlight": "",
+        "subtitle_main": "",
+        "description": "Siamo un team appassionato di scialpinismo, unito dalla voglia di condividere esperienze uniche e indimenticabili. Il nostro evento è nato per celebrare la bellezza della montagna e promuovere la cultura degli sport invernali.",
+        "bottom_button_text": "Scopri l'evento",
+        "bottom_button_link": ""
+      }
+    },
+    "richtext_RqiFED": {
+      "type": "richtext",
+      "custom_css": [],
+      "name": "Rich Text",
+      "settings": {
+        "content": "<h1>ll Festival va in scena nel cuore delle Alpi, a <strong>Santa Caterina Valfurva</strong></h1><p><br/>La culla indiscussa dello scialpinismo italiano. Itinerari, natura e un’atmosfera vivace rendono questo evento indimenticabile.<br/></p>",
+        "text_alignment": "text-center"
+      }
+    },
+    "event_info_inNAgg": {
+      "type": "event-info",
+      "name": "Destinazione Sciistica",
+      "settings": {
+        "background_image": "shopify://shop_images/Skimofestival_Domenica_Nature_GM-25-09379.jpg",
+        "location": "Santa Caterina Valfurva",
+        "date": "coming soon",
+        "description": "Scopri una località autentica immersa nel Parco Nazionale dello Stelvio. Natura incontaminata e avventure indimenticabili.",
+        "button_text": "Scopri di più",
+        "button_url": ""
+      }
+    },
+    "hero_tMbbB8": {
+      "type": "hero",
+      "blocks": {
+        "heading_cVaXtN": {
+          "type": "heading",
+          "settings": {
+            "heading": "Vuoi partecipare come Azienda, Negozio o Partner?",
+            "heading_color": "#0f0b0c"
+          }
+        },
+        "text_iB8fjR": {
+          "type": "text",
+          "settings": {
+            "text": "Siamo alla ricerca di aziende che vogliono unirsi a noi in questa avventura.",
+            "text_color": "text-white",
+            "text_color_hex": "#000000"
+          }
+        },
+        "button_KNzHjH": {
+          "type": "button",
+          "settings": {
+            "button_text": "Contattaci",
+            "button_url": "shopify://pages/contatti",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_cVaXtN",
+        "text_iB8fjR",
+        "button_KNzHjH"
+      ],
+      "custom_css": [
+        "{padding-block: 216px;}"
+      ],
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": false,
+        "text_position": "bottom",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "left",
+        "background_color": "#72d6c0"
+      }
+    }
+  },
+  "order": [
+    "page_hero_bQDTRP",
+    "hero_event_JNzbXt",
+    "richtext_RqiFED",
+    "event_info_inNAgg",
+    "hero_tMbbB8"
+  ]
+}

@@ -1,0 +1,112 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-test",
+      "settings": {
+        "show_breadcrumb": true,
+        "show_vendor": true,
+        "show_benefits": true
+      }
+    },
+    "how_works_9mC83a": {
+      "type": "how-works",
+      "blocks": {
+        "feature_UXGkwH": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector.svg",
+            "title": "Pagamento Sicuro",
+            "description": "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit,sed diam nonummy nibh euismod tincidunt ut laoreet dolore</p>"
+          }
+        },
+        "feature_rUcmyH": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector1.svg",
+            "title": "Pagamento Sicuro",
+            "description": "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit,sed diam nonummy nibh euismod tincidunt ut laoreet dolore</p>"
+          }
+        },
+        "feature_pWtiDj": {
+          "type": "feature",
+          "settings": {
+            "icon": "shopify://shop_images/Vector2.svg",
+            "title": "Reso Gratuito",
+            "description": "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit,sed diam nonummy nibh euismod tincidunt ut laoreet dolore</p>"
+          }
+        }
+      },
+      "block_order": [
+        "feature_UXGkwH",
+        "feature_rUcmyH",
+        "feature_pWtiDj"
+      ],
+      "name": "Come Funziona",
+      "settings": {
+        "title": "Come funziona il Test",
+        "background_color": "#25272C",
+        "text_color": "#ffffff"
+      }
+    },
+    "faq_PkHW3K": {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": {
+        "heading": "FAQ",
+        "subheading": "",
+        "cta_text": "Contact us and we'll be happy to help",
+        "cta_link": "",
+        "cta_button_text": "Contact Us"
+      }
+    },
+    "carousel_products_cFwUWr": {
+      "type": "carousel-products",
+      "blocks": {
+        "heading_EGrDVH": {
+          "type": "heading",
+          "settings": {
+            "heading": "Altri prodotti Skitrail potrebbero piacerti",
+            "description": "",
+            "button_text": "",
+            "button_url": "",
+            "button_style": "primary",
+            "show_arrow": true
+          }
+        },
+        "collection_RtdHJy": {
+          "type": "collection",
+          "settings": {
+            "collection": "brand-test",
+            "show_collection_title": false,
+            "products_to_show": 8,
+            "columns": 4,
+            "show_vendor": false,
+            "show_rating": false,
+            "show_view_all": true
+          }
+        }
+      },
+      "block_order": [
+        "heading_EGrDVH",
+        "collection_RtdHJy"
+      ],
+      "name": "Carousel Products",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "how_works_9mC83a",
+    "faq_PkHW3K",
+    "carousel_products_cFwUWr"
+  ]
+}

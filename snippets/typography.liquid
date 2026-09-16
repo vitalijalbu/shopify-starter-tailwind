@@ -1,0 +1,37 @@
+{% comment %}
+  Renders fonts links and variables.
+
+  Rideon also teaches you stuff ✦
+  - You can also use snippets to gather related blocks of code ;)
+  in this case rendering Shopify font and settings up all typography
+  token.
+
+  Usage:
+    {% render 'typography' %}
+{% endcomment %}
+
+{% style %}
+  {% comment %} We only render the font face if its not a system font {% endcomment %}
+  {% unless settings.type_heading.system? %}
+    {% liquid
+      assign font_heading = settings.type_heading
+      assign font_heading_bold = font_heading | font_modify: 'weight', 'bold'
+    %}
+
+    {{ font_heading | font_face: font_display: 'swap' }}
+    {{ font_heading_bold | font_face: font_display: 'swap' }}
+  {% endunless %}
+
+  {% unless settings.type_body.system? %}
+    {% liquid
+      assign font_body = settings.type_body
+      assign font_body_bold = font_body | font_modify: 'weight', 'bold'
+      assign font_body_italic = font_body | font_modify: 'style', 'italic'
+    %}
+
+    {{ font_body | font_face: font_display: 'swap' }}
+    {{ font_body_bold | font_face: font_display: 'swap' }}
+    {{ font_body_italic | font_face: font_display: 'swap' }}
+  {% endunless %}
+
+{% endstyle %}

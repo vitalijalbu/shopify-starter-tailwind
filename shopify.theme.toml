@@ -1,0 +1,38 @@
+# Configuration file for Shopify CLI theme development
+
+# Store URL for the Shopify store
+# Replace with your actual store URL
+store = "skimofestival.myshopify.com"
+
+# Theme ID (optional - if not specified, will use development theme)
+# theme_id = ""
+
+# Ignore patterns for files that should not be uploaded
+ignore = [
+  "node_modules/**/*",
+  "src/**/*",
+  ".git/**/*",
+  ".gitignore",
+  "package.json",
+  "package-lock.json",
+  "vite.config.js",
+  "shopify.theme.toml",
+  "README.md",
+  "jsonfig.json",
+  "*.log",
+  ".DS_Store",
+]
+
+# Development settings
+[development]
+# Store URL for development
+store = "skimofestival.myshopify.com"
+
+# Path to theme files (current directory)
+path = "."
+
+# Auto-reload browser on file changes
+auto_reload = true
+
+# Show detailed logs
+verbose = true

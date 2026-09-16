@@ -1,0 +1,92 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Header",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "blocks": {
+        "featured_menu_item_nkqaGr": {
+          "type": "featured_menu_item",
+          "settings": {
+            "menu_item": "Principiante",
+            "image": "shopify://shop_images/Skimofestival_Domenica_GM-25-09317.jpg",
+            "title": "Principiante",
+            "description": "",
+            "link": "shopify://collections/experience"
+          }
+        },
+        "featured_menu_item_atYQCB": {
+          "type": "featured_menu_item",
+          "settings": {
+            "menu_item": "Intermedio",
+            "image": "shopify://shop_images/Skimofestival_Domenica_GM-25-09308.jpg",
+            "title": "Intermedio",
+            "description": "",
+            "link": "shopify://collections/experience"
+          }
+        },
+        "featured_menu_item_9FyDFK": {
+          "type": "featured_menu_item",
+          "settings": {
+            "menu_item": "Esperto",
+            "image": "shopify://shop_images/Skimofestival_GM-25-08623_d2383304-a89b-4654-a2b8-48868cac65af.jpg",
+            "title": "Esperto",
+            "description": "",
+            "link": "shopify://collections/experience"
+          }
+        },
+        "menu_extra_link_XMY7i9": {
+          "type": "menu_extra_link",
+          "settings": {
+            "parent_menu": "Experience",
+            "title": "Guarda tutte le experience",
+            "link": "shopify://collections/experience"
+          }
+        },
+        "menu_extra_link_LczrNa": {
+          "type": "menu_extra_link",
+          "settings": {
+            "parent_menu": "Experience",
+            "title": "Scarica e compila la liberatoria",
+            "link": "https://cdn.shopify.com/s/files/1/0949/0769/5449/files/Liberatoria_attivita_scialpinistiche.pdf?v=1769173627"
+          }
+        }
+      },
+      "block_order": [
+        "featured_menu_item_nkqaGr",
+        "featured_menu_item_atYQCB",
+        "featured_menu_item_9FyDFK",
+        "menu_extra_link_XMY7i9",
+        "menu_extra_link_LczrNa"
+      ],
+      "settings": {
+        "logo": "shopify://shop_images/skimofestival.svg",
+        "menu": "main-menu-2",
+        "partecipa": true,
+        "announcement_text": ""
+      }
+    },
+    "richtext_CU9iMP": {
+      "type": "richtext",
+      "disabled": true,
+      "name": "Rich Text",
+      "settings": {
+        "content": "",
+        "text_alignment": "text-left"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "richtext_CU9iMP"
+  ]
+}

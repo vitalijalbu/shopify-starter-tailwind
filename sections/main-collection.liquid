@@ -1,0 +1,361 @@
+{% comment %}
+  Collection section with settings
+{% endcomment %}
+
+{% liquid
+  assign collection = collections[section.settings.collection] | default: collections.all
+  assign products_per_row = section.settings.products_per_row | default: 4
+  assign products_to_show = section.settings.products_to_show | default: 8
+%}
+
+{% paginate collection.products by products_to_show %}
+  <section class="py-12 md:py-16 lg:py-20">
+    <div class="container sm:px-6 lg:px-8">
+      {% comment %}
+        <!-- SEO Breadcrumbs -->
+        {% if section.settings.show_breadcrumbs %}
+          {% render 'breadcrumbs' %}
+        {% endif %}
+      {% endcomment %}
+
+      <!-- Heading -->
+      {% if section.settings.show_heading %}
+        <div class="text-left pl-16 mb-12">
+          <h2 data-scroll="slide-rotate-up" class="text-4xl md:text-7xl font-bold text-gray-900 mb-4">
+            {{ section.settings.heading | default: collection.title }}
+          </h2>
+
+          {% if section.settings.description != blank %}
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+              {{ section.settings.description }}
+            </p>
+          {% elsif collection.description != blank %}
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+              {{ collection.description }}
+            </p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Filters and Sorting -->
+      {% if section.settings.show_filters_bar %}
+        <div class="mb-8">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <!-- Filters on the left -->
+            <div class="flex items-center gap-3">
+              {% render 'collection-filters', collection: collection %}
+            </div>
+
+            <!-- Sort and count on the right -->
+            <div class="flex items-center gap-4">
+              <!-- Results count -->
+              <div class="text-base text-gray-600">{{ collection.all_products_count }} prodotti</div>
+
+              {% if section.settings.show_sort %}
+                <div class="relative" x-data="collectionSort()">
+                  <select
+                    class="px-3 py-2 text-base focus:ring-2 focus:ring-primary focus:border-primary min-w-[180px]"
+                    @change="sortProducts($event.target.value)"
+                  >
+                    <option
+                      value="manual"
+                      {% if collection.sort_by == blank or collection.sort_by == 'manual' %}
+                        selected
+                      {% endif %}
+                    >
+                      Ordina per
+                    </option>
+                    <option
+                      value="title-ascending"
+                      {% if collection.sort_by == 'title-ascending' %}
+                        selected
+                      {% endif %}
+                    >
+                      A-Z
+                    </option>
+                    <option
+                      value="title-descending"
+                      {% if collection.sort_by == 'title-descending' %}
+                        selected
+                      {% endif %}
+                    >
+                      Z-A
+                    </option>
+                    <option
+                      value="price-ascending"
+                      {% if collection.sort_by == 'price-ascending' %}
+                        selected
+                      {% endif %}
+                    >
+                      Prezzo: dal più basso
+                    </option>
+                    <option
+                      value="price-descending"
+                      {% if collection.sort_by == 'price-descending' %}
+                        selected
+                      {% endif %}
+                    >
+                      Prezzo: dal più alto
+                    </option>
+                    <option
+                      value="created-descending"
+                      {% if collection.sort_by == 'created-descending' %}
+                        selected
+                      {% endif %}
+                    >
+                      Più recenti
+                    </option>
+                    <option
+                      value="best-selling"
+                      {% if collection.sort_by == 'best-selling' %}
+                        selected
+                      {% endif %}
+                    >
+                      Più venduti
+                    </option>
+                  </select>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Products Grid -->
+      {% if collection.products.size > 0 %}
+        <div
+          id="products-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ products_per_row }} gap-6 gap-y-10 md:gap-y-20"
+        >
+          {% for product in collection.products limit: products_to_show %}
+            {% render 'card-product', product: product %}
+          {% endfor %}
+        </div>
+
+        <!-- Empty state for filtered results (hidden by default) -->
+        <div id="no-results-message" class="hidden">
+          {% render 'empty-state', title: 'Non ci sono Experience con queste caratteristiche' %}
+        </div>
+      {% else %}
+        {% render 'empty-state', title: 'Non ci sono Experience con queste caratteristiche' %}
+      {% endif %}
+
+      <!-- Pagination -->
+      {% if paginate.pages > 1 %}
+        <div class="flex items-center justify-center gap-2 mt-12">
+          {% if paginate.previous %}
+            <a
+              href="{{ paginate.previous.url }}"
+              class="btn btn-outline"
+              aria-label="Pagina precedente"
+            >
+              {% render 'icon', icon: 'chevron-left' %}
+              Precedente
+            </a>
+          {% else %}
+            <span class="btn btn-outline opacity-50 cursor-not-allowed">
+              {% render 'icon', icon: 'chevron-left' %}
+              Precedente
+            </span>
+          {% endif %}
+
+          <div class="flex items-center gap-1">
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a
+                  href="{{ part.url }}"
+                  class="px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  {{ part.title }}
+                </a>
+              {% else %}
+                {% if part.title == '&hellip;' %}
+                  <span class="px-2 text-gray-400">…</span>
+                {% else %}
+                  <span class="px-3 py-2 text-base font-medium text-white bg-primary rounded-md">
+                    {{ part.title }}
+                  </span>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if paginate.next %}
+            <a
+              href="{{ paginate.next.url }}"
+              class="btn btn-outline"
+              aria-label="Pagina successiva"
+            >
+              Successiva
+              {% render 'icon', icon: 'chevron-right' %}
+            </a>
+          {% else %}
+            <span class="btn btn-outline opacity-50 cursor-not-allowed">
+              Successiva
+              {% render 'icon', icon: 'chevron-right' %}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endpaginate %}
+
+<script>
+  function collectionSort() {
+    return {
+      sortProducts(value) {
+        const url = new URL(window.location);
+
+        if (value === 'manual') {
+          url.searchParams.delete('sort_by');
+        } else {
+          url.searchParams.set('sort_by', value);
+        }
+
+        window.location.href = url.toString();
+      },
+    };
+  }
+
+  // Function to check if any products are visible after filtering
+  function checkFilteredResults() {
+    const productsGrid = document.getElementById('products-grid');
+    const noResultsMessage = document.getElementById('no-results-message');
+
+    if (!productsGrid || !noResultsMessage) return;
+
+    const visibleProducts = productsGrid.querySelectorAll('[data-product-card]:not([style*="display: none"])');
+
+    if (visibleProducts.length === 0) {
+      productsGrid.style.display = 'none';
+      noResultsMessage.classList.remove('hidden');
+    } else {
+      productsGrid.style.display = 'grid';
+      noResultsMessage.classList.add('hidden');
+    }
+  }
+
+  // Observer to watch for changes in the products grid (when filters are applied)
+  document.addEventListener('DOMContentLoaded', function () {
+    const productsGrid = document.getElementById('products-grid');
+    if (!productsGrid) return;
+
+    // Create a MutationObserver to watch for changes in product visibility
+    const observer = new MutationObserver(function (mutations) {
+      let shouldCheck = false;
+
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+          shouldCheck = true;
+        }
+        if (mutation.type === 'childList') {
+          shouldCheck = true;
+        }
+      });
+
+      if (shouldCheck) {
+        setTimeout(checkFilteredResults, 100); // Small delay to ensure all changes are processed
+      }
+    });
+
+    // Observe the products grid and all its children
+    observer.observe(productsGrid, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      attributeFilter: ['style', 'class'],
+    });
+
+    // Also listen for custom events that might be triggered by filter scripts
+    document.addEventListener('filtersApplied', checkFilteredResults);
+    document.addEventListener('productsFiltered', checkFilteredResults);
+
+    // Initial check
+    setTimeout(checkFilteredResults, 500);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Collezione Principale",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collezione"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Prodotti per riga",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Prodotti da mostrare",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Intestazione"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Mostra breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Mostra intestazione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo personalizzato",
+      "info": "Lascia vuoto per usare il nome della collezione"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione personalizzata",
+      "info": "Lascia vuoto per usare la descrizione della collezione"
+    },
+    {
+      "type": "header",
+      "content": "Filtri e ordinamento"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters_bar",
+      "label": "Mostra barra filtri e ordinamento",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Mostra ordinamento",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collezione Principale"
+    }
+  ]
+}
+{% endschema %}

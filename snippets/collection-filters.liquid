@@ -1,0 +1,312 @@
+{% comment %}
+  Collection Filters Popover - Separate filters
+  Usage: {% render 'collection-filters', collection: collection %}
+{% endcomment %}
+
+{% liquid
+  assign livello_values = collection.products | map: 'metafields' | map: 'custom' | map: 'livello' | compact | uniq | sort
+  assign durata_values = collection.products | map: 'metafields' | map: 'custom' | map: 'durata' | compact | uniq | sort
+%}
+
+<div x-data="collectionFilters()" class="flex items-center gap-3">
+  <!-- Livello Filter -->
+  {% if livello_values.size > 0 %}
+    <div class="relative">
+      <button
+        @click="openFilter = openFilter === 'livello' ? null : 'livello'"
+        data-filter-button
+        class="flex items-center gap-2 px-4 py-2"
+      >
+        <span>Livello</span>
+        <span x-show="filters.livello.length > 0" class="bg-primary-500 text-white text-xs rounded-full px-2 py-0.5" x-text="filters.livello.length"></span>
+        <svg class="size-4 transition-transform" :class="{ 'rotate-180': openFilter === 'livello' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Livello Popover -->
+      <div
+        x-show="openFilter === 'livello'"
+        @click.away="closeFilter($event)"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute z-50 mt-2 w-64 bg-white rounded-lg shadow-xl border border-zinc-200"
+        style="display: none;"
+      >
+        <div class="p-4 space-y-3">
+          <div class="flex items-center justify-between border-b pb-2">
+            <h4 class="text-base font-medium text-gray-900">Livello</h4>
+            <button @click="openFilter = null" class="text-gray-400 hover:text-gray-600">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            {% for value in livello_values %}
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input
+                  type="checkbox"
+                  value="{{ value.value }}"
+                  @change="toggleFilter('livello', '{{ value.value }}')"
+                  :checked="filters.livello.includes('{{ value.value }}')"
+                  class="size-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                >
+                <span class="text-base text-gray-700">{{ value.value }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <div class="flex items-center justify-between gap-3 border-t pt-3">
+            <button
+              @click="resetFilter('livello')"
+              class="text-xs text-gray-600 hover:text-gray-900 underline"
+            >
+              Azzera
+            </button>
+            <button
+              @click="applyFilters()"
+              class="btn btn-primary btn-sm text-xs px-3 py-1"
+            >
+              Applica
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Durata Filter -->
+  {% if durata_values.size > 0 %}
+    <div class="relative">
+      <button
+        @click="openFilter = openFilter === 'durata' ? null : 'durata'"
+        data-filter-button
+        class="flex items-center gap-2 px-4 py-2"
+      >
+        <span>Durata</span>
+        <span x-show="filters.durata.length > 0" class="bg-primary-500 text-white text-xs rounded-full px-2 py-0.5" x-text="filters.durata.length"></span>
+        <svg class="size-4 transition-transform" :class="{ 'rotate-180': openFilter === 'durata' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Durata Popover -->
+      <div
+        x-show="openFilter === 'durata'"
+        @click.away="closeFilter($event)"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        class="absolute z-50 mt-2 w-64 bg-white rounded-lg shadow-xl border border-zinc-200"
+        style="display: none;"
+      >
+        <div class="p-4 space-y-3">
+          <div class="flex items-center justify-between border-b pb-2">
+            <h4 class="text-base font-medium text-gray-900">Durata</h4>
+            <button @click="openFilter = null" class="text-gray-400 hover:text-gray-600">
+              <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            {% for value in durata_values %}
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input
+                  type="checkbox"
+                  value="{{ value.value }}"
+                  @change="toggleFilter('durata', '{{ value.value }}')"
+                  :checked="filters.durata.includes('{{ value.value }}')"
+                  class="size-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                >
+                <span class="text-base text-gray-700">{{ value.value }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          <div class="flex items-center justify-between gap-3 border-t pt-3">
+            <button
+              @click="resetFilter('durata')"
+              class="text-xs text-gray-600 hover:text-gray-900 underline"
+            >
+              Azzera
+            </button>
+            <button
+              @click="applyFilters()"
+              class="btn btn-primary btn-sm text-xs px-3 py-1"
+            >
+              Applica
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Reset All Filters Button -->
+  <button
+    x-show="activeFiltersCount > 0"
+    @click="resetAllFilters()"
+    class="text-base text-gray-600 hover:text-gray-900 underline"
+    style="display: none;"
+  >
+    Azzera tutti i filtri
+  </button>
+</div>
+
+<script>
+  function collectionFilters() {
+    return {
+      openFilter: null, // Track which filter popover is open
+      filters: {
+        livello: [],
+        durata: []
+      },
+      allProducts: [],
+      
+      init() {
+        // Get all products from the page
+        this.allProducts = this.collectProducts();
+        
+        // Check for URL params to restore filters
+        this.restoreFiltersFromURL();
+      },
+
+      get activeFiltersCount() {
+        return this.filters.livello.length + this.filters.durata.length;
+      },
+
+      closeFilter(event) {
+        // Non chiudere se il click è su un bottone di filtro
+        if (event.target.closest('button[data-filter-button]')) {
+          return;
+        }
+        this.openFilter = null;
+      },
+
+      toggleFilter(filterType, value) {
+        const index = this.filters[filterType].indexOf(value);
+        if (index > -1) {
+          this.filters[filterType].splice(index, 1);
+        } else {
+          this.filters[filterType].push(value);
+        }
+      },
+
+      applyFilters() {
+        this.openFilter = null; // Close the popover
+        this.filterProducts();
+        this.updateURL();
+      },
+
+      resetFilter(filterType) {
+        this.filters[filterType] = [];
+      },
+
+      resetAllFilters() {
+        this.filters = {
+          livello: [],
+          durata: []
+        };
+        this.applyFilters();
+      },
+
+      collectProducts() {
+        const products = [];
+        const productCards = document.querySelectorAll('[data-product-card]');
+        
+        productCards.forEach(card => {
+          const productData = {
+            element: card,
+            livello: card.dataset.livello || '',
+            durata: card.dataset.durata || ''
+          };
+          products.push(productData);
+        });
+        
+        return products;
+      },
+
+      filterProducts() {
+        let visibleCount = 0;
+
+        this.allProducts.forEach(product => {
+          let show = true;
+
+          // Filter by livello
+          if (this.filters.livello.length > 0) {
+            show = show && this.filters.livello.includes(product.livello);
+          }
+
+          // Filter by durata
+          if (this.filters.durata.length > 0) {
+            show = show && this.filters.durata.includes(product.durata);
+          }
+
+          if (show) {
+            product.element.style.display = '';
+            visibleCount++;
+          } else {
+            product.element.style.display = 'none';
+          }
+        });
+
+        // Update count
+        this.updateResultsCount(visibleCount);
+      },
+
+      updateResultsCount(count) {
+        const countElement = document.querySelector('[data-products-count]');
+        if (countElement) {
+          countElement.textContent = count;
+        }
+      },
+
+      updateURL() {
+        const url = new URL(window.location);
+        
+        // Remove old filter params
+        url.searchParams.delete('filter_livello');
+        url.searchParams.delete('filter_durata');
+
+        // Add new filter params
+        if (this.filters.livello.length > 0) {
+          url.searchParams.set('filter_livello', this.filters.livello.join(','));
+        }
+        if (this.filters.durata.length > 0) {
+          url.searchParams.set('filter_durata', this.filters.durata.join(','));
+        }
+
+        history.replaceState({}, '', url);
+      },
+
+      restoreFiltersFromURL() {
+        const url = new URL(window.location);
+        
+        const livelloParam = url.searchParams.get('filter_livello');
+        if (livelloParam) {
+          this.filters.livello = livelloParam.split(',');
+        }
+
+        const durataParam = url.searchParams.get('filter_durata');
+        if (durataParam) {
+          this.filters.durata = durataParam.split(',');
+        }
+
+        if (this.activeFiltersCount > 0) {
+          this.filterProducts();
+        }
+      }
+    };
+  }
+</script>

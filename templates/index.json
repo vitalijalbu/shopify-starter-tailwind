@@ -1,0 +1,258 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "festival_hero_XJhxnr": {
+      "type": "festival-hero",
+      "blocks": {
+        "image_JefBe3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_GM-26-05125.jpg"
+          }
+        },
+        "image_eDTAae": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_GM-26-04883.jpg"
+          }
+        },
+        "image_mDpUec": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_GM-26-04603.jpg"
+          }
+        },
+        "image_Mbccbk": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Skimofestival_GM-26-04628.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "image_JefBe3",
+        "image_eDTAae",
+        "image_mDpUec",
+        "image_Mbccbk"
+      ],
+      "name": "Festival Hero",
+      "settings": {
+        "event_info": "Ci vediamo nel 2027",
+        "main_title": "Emozione, avventura. In una sola parola: Scialpinismo.",
+        "primary_button_text": "Scopri di più",
+        "primary_button_link": "shopify://pages/evento",
+        "secondary_button_text": "",
+        "secondary_button_link": "/account/register",
+        "subtitle_highlight": "L’evento imperdibile dello scialpinismo in Italia.",
+        "description": "Testa le ultime novità tecniche con i migliori brand e partecipa a indimenticabili Experience con le Guide alpine di Lombardia.",
+        "bottom_button_text": "Scopri l'evento",
+        "bottom_button_link": "shopify://pages/evento",
+        "mini_video_url": "https://cdn.shopify.com/videos/c/o/v/e55b78614a0d44dda953a65b71f90904.mp4",
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/12f88f98c31047399bc827352d97e568.mp4"
+      }
+    },
+    "featured_products": {
+      "type": "featured-products",
+      "blocks": {
+        "heading_bRReDT": {
+          "type": "heading",
+          "settings": {
+            "heading": "Scopri le nostre Experience, in sicurezza con le Guide alpine",
+            "description": "",
+            "button_text": "",
+            "button_url": "shopify://collections/experience",
+            "button_style": "primary",
+            "show_arrow": true
+          }
+        },
+        "collection_w9hDkh": {
+          "type": "collection",
+          "settings": {
+            "collection": "experience",
+            "show_collection_title": false,
+            "products_to_show": 8,
+            "columns": 3,
+            "show_vendor": false,
+            "show_rating": false,
+            "show_view_all": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_bRReDT",
+        "collection_w9hDkh"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "logos_carousel_mrUaaH": {
+      "type": "logos-carousel",
+      "name": "Logos Carousel",
+      "settings": {
+        "title": "Prova i migliori prodotti",
+        "subtitle": "Esplora la nostra selezione di brand leader nel settore. \n<br>\nPrenota il tuo test e vivi un'esperienza unica sulla neve.",
+        "button_text": "Scopri tutti i marchi",
+        "button_url": "shopify://pages/marchi",
+        "button_style": "primary"
+      }
+    },
+    "newsletter_VzRBeH": {
+      "type": "newsletter",
+      "disabled": true,
+      "name": "Newsletter Skimofestival",
+      "settings": {
+        "title": "Il programma di Skimofestival",
+        "subtitle": "Un weekend per testare le ultime novità tecniche con i migliori brand e partecipare a Experience emozionanti con le Guide alpine al tuo fianco",
+        "description": "Il programma è ancora in fase di aggiornamento.<br>Iscriviti per rimanere aggiornato.",
+        "privacy_text": "Cliccando su \"Resta aggiornato\" acconsenti al trattamento dei tuoi dati personali e dichiari di aver preso visione della nostra privacy policy.",
+        "button_label": "Resta aggiornato"
+      }
+    },
+    "intro_guides_mPimNR": {
+      "type": "intro-guides",
+      "disabled": true,
+      "name": "Intro Guide Alpine",
+      "settings": {
+        "title": "Scopri le nostre guide alpine, esperte e appassionate",
+        "show_view_all": true,
+        "view_all_text": "Visualizza tutto",
+        "view_all_link": "shopify://pages/guide-alpine"
+      }
+    },
+    "testimonials_7Ftx9f": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_qmnNrA": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Amazing products and excellent customer service. I couldn't be happier with my purchase!",
+            "author_name": "Sarah Johnson",
+            "author_title": "Verified Customer",
+            "rating": 5
+          }
+        },
+        "testimonial_wMTDxK": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Fast shipping and great quality. Highly recommend this store to anyone looking for reliable products.",
+            "author_name": "Mike Chen",
+            "author_title": "Repeat Customer",
+            "rating": 5
+          }
+        },
+        "testimonial_YkAtfK": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "The best online shopping experience I've had. Professional, fast, and reliable.",
+            "author_name": "Emma Wilson",
+            "author_title": "First-time Buyer",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_qmnNrA",
+        "testimonial_wMTDxK",
+        "testimonial_YkAtfK"
+      ],
+      "disabled": true,
+      "name": "Testimonials",
+      "settings": {
+        "heading": "Cosa dicono di Skimofestival",
+        "autoplay": true,
+        "loop": true,
+        "show_navigation": true,
+        "show_pagination": true
+      }
+    },
+    "hero_rEywTY": {
+      "type": "hero",
+      "blocks": {
+        "heading_JVXgaD": {
+          "type": "heading",
+          "settings": {
+            "heading": "Iscriviti  a Skimofestival",
+            "heading_color": "#0f0b0c"
+          }
+        },
+        "text_icCin9": {
+          "type": "text",
+          "settings": {
+            "text": "Unisciti a noi in questa avventura, scopri esperienze indimenticabili di scialpinismo.",
+            "text_color": "text-white",
+            "text_color_hex": "#000000"
+          }
+        },
+        "button_WFNCgz": {
+          "type": "button",
+          "settings": {
+            "button_text": "Iscriviti",
+            "button_url": "/account/register",
+            "button_style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_JVXgaD",
+        "text_icCin9",
+        "button_WFNCgz"
+      ],
+      "disabled": true,
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": true,
+        "text_position": "bottom",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "right",
+        "background_color": "#72d6c0"
+      }
+    },
+    "1763720903cd757a62": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_WNLxjF": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "Segui @skimofestival",
+            "title_color": "",
+            "title_size_v2": 20,
+            "alignment": "center",
+            "instafeed_margin_top": 24,
+            "instafeed_margin_bottom": 24,
+            "instafeed_margin_sides": 36,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_WNLxjF"
+      ],
+      "disabled": true,
+      "settings": {}
+    }
+  },
+  "order": [
+    "festival_hero_XJhxnr",
+    "featured_products",
+    "logos_carousel_mrUaaH",
+    "newsletter_VzRBeH",
+    "intro_guides_mPimNR",
+    "testimonials_7Ftx9f",
+    "hero_rEywTY",
+    "1763720903cd757a62"
+  ]
+}

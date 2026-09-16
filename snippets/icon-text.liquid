@@ -1,0 +1,31 @@
+{% comment %}
+  Snippet per combinazione immagine + testo + descrizione
+  Usage: {% render 'icon-text', image: section.settings.icon_image, text: 'Sci alpinismo', description: 'Descrizione dettagliata' %}
+  Usage con link: {% render 'icon-text', image: section.settings.icon_image, text: 'Sci alpinismo', url: '/link' %}
+{% endcomment %}
+
+{% liquid
+  assign container_class = settings.layout_style | default: 'flex items-center gap-3'
+  assign icon_size = settings.icon_size | default: '45'
+  assign tag = 'div'
+  if settings.url and settings.url != blank
+    assign tag = 'a'
+  endif
+%}
+
+<{{ tag }}
+  {% if tag == 'a' %}
+    href="{{ settings.url }}"
+  {% endif %}
+  class="{{ container_class }}{% if tag == 'a' %} hover:opacity-80 transition-opacity{% endif %}"
+>
+  {% if settings.icon_image %}
+    {% render 'image', image: settings.icon_image, width: icon_size, height: icon_size, loading: 'lazy' %}
+  {% endif %}
+  {% if settings.text != blank %}
+    <span class="font-semibold text-3xl">{{ settings.text }}</span>
+  {% endif %}
+  {% if settings.description != blank %}
+    <div class="mt-3 text-gray-600">{{ settings.description }}</div>
+  {% endif %}
+</{{ tag }}>

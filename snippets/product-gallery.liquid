@@ -1,0 +1,282 @@
+{% comment %}
+  Product gallery with zoom and thumbnails
+{% endcomment %}
+
+{% liquid
+  assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+%}
+
+<div 
+  x-data="productGallery({{ product.media | json | escape }})"
+  class="product-gallery"
+>
+  <!-- Main media -->
+  <div class="relative mb-4 group">
+    <div class="aspect-square overflow-hidden rounded-lg bg-gray-100">
+      <template x-for="(media, index) in medias" :key="media.id">
+        <div 
+          x-show="currentIndex === index"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 scale-95"
+          x-transition:enter-end="opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="opacity-100 scale-100"
+          x-transition:leave-end="opacity-0 scale-95"
+          class="relative w-full h-full"
+        >
+          <template x-if="media.media_type === 'image'">
+            <img
+              :src="media.preview_image.url"
+              :alt="media.alt || '{{ product.title | escape }}'"
+              class="w-full h-full object-cover cursor-zoom-in"
+              width="600"
+              height="600"
+              @click="openZoom()"
+              loading="lazy"
+            >
+          </template>
+          
+          <template x-if="media.media_type === 'video'">
+            <video
+              :src="media.sources[0].url"
+              :poster="media.preview_image.url"
+              class="w-full h-full object-cover"
+              controls
+              muted
+              playsinline
+            ></video>
+          </template>
+          
+          <template x-if="media.media_type === 'model'">
+            <model-viewer
+              :src="media.sources[0].url"
+              :poster="media.preview_image.url"
+              class="w-full h-full"
+              auto-rotate
+              camera-controls
+              ar
+              ar-modes="webxr scene-viewer quick-look"
+            ></model-viewer>
+          </template>
+          
+          <template x-if="media.media_type === 'external_video'">
+            <div class="w-full h-full flex items-center justify-center bg-black">
+              <iframe
+                :src="getVideoUrl(media)"
+                class="w-full h-full"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+    
+    <!-- Navigation arrows -->
+    <template x-if="medias.length > 1">
+      <div>
+        <button
+          @click="prevMedia()"
+          x-show="currentIndex > 0"
+          class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all opacity-0 group-hover:opacity-100"
+          aria-label="Previous image"
+        >
+          {% render 'icon', icon: 'arrow', class: 'size-5 rotate-180' %}
+        </button>
+        
+        <button
+          @click="nextMedia()"
+          x-show="currentIndex < medias.length - 1"
+          class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all opacity-0 group-hover:opacity-100"
+          aria-label="Next image"
+        >
+          {% render 'icon', icon: 'arrow' %}
+        </button>
+      </div>
+    </template>
+    
+    <!-- Media counter -->
+    <template x-if="medias.length > 1">
+      <div class="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+        <span x-text="currentIndex + 1"></span> / <span x-text="medias.length"></span>
+      </div>
+    </template>
+    
+    <!-- Zoom icon -->
+    <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+      <button
+        @click="openZoom()"
+        class="bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
+        aria-label="Zoom image"
+      >
+        {% render 'icon', icon: 'zoom' %}
+      </button>
+    </div>
+  </div>
+  
+  <!-- Thumbnails -->
+  <template x-if="medias.length > 1">
+    <div class="grid grid-cols-4 md:grid-cols-6 gap-3">
+      <template x-for="(media, index) in medias" :key="media.id">
+        <button
+          @click="setCurrentMedia(index)"
+          :class="{
+            'ring-2 ring-primary-500': currentIndex === index,
+            'ring-1 ring-gray-200 hover:ring-gray-300': currentIndex !== index
+          }"
+          class="aspect-square rounded-lg overflow-hidden bg-gray-100 transition-all"
+        >
+          <img
+            :src="media.preview_image.url"
+            :alt="media.alt || '{{ product.title | escape }}'"
+            class="w-full h-full object-cover"
+            width="120"
+            height="120"
+            loading="lazy"
+          >
+          
+          <!-- Video play icon -->
+          <template x-if="media.media_type === 'video' || media.media_type === 'external_video'">
+            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+              {% render 'icon', icon: 'play', class: 'size-5 text-white' %}
+            </div>
+          </template>
+          
+          <!-- 3D model icon -->
+          <template x-if="media.media_type === 'model'">
+            <div class="absolute inset-0 flex items-center justify-center bg-black/20">
+              <span class="text-white text-xs font-medium">3D</span>
+            </div>
+          </template>
+        </button>
+      </template>
+    </div>
+  </template>
+  
+  <!-- Zoom Modal -->
+  <div
+    x-show="zoomOpen"
+    x-transition.opacity
+    @click="closeZoom()"
+    @keydown.escape.window="closeZoom()"
+    class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+    style="display: none;"
+  >
+    <div class="relative max-w-7xl max-h-full">
+      <img
+        x-show="zoomOpen && medias[currentIndex]"
+        :src="medias[currentIndex]?.preview_image?.url"
+        :alt="medias[currentIndex]?.alt || '{{ product.title | escape }}'"
+        class="max-w-full max-h-full object-contain"
+        width="1200"
+        height="1200"
+        @click.stop
+      >
+      
+      <!-- Close button -->
+      <button
+        @click="closeZoom()"
+        class="absolute top-4 right-4 bg-white/20 hover:bg-white/30 rounded-full p-2 text-white"
+        aria-label="Close zoom"
+      >
+        {% render 'icon', icon: 'close' %}
+      </button>
+      
+      <!-- Navigation in zoom -->
+      <template x-if="medias.length > 1">
+        <div>
+          <button
+            @click.stop="prevMedia()"
+            x-show="currentIndex > 0"
+            class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3 text-white"
+            aria-label="Previous image"
+          >
+            {% render 'icon', icon: 'arrow', class: 'rotate-180' %}
+          </button>
+          
+          <button
+            @click.stop="nextMedia()"
+            x-show="currentIndex < medias.length - 1"
+            class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 rounded-full p-3 text-white"
+            aria-label="Next image"
+          >
+            {% render 'icon', icon: 'arrow' %}
+          </button>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
+
+<!-- Load 3D Model Viewer only when needed -->
+{% comment %} 3D Model Viewer will be loaded dynamically by Alpine.js when needed {% endcomment %}
+
+<script>
+function productGallery(productMedia) {
+  return {
+    medias: productMedia || [],
+    currentIndex: 0,
+    zoomOpen: false,
+    
+    init() {
+      // Find the featured media and set as current
+      const featuredMediaId = '{{ featured_media.id }}';
+      if (featuredMediaId) {
+        const featuredIndex = this.medias.findIndex(media => media.id.toString() === featuredMediaId);
+        if (featuredIndex !== -1) {
+          this.currentIndex = featuredIndex;
+        }
+      }
+      
+      // Listen for variant changes
+      document.addEventListener('variant:change', (e) => {
+        if (e.detail.variant && e.detail.variant.featured_media) {
+          const newIndex = this.medias.findIndex(media => 
+            media.id === e.detail.variant.featured_media.id
+          );
+          if (newIndex !== -1) {
+            this.setCurrentMedia(newIndex);
+          }
+        }
+      });
+    },
+    
+    setCurrentMedia(index) {
+      this.currentIndex = index;
+    },
+    
+    nextMedia() {
+      if (this.currentIndex < this.medias.length - 1) {
+        this.currentIndex++;
+      }
+    },
+    
+    prevMedia() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+      }
+    },
+    
+    openZoom() {
+      this.zoomOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+    
+    closeZoom() {
+      this.zoomOpen = false;
+      document.body.style.overflow = '';
+    },
+    
+    getVideoUrl(media) {
+      if (media.host === 'youtube') {
+        return `https://www.youtube.com/embed/${media.external_id}`;
+      } else if (media.host === 'vimeo') {
+        return `https://player.vimeo.com/video/${media.external_id}`;
+      }
+      return media.url;
+    }
+  }
+}
+</script>

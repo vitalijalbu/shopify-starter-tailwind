@@ -1,0 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_EEEYMH": {
+      "type": "page-hero",
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "Scopri le Guide",
+        "custom_subtitle": "Le nostre guide alpine esperte ti accompagneranno in esperienze indimenticabili sulla neve.",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/ec462068cfcad2d998dd66ea46d778d6179fa8bb.jpg",
+        "section_size": "large",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "button_text": "",
+        "button_url": "",
+        "button_icon": "",
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "main": {
+      "type": "guides-list",
+      "settings": {
+        "section_title": "Scopri le guide alpine che partecipano a SkimoFestival",
+        "show_filters": true,
+        "filter_label": "Filtra per:",
+        "zone_filter_label": "Zona di attività",
+        "cta_text": "Scopri la guida",
+        "default_cta_link": ""
+      }
+    }
+  },
+  "order": [
+    "page_hero_EEEYMH",
+    "main"
+  ]
+}

@@ -1,0 +1,183 @@
+<section class="relative overflow-hidden">
+  {% liquid
+    # Aggiunge l'altezza basata sulla dimensione selezionata per la sezione di testo
+    assign text_section_height = 'py-16 lg:py-24'
+    case section.settings.section_size
+      when 'small'
+        assign text_section_height = 'py-16 lg:pb-[144px]'
+      when 'medium'
+        assign text_section_height = 'py-16 lg:py-24'
+      when 'large'
+        assign text_section_height = 'py-20 lg:py-32'
+      else
+        assign text_section_height = 'py-16 lg:py-24'
+    endcase
+
+    # Aggiunge l'altezza basata sulla dimensione selezionata per l'immagine
+    assign image_height = 'h-[476px] sm:h-[476px] md:h-[476px]'
+    case section.settings.section_size
+      when 'small'
+        assign image_height = 'h-[250px] sm:h-[300px] md:h-[476px]'
+      when 'medium'
+        assign image_height = 'h-[476px] sm:h-[400px] md:h-[476px]'
+      when 'large'
+        assign image_height = 'h-[476px] sm:h-[500px] md:h-[600px]'
+      else
+        assign image_height = 'h-[300px] sm:h-[400px] md:h-[476px]'
+    endcase
+  %}
+  
+  <!-- Text Content -->
+  <div class="container">
+    <div class="{{ text_section_height }}">
+      <div class="w-full {% if section.settings.split_layout %}flex flex-col lg:flex-row lg:items-center lg:justify-between items-center gap-4 lg:gap-8{% else %}text-center{% endif %}">
+        <!-- Title -->
+        {% assign display_title = section.settings.custom_title | default: page_title %}
+        {% if display_title != blank %}
+          <h1 data-scroll="slide-rotate-up" class="text-5xl md:text-7xl font-bold {% if section.settings.split_layout %}mb-4 lg:mb-0 lg:w-[60%]{% else %}mb-4 md:mb-6{% endif %}">
+            {{ display_title }}
+          </h1>
+        {% endif %}
+
+        <!-- Subtitle -->
+        {% assign display_subtitle = section.settings.custom_subtitle %}
+        {% unless display_subtitle %}
+          {% if page.content and page.content != blank %}
+            {% assign display_subtitle = page.content | strip_html | truncate: 200 %}
+          {% elsif collection.description and collection.description != blank %}
+            {% assign display_subtitle = collection.description | strip_html | truncate: 200 %}
+          {% elsif blog.description and blog.description != blank %}
+            {% assign display_subtitle = blog.description | strip_html | truncate: 200 %}
+          {% endif %}
+        {% endunless %}
+
+        {% if display_subtitle != blank %}
+          <div class="sm:text-lg lg:text-2xl {% if section.settings.split_layout %}mb-0 max-w-full lg:max-w-xl text-left lg:flex-1{% else %}mb-6 md:mb-8 max-w-full md:max-w-3xl mx-auto{% endif %}">
+            {{ display_subtitle }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- CTA Button -->
+      {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+        <div class="{% if section.settings.split_layout %}mt-6 lg:mt-8{% else %}mt-0{% endif %} flex {% if section.settings.split_layout %}justify-start lg:justify-center{% else %}justify-center{% endif %}">
+          <a href="{{ section.settings.button_url }}" class="btn btn-outline btn-lg bg-white text-gray-900 border-white hover:bg-gray-100 w-full sm:w-auto">
+            {{ section.settings.button_text }}
+            {% if section.settings.button_icon %}
+              {% render 'icon', icon: section.settings.button_icon, class: 'ml-4 size-5' %}
+            {% endif %}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Full Width Image -->
+{% if section.settings.hero_image %}
+  <div class="relative w-full {{ image_height }} overflow-hidden">
+    {% render 'picture' image: section.settings.hero_image, class: "w-full h-full object-cover", width: "1920", height: "800", loading: "lazy" %}
+    <div class="absolute inset-0 bg-gradient-to-t from-transparent to-black/20"></div>
+    <!-- Image Caption -->
+    {% if section.settings.image_caption != blank %}
+      <div class="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">
+        <div class="bg-black/50 backdrop-blur-sm rounded-lg px-3 sm:px-4 py-2">
+          <p class="text-sm sm:text-base text-white">{{ section.settings.image_caption }}</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Page Hero 2",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Titolo personalizzato"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_subtitle",
+      "label": "Sottotitolo personalizzato"
+    },
+    {
+      "type": "checkbox",
+      "id": "split_layout",
+      "label": "Layout split (titolo e sottotitolo in linea)",
+      "default": false,
+      "info": "Se attivo, titolo e sottotitolo saranno affiancati. Altrimenti saranno centrati."
+    },
+    {
+      "type": "select",
+      "id": "section_size",
+      "label": "Dimensione sezione",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "info": "Altezza della sezione testo e immagine"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Mostra breadcrumb",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Immagine hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Immagine hero"
+    },
+    {
+      "type": "text",
+      "id": "image_caption",
+      "label": "Didascalia immagine"
+    },
+    {
+      "type": "header",
+      "content": "Pulsante CTA"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Testo pulsante"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Link pulsante"
+    },
+    {
+      "type": "select",
+      "id": "button_icon",
+      "label": "Icona pulsante",
+      "options": [
+        { "value": "", "label": "Nessuna" },
+        { "value": "arrow-right", "label": "Freccia destra" },
+        { "value": "external-link", "label": "Link esterno" },
+        { "value": "download", "label": "Download" },
+        { "value": "phone", "label": "Telefono" },
+        { "value": "mail", "label": "Email" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page Hero 2"
+    }
+  ]
+}
+{% endschema %}

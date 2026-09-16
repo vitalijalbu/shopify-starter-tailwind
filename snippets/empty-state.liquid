@@ -1,0 +1,46 @@
+{% comment %}
+  Snippet per mostrare uno stato vuoto riutilizzabile
+
+  Parametri:
+  - title: Titolo principale
+  - subtitle: Sottotitolo/descrizione
+  - icon: Tipo di icona (opzionale: search, box, user, default)
+  - show_button: true/false per mostrare il bottone
+  - button_text: Testo del bottone
+  - button_action: Azione del bottone (Alpine.js o link)
+{% endcomment %}
+
+<div class="text-center py-16">
+  <div class="max-w-md mx-auto">
+     {% if show_icon %}
+      <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    {% endif %}
+
+    <!-- Title -->
+    <h3 class="text-lg font-medium text-gray-500 mb-2">
+      {{ title | default: 'Nessun elemento trovato' }}
+    </h3>
+
+    <!-- Subtitle -->
+    <p class="text-gray-500 mb-4">
+      {{ subtitle }}
+    </p>
+
+    <!-- Button (optional) -->
+    {% if show_button %}
+      <button
+        {% if button_action %}
+          {{- button_action -}}
+        {% endif %}
+        class="inline-flex items-center px-4 py-2 text-primary hover:text-teal-700 font-medium text-base transition-colors duration-200"
+      >
+        <svg class="size-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+        {{ button_text | default: 'Ripristina' }}
+      </button>
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,161 @@
+<section class="py-16 lg:py-24" x-data="brandsFilter()">
+  <div class="container">
+    <!-- Section Title -->
+    {% if section.settings.section_title != blank %}
+      <div class="mb-12">
+        <h2 class="text-5xl md:text-7xl font-semibold text-gray-900" data-scroll="slide-rotate-up">
+          {{ section.settings.section_title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% assign brands = shop.metaobjects.brands.values %}
+
+    <!-- Filters -->
+    <div class="mb-12 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-4">
+        <span class="text-gray-700 font-medium">Filtra per:</span>
+
+        <!-- Brand Filter -->
+        <div class="relative flex">
+          <select
+            x-model="selectedBrand"
+            class="appearance-none px-4 py-2 pr-8 text-gray-700 hover:border-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+          >
+            <option value="">Tutti i brand</option>
+            {% for brand in brands %}
+              <option value="{{ brand.name | escape }}">{{ brand.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Clear Filters -->
+        <button
+          x-show="selectedBrand || searchQuery"
+          @click="clearFilters()"
+          class="inline-flex items-center px-3 py-2 text-base text-primary hover:text-teal-700 font-medium"
+        >
+          Cancella filtri
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="relative">
+        <input
+          type="text"
+          x-model="searchQuery"
+          placeholder="Cerca brand..."
+          class="pl-10 pr-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:border-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+        >
+        <svg
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Results Counter -->
+    <div class="mb-6">
+      <p class="text-gray-600">
+        <span x-text="filteredBrands.length"></span>
+        <span x-text="filteredBrands.length === 1 ? 'brand trovato' : 'brand trovati'"></span>
+      </p>
+    </div>
+
+    <!-- Brands Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-20">
+      {% for brand in brands %}
+        <div x-show="isVisible('{{ brand.handle | escape }}')" class="transition-all duration-200 h-full">
+          {% render 'card-brand', data: brand %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="filteredBrands.length === 0" class="text-center py-16">
+      <svg class="mx-auto w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Nessun brand corrisponde ai filtri</h3>
+      <p class="text-gray-500 mb-4">Prova a modificare i criteri di ricerca.</p>
+      <button
+        @click="clearFilters()"
+        class="inline-flex items-center px-4 py-2 text-primary hover:text-teal-700 font-medium text-base"
+      >
+        Reset filtri
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  function brandsFilter() {
+    return {
+      selectedBrand: '',
+      searchQuery: '',
+      brands: {{ brands | map: 'name' | json }},
+
+      get filteredBrands() {
+        let filtered = this.brands;
+
+        // Filtra per brand selezionato
+        if (this.selectedBrand) {
+          filtered = filtered.filter(brand => brand === this.selectedBrand);
+        }
+
+        // Filtra per ricerca
+        if (this.searchQuery) {
+          filtered = filtered.filter(brand =>
+            brand.toLowerCase().includes(this.searchQuery.toLowerCase())
+          );
+        }
+
+        return filtered;
+      },
+
+      isVisible(brandHandle) {
+        // Se non ci sono filtri attivi, mostra tutti
+        if (!this.selectedBrand && !this.searchQuery) {
+          return true;
+        }
+
+        // Ottieni tutti i brands con i dati completi
+        const allBrands = {{ brands | json }};
+        const currentBrand = allBrands.find(b => b.handle === brandHandle);
+        if (!currentBrand) return false;
+
+        // Controlla se il nome di questo brand è nella lista filtrata
+        return this.filteredBrands.includes(currentBrand.name);
+      },
+
+      clearFilters() {
+        this.selectedBrand = '';
+        this.searchQuery = '';
+      }
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Lista Brands",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Brands - SkimoFestival"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista Brands"
+    }
+  ]
+}
+{% endschema %}

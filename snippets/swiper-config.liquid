@@ -1,0 +1,250 @@
+{% comment %}
+  Swiper configuration snippet
+  Usage: {% render 'swiper-config', id: 'hero-slider', type: 'hero', autoplay: true %}
+{% endcomment %}
+
+{% liquid
+  assign swiper_id = id | default: 'swiper-' | append: section.id
+  assign slides_per_view = slides_per_view | default: 1
+  assign space_between = space_between | default: 16
+  assign autoplay_delay = autoplay_delay | default: 3000
+  assign loop = loop | default: true
+  assign pagination = pagination | default: true
+  assign navigation = navigation | default: true
+%}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  {% case type %}
+    {% when 'hero' %}
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: {{ loop }},
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: false,
+          },
+        {% endif %}
+        {% if pagination %}
+          pagination: {
+            el: '#{{ swiper_id }} .swiper-pagination',
+            clickable: true,
+          },
+        {% endif %}
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+        effect: 'fade',
+        fadeEffect: {
+          crossFade: true
+        }
+      });
+    
+    {% when 'products' %}
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: 2.5,
+        spaceBetween: {{ space_between }},
+        loop: {{ loop }},
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: true,
+          },
+        {% endif %}
+        {% if pagination %}
+          pagination: {
+            el: '#{{ swiper_id }} .swiper-pagination',
+            clickable: true,
+          },
+        {% endif %}
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+        breakpoints: {
+          640: {
+            slidesPerView: 2.5,
+            spaceBetween: {{ space_between }},
+          },
+          768: {
+            slidesPerView: 3.5,
+            spaceBetween: {{ space_between }},
+          },
+          1024: {
+            slidesPerView: {{ slides_per_view }},
+            spaceBetween: {{ space_between }},
+          },
+        },
+      });
+    
+    {% when 'gallery' %}
+      // Gallery thumbnails
+      const galleryThumbs = new Swiper('#{{ swiper_id }}-thumbs', {
+        spaceBetween: 10,
+        slidesPerView: 4,
+        freeMode: true,
+        watchSlidesProgress: true,
+        breakpoints: {
+          640: {
+            slidesPerView: 6,
+          },
+          768: {
+            slidesPerView: 8,
+          },
+        },
+      });
+
+      // Main gallery
+      new Swiper('#{{ swiper_id }}', {
+        spaceBetween: 10,
+        loop: {{ loop }},
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+        thumbs: {
+          swiper: galleryThumbs,
+        },
+      });
+    
+    {% when 'testimonials' %}
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: 1,
+        spaceBetween: {{ space_between }},
+        loop: {{ loop }},
+        centeredSlides: true,
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: false,
+          },
+        {% endif %}
+        {% if pagination %}
+          pagination: {
+            el: '#{{ swiper_id }} .swiper-pagination',
+            clickable: true,
+          },
+        {% endif %}
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+        breakpoints: {
+          768: {
+            slidesPerView: 2,
+            spaceBetween: {{ space_between }},
+          },
+          1024: {
+            slidesPerView: 3,
+            spaceBetween: {{ space_between }},
+          },
+        },
+      });
+    
+    {% when 'logos' %}
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: 2,
+        spaceBetween: {{ space_between }},
+        loop: {{ loop }},
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: false,
+          },
+        {% endif %}
+        centeredSlides: true,
+        breakpoints: {
+          640: {
+            slidesPerView: 3,
+            spaceBetween: {{ space_between }},
+          },
+          768: {
+            slidesPerView: 4,
+            spaceBetween: {{ space_between }},
+          },
+          1024: {
+            slidesPerView: {{ slides_per_view }},
+            spaceBetween: {{ space_between }},
+          },
+        },
+      });
+    
+    {% when 'testimonials' %}
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: 1,
+        spaceBetween: {{ space_between }},
+        loop: {{ loop }},
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: false,
+          },
+        {% endif %}
+        {% if pagination %}
+          pagination: {
+            el: '#{{ swiper_id }} .swiper-pagination',
+            clickable: true,
+          },
+        {% endif %}
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+        centeredSlides: true,
+        breakpoints: {
+          640: {
+            slidesPerView: 1.2,
+            spaceBetween: {{ space_between }},
+          },
+          768: {
+            slidesPerView: 1.5,
+            spaceBetween: {{ space_between }},
+          },
+          1024: {
+            slidesPerView: {{ slides_per_view }},
+            spaceBetween: {{ space_between }},
+          },
+        },
+      });
+    
+    {% else %}
+      // Default configuration
+      new Swiper('#{{ swiper_id }}', {
+        slidesPerView: {{ slides_per_view }},
+        spaceBetween: {{ space_between }},
+        loop: {{ loop }},
+        {% if autoplay %}
+          autoplay: {
+            delay: {{ autoplay_delay }},
+            disableOnInteraction: false,
+          },
+        {% endif %}
+        {% if pagination %}
+          pagination: {
+            el: '#{{ swiper_id }} .swiper-pagination',
+            clickable: true,
+          },
+        {% endif %}
+        {% if navigation %}
+          navigation: {
+            nextEl: '#{{ swiper_id }} .swiper-button-next',
+            prevEl: '#{{ swiper_id }} .swiper-button-prev',
+          },
+        {% endif %}
+      });
+  {% endcase %}
+});
+</script>

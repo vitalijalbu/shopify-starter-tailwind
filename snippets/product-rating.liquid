@@ -1,0 +1,47 @@
+{% comment %}
+  Product Rating Snippet
+{% endcomment %}
+
+{% assign product_rating = product.metafields.reviews.rating %}
+{% assign product_rating_count = product.metafields.reviews.rating_count %}
+
+{% if product_rating and product_rating_count %}
+  <div class="product-rating">
+    <div class="product-rating__stars" aria-label="Rating: {{ product_rating }} out of 5 stars">
+      {% for i in (1..5) %}
+        <span class="product-rating__star {% if i <= product_rating %}product-rating__star--filled{% endif %}">
+          ★
+        </span>
+      {% endfor %}
+    </div>
+    <span class="product-rating__count">({{ product_rating_count }})</span>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .product-rating__stars {
+    display: flex;
+    gap: 0.125rem;
+  }
+
+  .product-rating__star {
+    color: #d1d5db;
+    font-size: 1rem;
+  }
+
+  .product-rating__star--filled {
+    color: #fbbf24;
+  }
+
+  .product-rating__count {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+{% endstylesheet %}

@@ -1,0 +1,19 @@
+<section class="py-16 container">
+  <h1 class="text-4xl md:text-7xl font-bold mb-6">Collezioni</h1>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {% for collection in collections %}
+      <a href="{{ collection.url }}" class="block">
+        <div class="font-medium">{{ collection.title }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main List Collections",
+  "tag": "section",
+  "class": "section-main-list-collections",
+  "settings": []
+}
+{% endschema %}

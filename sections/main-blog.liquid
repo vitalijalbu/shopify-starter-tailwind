@@ -1,0 +1,23 @@
+<section class="py-16 container">
+  <!-- SEO Breadcrumbs -->
+  {% render 'breadcrumbs' %}
+  
+  <h1 class="text-4xl md:text-7xl font-bold mb-6">{{ blog.title }}</h1>
+  <div class="grid gap-8">
+    {% for article in blog.articles %}
+      <article>
+        <h2 class="text-xl font-semibold mb-2"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+        <div class="text-gray-600">{{ article.excerpt }}</div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Main Blog",
+  "tag": "section",
+  "class": "section-main-blog",
+  "settings": []
+}
+{% endschema %}

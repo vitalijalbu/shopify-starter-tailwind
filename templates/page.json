@@ -1,0 +1,41 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "richtext_rtBgzy": {
+      "type": "richtext",
+      "name": "Rich Text",
+      "settings": {
+        "content": "<p><strong>Rivivi le giornate di Skimofestival attraverso le foto più belle dell'evento.</strong></p>",
+        "text_alignment": "text-center"
+      }
+    },
+    "page_hero_fUXepD": {
+      "type": "page-hero",
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "{{ page.title }}",
+        "custom_subtitle": "",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/Skimofestival_GM-26-05260.jpg",
+        "section_size": "large",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    }
+  },
+  "order": [
+    "richtext_rtBgzy",
+    "page_hero_fUXepD"
+  ]
+}

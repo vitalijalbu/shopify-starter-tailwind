@@ -1,0 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "richtext_4636Ay": {
+      "type": "richtext",
+      "name": "Rich Text",
+      "settings": {
+        "content": "<p>testo</p>",
+        "text_alignment": "text-left"
+      }
+    },
+    "simple_image_RTQJ4C": {
+      "type": "simple-image",
+      "name": "Simple Image",
+      "settings": {
+        "image": "shopify://shop_images/Locandina_Skimoparty_2026_1.jpg"
+      }
+    }
+  },
+  "order": [
+    "richtext_4636Ay",
+    "simple_image_RTQJ4C"
+  ]
+}

@@ -1,0 +1,224 @@
+{% comment %} Griglia prodotti con Alpine.js {% endcomment %}
+<section class="section-padding" x-data="productCollection()">
+  <div class="container">
+    <!-- Header sezione -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-7xl font-bold mb-4">{{ section.settings.title | default: collection.title }}</h2>
+      {% if section.settings.description %}
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Filtri e ordinamento -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 space-y-4 md:space-y-0">
+      <!-- Filtri -->
+      <div class="flex items-center space-x-4">
+        <button
+          @click="toggleFilters()"
+          class="btn btn-outline btn-sm md:hidden"
+        >
+          <svg class="size-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          Filtri
+        </button>
+
+        <!-- Conteggio risultati -->
+        <span class="text-base text-gray-600">
+          Mostrando <span x-text="displayedProducts.length"></span> di <span x-text="totalProducts"></span> prodotti
+        </span>
+      </div>
+
+      <!-- Ordinamento -->
+      <div class="flex items-center space-x-4">
+        <label class="text-base font-medium">Ordina per:</label>
+        <select
+          x-model="sortBy"
+          @change="sortProducts()"
+          class="form-select text-base"
+        >
+          <option value="manual">In evidenza</option>
+          <option value="title-ascending">A-Z</option>
+          <option value="title-descending">Z-A</option>
+          <option value="price-ascending">Prezzo crescente</option>
+          <option value="price-descending">Prezzo decrescente</option>
+          <option value="created-descending">Più recenti</option>
+          <option value="best-selling">Più venduti</option>
+        </select>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      x-show="displayedProducts.length > 0"
+    >
+      <template x-for="product in displayedProducts" :key="product.id">
+        <div class="product-card">
+          <a :href="product.url" class="block">
+            <!-- Immagine prodotto -->
+            <div class="product-card-image">
+              <img
+                :src="product.featured_image"
+                :alt="product.title"
+                class="w-full h-full object-cover"
+                width="300"
+                height="300"
+                loading="lazy"
+              >
+              <!-- Badge sconto -->
+              <div
+                x-show="product.compare_at_price > product.price"
+                class="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded"
+              >
+                <span x-text="`-${Math.round((1 - product.price / product.compare_at_price) * 100)}%`"></span>
+              </div>
+              <!-- Badge sold out -->
+              <div
+                x-show="!product.available"
+                class="absolute top-2 right-2 bg-gray-600 text-white text-xs px-2 py-1 rounded"
+              >
+                Esaurito
+              </div>
+            </div>
+
+            <!-- Informazioni prodotto -->
+            <div class="mt-4">
+              <h3 class="product-card-title" x-text="product.title"></h3>
+              <div class="product-card-price">
+                <span
+                  x-show="product.compare_at_price > product.price"
+                  class="price-sale"
+                  x-text="formatMoney(product.price)"
+                ></span>
+                <span
+                  x-show="product.compare_at_price <= product.price"
+                  class="price"
+                  x-text="formatMoney(product.price)"
+                ></span>
+                <span
+                  x-show="product.compare_at_price > product.price"
+                  class="price-compare"
+                  x-text="formatMoney(product.compare_at_price)"
+                ></span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Quick add button -->
+          <button
+            @click="quickAdd(product)"
+            x-show="product.available && product.variants.length === 1"
+            class="btn btn-primary btn-sm w-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            Aggiungi veloce
+          </button>
+        </div>
+      </template>
+    </div>
+
+    <!-- Messaggio nessun prodotto -->
+    <div
+      x-show="displayedProducts.length === 0"
+      class="text-center py-12"
+    >
+      <div class="max-w-md mx-auto">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">Nessun prodotto trovato</h3>
+        <p class="mt-2 text-gray-500">Prova a modificare i tuoi filtri di ricerca.</p>
+      </div>
+    </div>
+
+    <!-- Load more button -->
+    <div
+      x-show="hasMore"
+      class="text-center mt-12"
+    >
+      <button
+        @click="loadMore()"
+        class="btn btn-outline"
+        :disabled="loading"
+      >
+        <span x-show="!loading">Carica altri</span>
+        <span x-show="loading" class="flex items-center">
+          <svg
+            class="animate-spin -ml-1 mr-3 size-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Caricamento...
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Dati della collezione per Alpine.js
+  window.collectionData = {
+    products: [
+      {% for product in collection.products %}
+        {
+          id: {{ product.id }},
+          title: {{ product.title | json }},
+          url: {{ product.url | json }},
+          price: {{ product.price }},
+          compare_at_price: {{ product.compare_at_price | default: 0 }},
+          available: {{ product.available | json }},
+          featured_image: {{ product.featured_image | image_url: width: 400 | json }},
+          vendor: {{ product.vendor | json }},
+          type: {{ product.type | json }},
+          created_at: {{ product.created_at | date: '%s' }},
+          variants: [
+            {% for variant in product.variants %}
+              {
+                id: {{ variant.id }},
+                available: {{ variant.available | json }},
+                price: {{ variant.price }}
+              }{% unless forloop.last %},{% endunless %}
+            {% endfor %}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ],
+    total_count: {{ collection.products_count | default: collection.products.size }}
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Griglia Prodotti",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "I nostri prodotti"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Prodotti per pagina",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Griglia Prodotti"
+    }
+  ]
+}
+{% endschema %}

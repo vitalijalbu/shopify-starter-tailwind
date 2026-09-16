@@ -1,0 +1,364 @@
+{% comment %}
+  Product form with variant selection and add to cart - Vanilla JS
+{% endcomment %}
+
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign show_quantity = show_quantity | default: true
+  assign show_payment_button = show_payment_button | default: true
+  assign show_pickup = show_pickup | default: false
+%}
+
+<div class="product-form mt-13 block" data-product-form>
+  <form
+    action="{{ routes.cart_add_url }}"
+    method="post"
+    enctype="multipart/form-data"
+    class="space-y-6"
+    data-product-form-element
+  >
+    <!-- Variant Selection -->
+    {% unless product.has_only_default_variant %}
+      <div class="flex gap-4 items-center justify-between variant-selectors">
+        {% for option in product.options_with_values %}
+          <div class="variant-option w-full" data-option-position="{{ forloop.index0 }}">
+            {% comment %} <label class="block text-base font-medium text-gray-700 mb-3">
+              Scegli {{ option.name }}:
+              <span data-selected-value="{{ option.name | handleize }}">{{ option.selected_value }}</span>
+            </label> {% endcomment %}
+
+            {% if is_color %}
+              <!-- Color Swatches -->
+              <div class="flex flex-wrap gap-3">
+                {% for value in option.values %}
+                  {% liquid
+                    assign color_value = value | downcase | replace: ' ', '-'
+                    assign swatch_file = 'swatch-' | append: color_value | append: '.png'
+                    assign swatch_url = swatch_file | asset_url
+                  %}
+
+                  <label class="relative cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="option{{ forloop.parentloop.index }}"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}
+                        checked
+                      {% endif %}
+                      data-option-name="{{ option.name | handleize }}"
+                      data-option-position="{{ forloop.parentloop.index0 }}"
+                      class="sr-only variant-input"
+                    >
+                    <div class="w-10 h-10 rounded-full border-2 border-gray-300 group-hover:border-gray-400 transition-colors relative overflow-hidden variant-swatch">
+                      <div
+                        class="w-full h-full rounded-full"
+                        style="background: {{ value | color_to_rgb }}; background-image: url('{{ swatch_url }}'); background-size: cover;"
+                        title="{{ value }}"
+                      ></div>
+                    </div>
+                    <span class="sr-only">{{ value }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+
+            {% elsif is_size %}
+              <!-- Size Buttons -->
+              <div class="flex flex-wrap gap-2">
+                {% for value in option.values %}
+                  <label class="cursor-pointer">
+                    <input
+                      type="radio"
+                      name="option{{ forloop.parentloop.index }}"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}
+                        checked
+                      {% endif %}
+                      data-option-name="{{ option.name | handleize }}"
+                      data-option-position="{{ forloop.parentloop.index0 }}"
+                      class="sr-only variant-input"
+                    >
+                    <div class="px-4 py-2 border border-gray-300 rounded-md text-base font-medium hover:border-gray-400 transition-colors variant-button">
+                      {{ value }}
+                    </div>
+                  </label>
+                {% endfor %}
+              </div>
+
+            {% else %}
+              <!-- Default Select -->
+              <select
+                name="option{{ forloop.index }}"
+                class="form-input variant-input"
+                data-option-name="{{ option.name | handleize }}"
+                data-option-position="{{ forloop.index0 }}"
+              >
+                {% for value in option.values %}
+                  <option
+                    value="{{ value | escape }}"
+                    {% if option.selected_value == value %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ value }}
+                  </option>
+                {% endfor %}
+              </select>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endunless %}
+
+    <!-- Variant ID (hidden input) -->
+    <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+    <!-- Add to Cart -->
+    <div class="flex items-end gap-4">
+      <div class="flex-1">
+        <button
+          type="submit"
+          class="btn btn-dark w-full flex items-center justify-center gap-2"
+          data-add-to-cart-button
+        >
+          <div class="animate-spin rounded-full size-5 border-b-2 border-white hidden" data-loading-spinner></div>
+          <span data-button-text>Prenota prodotto</span>
+          <span data-button-icon>{% render 'icon', icon: 'arrow-top-right' %}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Checkout Buttons -->
+    {% if show_payment_button %}
+      <div class="dynamic-checkout">
+        {{ form | payment_button }}
+      </div>
+    {% endif %}
+
+    <!-- Pickup Availability -->
+    {% if show_pickup and product.selected_or_first_available_variant.store_availabilities.size > 0 %}
+      <div class="pickup-availability mt-6">
+        {% render 'pickup-availability', variant: product.selected_or_first_available_variant %}
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<script>
+  // Product variants data
+  window.productVariants_{{ product.id }} = {{ product.variants | json }};
+</script>
+
+<script>
+(function() {
+  const productForm = document.querySelector('[data-product-form]');
+  if (!productForm) return;
+
+  const form = productForm.querySelector('[data-product-form-element]');
+  const variantIdInput = productForm.querySelector('[data-variant-id]');
+  const addToCartButton = productForm.querySelector('[data-add-to-cart-button]');
+  const buttonText = productForm.querySelector('[data-button-text]');
+  const buttonIcon = productForm.querySelector('[data-button-icon]');
+  const loadingSpinner = productForm.querySelector('[data-loading-spinner]');
+  const stockInfo = productForm.querySelector('[data-stock-info]');
+  const priceInfo = productForm.querySelector('[data-price-info]');
+  const priceElement = productForm.querySelector('[data-price]');
+  const comparePriceElement = productForm.querySelector('[data-compare-price]');
+
+  // Get variants data
+  const productId = {{ product.id }};
+  const variants = window['productVariants_' + productId] || [];
+  let currentVariant = variants.find(v => v.id === {{ current_variant.id }}) || variants[0];
+
+  // Check if variant is in cart
+  function isVariantInCart(variantId) {
+    if (!window.cartDrawer || !window.cartDrawer.cartData) return false;
+    const items = window.cartDrawer.cartData.items || [];
+    return items.some(item => item.variant_id === variantId);
+  }
+
+  // Handle variant option changes
+  const variantInputs = productForm.querySelectorAll('.variant-input');
+  variantInputs.forEach(input => {
+    input.addEventListener('change', handleVariantChange);
+  });
+
+  function handleVariantChange() {
+    // Get selected options
+    const selectedOptions = [];
+    const optionInputs = productForm.querySelectorAll('.variant-input');
+    
+    optionInputs.forEach(input => {
+      if (input.type === 'radio') {
+        if (input.checked) {
+          const position = parseInt(input.dataset.optionPosition);
+          selectedOptions[position] = input.value;
+        }
+      } else if (input.tagName === 'SELECT') {
+        const position = parseInt(input.dataset.optionPosition);
+        selectedOptions[position] = input.value;
+      }
+    });
+
+    // Find matching variant
+    const matchingVariant = variants.find(variant => {
+      return variant.options.every((option, index) => option === selectedOptions[index]);
+    });
+
+    if (matchingVariant) {
+      currentVariant = matchingVariant;
+      updateVariantUI();
+      updateURL();
+    }
+  }
+
+  function updateVariantUI() {
+    // Update hidden variant ID input
+    if (variantIdInput) {
+      variantIdInput.value = currentVariant.id;
+    }
+
+    // Check if variant is already in cart
+    const inCart = isVariantInCart(currentVariant.id);
+
+    // Update button state
+    if (addToCartButton) {
+      if (!currentVariant.available) {
+        addToCartButton.disabled = true;
+        addToCartButton.classList.add('opacity-50', 'cursor-not-allowed');
+        if (buttonText) buttonText.textContent = 'Esaurito';
+      } else if (inCart) {
+        addToCartButton.disabled = true;
+        addToCartButton.classList.add('opacity-50', 'cursor-not-allowed');
+        if (buttonText) buttonText.textContent = 'Prodotto già nel carrello';
+      } else {
+        addToCartButton.disabled = false;
+        addToCartButton.classList.remove('opacity-50', 'cursor-not-allowed');
+        if (buttonText) buttonText.textContent = 'Prenota prodotto';
+      }
+    }
+
+    // Update stock info
+    if (stockInfo) {
+      stockInfo.innerHTML = currentVariant.available
+        ? `<div class="flex items-center gap-2 text-green-600">
+             {% render 'icon', icon: 'checkmark' %}
+             <span>Disponibile</span>
+           </div>`
+        : `<div class="flex items-center gap-2 text-red-700">
+             {% render 'icon', icon: 'unavailable' %}
+             <span>Esaurito</span>
+           </div>`;
+    }
+
+    // Update price
+    if (priceElement) {
+      priceElement.textContent = formatMoney(currentVariant.price);
+    }
+
+    // Update compare at price
+    if (comparePriceElement) {
+      if (currentVariant.compare_at_price && currentVariant.compare_at_price > currentVariant.price) {
+        comparePriceElement.textContent = formatMoney(currentVariant.compare_at_price);
+        comparePriceElement.classList.remove('hidden');
+      } else {
+        comparePriceElement.classList.add('hidden');
+      }
+    }
+
+    // Update visual selection state for swatches and buttons
+    updateVisualSelection();
+  }
+
+  function updateVisualSelection() {
+    // Update color swatches
+    const swatches = productForm.querySelectorAll('.variant-swatch');
+    swatches.forEach(swatch => {
+      const input = swatch.closest('label').querySelector('input');
+      if (input.checked) {
+        swatch.classList.add('ring-2', 'ring-primary-500', 'ring-offset-2');
+      } else {
+        swatch.classList.remove('ring-2', 'ring-primary-500', 'ring-offset-2');
+      }
+    });
+
+    // Update size buttons
+    const buttons = productForm.querySelectorAll('.variant-button');
+    buttons.forEach(button => {
+      const input = button.closest('label').querySelector('input');
+      if (input.checked) {
+        button.classList.add('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        button.classList.remove('text-gray-700');
+      } else {
+        button.classList.remove('border-primary-500', 'bg-primary-50', 'text-primary-700');
+        button.classList.add('text-gray-700');
+      }
+    });
+
+    // Update selected value display
+    const selectedValueSpans = productForm.querySelectorAll('[data-selected-value]');
+    selectedValueSpans.forEach(span => {
+      const optionName = span.dataset.selectedValue;
+      const checkedInput = productForm.querySelector(`input[data-option-name="${optionName}"]:checked`);
+      if (checkedInput) {
+        span.textContent = checkedInput.value;
+      }
+    });
+  }
+
+  function updateURL() {
+    if (currentVariant && history.replaceState) {
+      const url = new URL(window.location);
+      url.searchParams.set('variant', currentVariant.id);
+      history.replaceState({}, '', url);
+    }
+  }
+
+  function formatMoney(cents) {
+    return '€' + (cents / 100).toFixed(2).replace('.', ',');
+  }
+
+  // Handle form submission
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (!currentVariant || !currentVariant.available) {
+      return;
+    }
+
+    // Check if already in cart
+    if (isVariantInCart(currentVariant.id)) {
+      return;
+    }
+
+    // Show loading state on button
+    addToCartButton.disabled = true;
+    if (buttonText) buttonText.textContent = 'Aggiunta in corso...';
+    if (buttonIcon) buttonIcon.classList.add('hidden');
+    if (loadingSpinner) loadingSpinner.classList.remove('hidden');
+
+    // Use cartDrawer to add item
+    if (window.cartDrawer) {
+      try {
+        await window.cartDrawer.addItem(currentVariant.id, 1);
+        // Update UI after adding to cart
+        updateVariantUI();
+      } catch (error) {
+        // Optionally, show an error message to the user here
+        console.error('Failed to add item to cart:', error);
+      }
+    }
+
+    // Reset loading state
+    if (buttonIcon) buttonIcon.classList.remove('hidden');
+    if (loadingSpinner) loadingSpinner.classList.add('hidden');
+  });
+
+  // Listen for cart updates to refresh button state
+  window.addEventListener('cart:updated', function() {
+    updateVariantUI();
+  });
+
+  // Initialize UI
+  updateVariantUI();
+})();
+</script>

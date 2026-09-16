@@ -1,0 +1,316 @@
+<section class="relative overflow-hidden">
+  {% liquid
+    # Aggiunge l'altezza basata sulla dimensione selezionata per l'immagine
+    assign image_height = 'h-[300px] sm:h-[400px] md:h-[476px]'
+    case section.settings.section_size
+      when 'small'
+        assign image_height = 'h-[250px] sm:h-[300px] md:h-[350px]'
+      when 'medium'
+        assign image_height = 'h-[300px] sm:h-[400px] md:h-[476px]'
+      when 'large'
+        assign image_height = 'h-[350px] sm:h-[500px] md:h-[600px]'
+      else
+        assign image_height = 'h-[300px] sm:h-[400px] md:h-[476px]'
+    endcase
+  %}
+
+  <!-- Text Content -->
+  <div class="container mb-20">
+    <div class="w-full container text-center">
+      <!-- Title - sempre centrato -->
+      {% assign display_title = section.settings.custom_title | default: page_title %}
+      {% if display_title != blank %}
+        <h1 class="text-5xl md:text-7xl font-bold mb-6">
+          {{ display_title }}
+        </h1>
+      {% endif %}
+
+      <!-- Subtitle e CTA inline su desktop -->
+      {% assign display_subtitle = section.settings.custom_subtitle %}
+      {% unless display_subtitle %}
+        {% if page.content and page.content != blank %}
+          {% assign display_subtitle = page.content | strip_html | truncate: 200 %}
+        {% elsif collection.description and collection.description != blank %}
+          {% assign display_subtitle = collection.description | strip_html | truncate: 200 %}
+        {% elsif blog.description and blog.description != blank %}
+          {% assign display_subtitle = blog.description | strip_html | truncate: 200 %}
+        {% endif %}
+      {% endunless %}
+
+      {% assign has_subtitle = false %}
+      {% assign has_button = false %}
+      {% if display_subtitle != blank %}
+        {% assign has_subtitle = true %}
+      {% endif %}
+      {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+        {% assign has_button = true %}
+      {% endif %}
+
+      {% if has_subtitle or has_button %}
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-4 lg:gap-8">
+          {% if has_subtitle %}
+            <div class="text-left text-base sm:text-lg lg:text-xl max-w-full lg:max-w-2xl">
+              {{ display_subtitle }}
+            </div>
+          {% endif %}
+
+          <!-- CTA Button -->
+          {% if has_button %}
+            <div class="flex justify-center lg:justify-start shrink-0">
+              <a
+                href="{{ section.settings.button_url }}"
+                class="btn btn-secondary w-full sm:w-auto"
+              >
+                {{ section.settings.button_text }}
+                {% render 'icon', icon: 'arrow-top-right', class: 'ml-4 size-5' %}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Full Width Image -->
+{% if section.settings.hero_image %}
+  <div class="relative w-full {{ image_height }} w-full overflow-hidden">
+    <!-- Immagine di sfondo -->
+    {% if section.settings.hero_image %}
+      <img
+        src="{{ section.settings.hero_image | image_url: width: 1920 }}"
+        alt="{{ section.settings.hero_image.alt | escape }}"
+        class="absolute inset-0 w-full h-full object-cover"
+        width="1920"
+        height="{{ 1920 | divided_by: section.settings.hero_image.aspect_ratio | round }}"
+      >
+    {% else %}
+      <div class="absolute inset-0 bg-linear-to-br from-gray-400 to-gray-600"></div>
+    {% endif %}
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/30 z-10 "></div>
+
+    <div class="container pt-20 h-full flex items-end relative z-20">
+      <div class="w-full bottom-0">
+        <div class="bg-dark backdrop-blur-sm text-white p-4 sm:p-6 lg:p-8 relative border-l-[20px] border-accent-teal">
+          <!-- Mobile Layout -->
+          <div class="flex flex-col gap-4 sm:hidden">
+            <!-- Location e Date insieme su mobile -->
+            <div class="flex gap-6">
+              {% if section.settings.location != blank %}
+                <div class="flex-1">
+                  <h3 class="text-xs font-medium tracking-wider mb-1 text-gray-300">Luogo</h3>
+                  <p class="text-base font-semibold">{{ section.settings.location }}</p>
+                </div>
+              {% endif %}
+
+              {% if section.settings.date != blank %}
+                <div class="flex-1">
+                  <h3 class="text-xs font-medium tracking-wider mb-1 text-gray-300">Data</h3>
+                  <p class="text-base font-semibold">{{ section.settings.date }}</p>
+                </div>
+              {% endif %}
+            </div>
+
+            {% if section.settings.description != blank %}
+              <div>
+                <p class="text-base leading-relaxed text-gray-100">
+                  {{ section.settings.description }}
+                </p>
+              </div>
+            {% endif %}
+
+            {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+              <div class="pt-2">
+                <a
+                  href="{{ section.settings.button_url }}"
+                  class="inline-block bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-base font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-gray-900"
+                >
+                  {{ section.settings.button_text }}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Desktop/Tablet Layout -->
+          <div class="hidden sm:flex items-start lg:items-center gap-4 md:gap-6 lg:gap-8 flex-wrap lg:flex-nowrap">
+            {% if section.settings.location != blank %}
+              <div class="shrink-0">
+                <h3 class="lg:text-lg font-semibold tracking-wider mb-1 text-white">Luogo:</h3>
+                <p>{{ section.settings.location }}</p>
+              </div>
+            {% endif %}
+
+            {% if section.settings.date != blank %}
+              <div class="shrink-0">
+                <h3 class="lg:text-lg font-semibold tracking-wider mb-1 text-white">Data:</h3>
+                <p>{{ section.settings.date }}</p>
+              </div>
+            {% endif %}
+
+            {% if section.settings.description != blank %}
+              <div class="flex-1 min-w-0">
+                <p class=" text-gray-100">
+                  {{ section.settings.description }}
+                </p>
+              </div>
+            {% endif %}
+
+            {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+              <div class="shrink-0">
+                <a
+                  href="{{ section.settings.button_url }}"
+                  class="btn btn-primary"
+                >
+                  {{ section.settings.button_text }}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Two Column Section with Prize -->
+<section class="py-16 lg:py-24">
+  <div class="container">
+    <div class="grid grid-cols-1 lg:grid-cols-6 divide-y lg:divide-y-0 lg:divide-x divide-zinc-200 gap-8 lg:gap-16">
+      <!-- Left Column - Premio e Pulsante (2/6) -->
+      <div class="pb-8 lg:pb-0 lg:pr-8 lg:col-span-2">
+        {% if section.settings.prize_title != blank %}
+          <h3 class="text-4xl md:text-6xl font-semibold mb-6">
+            {{ section.settings.prize_title }}
+          </h3>
+        {% endif %}
+
+        {% if section.settings.prize_button_text != blank and section.settings.prize_button_url != blank %}
+          <div class="mt-6">
+            <a href="{{ section.settings.prize_button_url }}" class="btn btn-primary w-full sm:w-auto">
+              {{ section.settings.prize_button_text }}
+              {% render 'icon', icon: 'arrow-top-right', class: 'ml-4 size-5' %}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Right Column - Titolo e Testo (4/6) -->
+      <div class="pt-8 lg:pt-0 lg:pl-8 lg:col-span-4">
+        {% if section.settings.right_title != blank %}
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            {{ section.settings.right_title }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.right_text != blank %}
+          <div class="prose prose-lg max-w-none text-gray-700">
+            {{ section.settings.right_text }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Challenge Rules",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Titolo personalizzato"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_subtitle",
+      "label": "Sottotitolo personalizzato"
+    },
+    {
+      "type": "select",
+      "id": "section_size",
+      "label": "Dimensione sezione",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium",
+      "info": "Altezza della sezione testo e immagine"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Mostra breadcrumb",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Immagine hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Immagine hero"
+    },
+    {
+      "type": "header",
+      "content": "Pulsante CTA"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Testo pulsante"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Link pulsante"
+    },
+    {
+      "type": "header",
+      "content": "Sezione Due Colonne"
+    },
+    {
+      "type": "text",
+      "id": "right_title",
+      "label": "Titolo colonna sinistra",
+      "default": "I vincitori delle diverse categorie riceveranno premi esclusivi."
+    },
+    {
+      "type": "richtext",
+      "id": "right_text",
+      "label": "Testo colonna sinistra",
+      "default": "<p>Non perdere l'opportunità di vincere fantastici riconoscimenti!</p>"
+    },
+    {
+      "type": "text",
+      "id": "prize_title",
+      "label": "Titolo premio (colonna destra)",
+      "default": "I premi per i vincitori"
+    },
+    {
+      "type": "text",
+      "id": "prize_button_text",
+      "label": "Testo pulsante premio",
+      "default": "Iscriviti alla gara"
+    },
+    {
+      "type": "url",
+      "id": "prize_button_url",
+      "label": "Link pulsante premio"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Challenge Rules"
+    }
+  ]
+}
+{% endschema %}

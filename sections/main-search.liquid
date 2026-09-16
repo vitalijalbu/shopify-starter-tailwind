@@ -1,0 +1,22 @@
+<section class="py-16 container">
+  <h1 class="text-4xl md:text-7xl font-bold mb-6">Risultati della ricerca</h1>
+  {% if search.performed %}
+    <p class="mb-6">{{ search.results_count }} risultati per "{{ search.terms }}"</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      {% for item in search.results %}
+        <a href="{{ item.url }}" class="block">
+          <div class="font-medium">{{ item.title }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Main Search",
+  "tag": "section",
+  "class": "section-main-search",
+  "settings": []
+}
+{% endschema %}

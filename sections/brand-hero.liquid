@@ -1,0 +1,47 @@
+<section class="py-24">
+  <div class="container">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl flex items-center justify-center p-6 md:p-12">
+        {% render 'picture', image: section.settings.image, class: 'w-auto h-[100px]' %}
+      </div>
+      <div class="col-span-2 flex flex-col justify-center">
+        {% if section.settings.description != blank %}
+          <div class="text-gray-700 mb-6">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Immagine",
+      "info": "L'immagine verrà visualizzata a sinistra su desktop e sopra il testo su mobile."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Titolo Sezione"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "<p>Questa è la descrizione della sezione.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Hero"
+    }
+  ]
+}
+{% endschema %}

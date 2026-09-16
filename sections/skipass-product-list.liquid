@@ -1,0 +1,192 @@
+{% comment %}
+  Section: Skipass Product List
+  - Renders a product grid for all products where product_type == "Skipass"
+  - Uses pagination to safely traverse large catalogs
+{% endcomment %}
+
+
+<section class="manual-products section-{{ section.id }}">
+  <div class="container">
+
+    {% if section.settings.heading != blank %}
+      <h2 class="manual-products__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% assign has_items = false %}
+
+    <div class="manual-products__grid">
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {% if product != blank %}
+          {% assign has_items = true %}
+
+          <article class="manual-products__card" {{ block.shopify_attributes }}>
+            <a href="{{ product.url }}" class="manual-products__link">
+              {% if product.featured_image %}
+                <img
+                  src="{{ product.featured_image | image_url: width: 900 }}"
+                  alt="{{ product.featured_image.alt | escape }}"
+                  loading="lazy"
+                  class="manual-products__image"
+                >
+              {% endif %}
+
+              <h3 class="text-2xl font-semibold text-gray-900 mb-4 mt-4 line-clamp-2">{{ product.title }}</h3>
+              <div class="manual-products__price text-lg">{{ product.price | money }}</div>
+            </a>
+
+            {% if section.settings.show_add_to_cart %}
+              {% if product.available %}
+                <form method="post" action="/cart/add" class="manual-products__form">
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <button type="submit" class="manual-products__btn">
+                    {{ section.settings.add_to_cart_label }}
+                  </button>
+                </form>
+              {% else %}
+                <div class="manual-products__soldout">
+                  {{ section.settings.sold_out_label }}
+                </div>
+              {% endif %}
+            {% endif %}
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% unless has_items %}
+      <div class="manual-products__empty">
+        {{ section.settings.empty_state }}
+      </div>
+    {% endunless %}
+
+  </div>
+</section>
+
+<style>
+  .section-{{ section.id }} { padding: 64px 0; }
+
+  .section-{{ section.id }} .manual-products__heading { margin: 0 0 20px; }
+
+  .section-{{ section.id }} .manual-products__grid {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: 1 colonna */
+  gap: 18px;
+}
+
+@media (min-width: 750px) {
+  .section-{{ section.id }} .manual-products__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* tablet: 2 colonne */
+  }
+}
+
+@media (min-width: 990px) {
+  .section-{{ section.id }} .manual-products__grid {
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr)); /* desktop */
+  }
+}
+
+  .section-{{ section.id }} .manual-products__card {
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 14px;
+  }
+
+  .section-{{ section.id }} .manual-products__link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .section-{{ section.id }} .manual-products__image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+  }
+
+  {% comment %} .section-{{ section.id }} .manual-products__title { margin: 12px 0 6px; font-size: 16px; }
+  .section-{{ section.id }} .manual-products__price { font-size: 14px; opacity: .85; } {% endcomment %}
+
+  .section-{{ section.id }} .manual-products__form { margin-top: 12px; }
+
+  .section-{{ section.id }} .manual-products__btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0,.15);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .section-{{ section.id }} .manual-products__soldout,
+  .section-{{ section.id }} .manual-products__empty {
+    margin-top: 16px;
+    opacity: .8;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Manual product list",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo",
+      "default": "Skipass"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Colonne desktop",
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "label": "Mostra bottone aggiungi al carrello",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_label",
+      "label": "Testo bottone",
+      "default": "Aggiungi al carrello"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Testo esaurito",
+      "default": "Esaurito"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_state",
+      "label": "Messaggio se non ci sono prodotti",
+      "default": "Seleziona uno o più prodotti nei blocchi della sezione."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Prodotto",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Seleziona prodotto"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    { "name": "Manual product list" }
+  ]
+}
+{% endschema %}

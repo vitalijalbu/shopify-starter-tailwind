@@ -1,0 +1,88 @@
+<div class="container sm:px-6 lg:px-8 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+    <div class="mb-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ product.title }}</h1>
+        {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+          <div class="shrink-0">
+            <a
+              href="{{ section.settings.button_url }}"
+              class="btn btn-primary"
+            >
+              {{ section.settings.button_text }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+      {% render 'price',
+        product: product,
+        class: 'text-3xl md:text-5xl [&>span:not(.sr-only)]:text-primary-400 font-semibold'
+      %}
+    </div>
+    <!-- Product Details -->
+    <div class="order-2">
+      <!-- Info Fields -->
+      <div>
+        <ul class="divide-y divide-zinc-200">
+          <li class="flex justify-between items-center py-3">
+            <span class="text-gray-600 font-semibold flex items-center gap-2">
+              {%- render 'icon', icon: 'snow', class: 'text-primary-400' %} Evento</span
+            >
+            <span class="text-gray-900">{{ product.metafields.custom.challenge_event }}</span>
+          </li>
+          <li class="flex justify-between items-center py-3">
+            <span class="text-gray-600 font-semibold flex items-center gap-2">
+              {%- render 'icon', icon: 'calendar', class: 'text-primary-400' %} Date</span
+            >
+            <span class="text-gray-900">{{ product.metafields.custom.challenge_date }}</span>
+          </li>
+          <li class="flex justify-between items-center py-3">
+            <span class="text-gray-600 font-semibold flex items-center gap-2">
+              {%- render 'icon', icon: 'flag', class: 'text-primary-400' %} Tipo</span
+            >
+            <span class="text-gray-900">{{ product.metafields.custom.challenge_type }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% if product.featured_media %}
+  <div class="relative h-[300px] sm:h-[400px] md:h-[476px] w-full overflow-hidden">
+    <img
+      src="{{ product.featured_media | image_url: width: 1920 }}"
+      alt="{{ product.featured_media.alt | escape }}"
+      class="absolute inset-0 w-full h-full object-cover"
+      width="1920"
+      height="{{ 1920 | divided_by: product.featured_media.aspect_ratio | round }}"
+    >
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Product Challenge",
+  "tag": "section",
+  "class": "product-challenge",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Impostazioni generali"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Testo pulsante"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Link pulsante"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Challenge"
+    }
+  ]
+}
+{% endschema %}

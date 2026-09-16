@@ -1,0 +1,20 @@
+<section class="py-16 container">
+  <h1 class="text-3xl md:text-4xl font-bold mb-6">Attiva il tuo account</h1>
+  <div>
+    {% form 'activate_customer_password' %}
+      {{ form.errors | default_errors }}
+      <input type="password" name="customer[password]" placeholder="Password" class="border p-2 mr-2" />
+      <input type="password" name="customer[password_confirmation]" placeholder="Conferma Password" class="border p-2 mr-2" />
+      <button type="submit" class="btn btn-primary">Attiva</button>
+    {% endform %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Activate Account",
+  "tag": "section",
+  "class": "section-customer-activate-account",
+  "settings": []
+}
+{% endschema %}

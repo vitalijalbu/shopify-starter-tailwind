@@ -1,0 +1,63 @@
+<div class="h-full md:h-[400px] guide-card overflow-hidden transition-all duration-200 transform">
+  <div class="md:flex h-full">
+    <!-- Guide Image -->
+    <div class="mb-4 h-[300px] md:h-[400px] md:w-[320px] rounded-2xl overflow-hidden">
+      {% render 'picture', image: guide.profile_picture, class: 'rounded-2xl w-full h-full object-cover' %}
+    </div>
+
+    <!-- Guide Info -->
+    <div class="md:px-6 flex-1 flex flex-col justify-between">
+      <!-- Name -->
+      <h3 class="text-2xl font-bold mb-2">{{ guide.nome.value }}</h3>
+
+      <!-- Info Fields -->
+      <div>
+        {% liquid
+          assign info_items = ''
+
+          if guide.gruppo.value != blank
+            assign info_items = info_items | append: 'Gruppo::' | append: guide.gruppo.value | append: '||'
+          endif
+
+          if guide.zona.value != blank
+            assign info_items = info_items | append: 'Zona Attività::' | append: guide.zona.value | append: '||'
+          endif
+
+          assign items = info_items | split: '||'
+        %}
+
+        {% if items.size > 0 %}
+          <ul class="divide-y divide-zinc-200">
+            {% for item in items %}
+              {% if item != blank %}
+                {% assign parts = item | split: '::' %}
+                <li class="flex justify-between items-center py-3">
+                  <span>{{ parts[0] }}</span>
+                  <span class="text-gray-500 text-right">{{ parts[1] }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% if guide.bio.value != blank %}
+          <div class="mb-6">
+            <span class="block mb-2">Bio</span>
+            <p
+              class="text-gray-500 text-base leading-relaxed overflow-hidden"
+              style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;"
+            >
+              {{ guide.bio.value }}
+            </p>
+          </div>
+        {% endif %}
+        <a
+          href="/collections/experience"
+          class="inline-flex items-center hover:text-primary underline text-base transition-colors duration-200 group"
+        >
+          Scopri le experience
+          {% render 'icon', icon: 'arrow-top-right' %}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

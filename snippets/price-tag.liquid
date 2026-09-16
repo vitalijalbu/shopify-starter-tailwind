@@ -1,0 +1,19 @@
+{% comment %}
+  Renders a price with "Gratis" for zero values
+
+  Accepts:
+  - price: {number} Price in cents (required)
+  - class: {string} Additional CSS classes (optional)
+
+  Usage:
+    {% render 'price-tag', price: order.total_price %}
+    {% render 'price-tag', price: line_item.final_price, class: 'font-bold' %}
+{% endcomment %}
+
+<span class="{{ class }}">
+  {%- if price == 0 -%}
+    Gratis
+  {%- else -%}
+    {{ price | money }}
+  {%- endif -%}
+</span>

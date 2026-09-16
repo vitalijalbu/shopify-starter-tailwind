@@ -1,0 +1,47 @@
+{% liquid
+  assign card_id = 'card-experience-' | append: product.id
+  assign loading = loading | default: 'lazy'
+%}
+<article
+  data-scroll="product-card"
+  class="group hover:scale-102 transition-transform duration-200 relative"
+  aria-labelledby="{{ card_id }}-title"
+>
+  <a href="{{ product.url }}" class="block">
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500">
+      <div class="relative overflow-hidden bg-gray-100 h-[437px] md:h-[537px]">
+        <!-- Main Image -->
+        {%
+          render 'picture'
+          image: product.featured_media,
+          alt: product.featured_media.alt | default: product.title | escape,
+          class: "absolute inset-0 w-full h-full object-cover object-center"
+        %}
+
+        <div class="absolute inset-0 bg-linear-to-b/shorter from-transparent via-transparent to-dark"></div>
+
+        <!-- Tags in alto a sinistra -->
+        {% if product.tags.size > 0 %}
+          <div class="absolute top-6 left-6 flex flex-wrap gap-2">
+            {% for tag in product.tags limit: 3 %}
+              <span class="badge">
+                {{ tag }}
+              </span>
+            {% endfor %}
+            {% if product.tags.size > 3 %}
+              <span class="badge"> +{{ product.tags.size | minus: 3 }} </span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Product info - Dentro la card, in basso -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <h3 id="{{ card_id }}-title" class="text-xl md:text-3xl font-medium text-white line-clamp-2">
+            {{ product.title }}
+          </h3>
+          {% render 'price', product: product, class: '!text-xl' %}
+        </div>
+      </div>
+    </div>
+  </a>
+</article>

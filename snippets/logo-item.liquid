@@ -1,0 +1,38 @@
+<style>
+  .logo-item {
+    flex-shrink: 0;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    @media (max-width: 768px) {
+      width: 80px;
+      height: 80px;
+      padding: 16px;
+    }
+    @media (max-width: 480px) {
+      width: 100px;
+      height: 100px;
+      padding: 12px;
+    }
+  }
+
+  .logo-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+</style>
+
+{% if product.logo != blank %}
+  <div class="logo-item">
+    {{ product.logo | image_url: width: 200 | image_tag: alt: product.name.value, loading: 'lazy' }}
+  </div>
+{% else %}
+  <img width="120" height="120" src="{{ 'placeholder.svg' | asset_url }}" alt="Placeholder Logo" class="logo-item" loading="lazy"/>
+{% endif %}

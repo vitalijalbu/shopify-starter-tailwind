@@ -1,0 +1,60 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "logo": "shopify://shop_images/skimofestival.svg",
+    "favicon": "shopify://shop_images/favicon.png",
+    "social_instagram_link": "https://www.instagram.com/skimofestival",
+    "type_heading": "syne_n7",
+    "type_body": "syne_n4",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "menu": "main-menu"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "show_payment_methods": true
+        }
+      }
+    },
+    "content_for_index": [],
+    "blocks": {
+      "5824954802169832938": {
+        "type": "shopify://apps/nitro-lookbook/blocks/app-embed/cc1f7d0a-9bac-40f1-a181-859d84a3417f",
+        "disabled": false,
+        "settings": {}
+      }
+    }
+  },
+  "presets": {
+    "Default": {
+      "type_heading": "syne_n7",
+      "type_body": "syne_n4",
+      "sections": {
+        "header": {
+          "type": "header",
+          "settings": {
+            "menu": "main-menu"
+          }
+        },
+        "footer": {
+          "type": "footer",
+          "settings": {
+            "show_payment_methods": true
+          }
+        }
+      }
+    }
+  }
+}

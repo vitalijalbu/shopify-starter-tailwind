@@ -1,0 +1,24 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "richtext_rtBgzy": {
+      "type": "richtext",
+      "name": "Rich Text",
+      "settings": {
+        "content": "<p><span style=\"text-decoration:underline\"><strong>ALLOGGI<br/></strong></span>Per organizzare al meglio la tua esperienza a Skimofestival, ti consigliamo di sfruttare almeno due giornate intere di attività. Grazie alla partnership con il comprensorio di Bormio siamo in grado di offrirti le migliori condizioni negli hotel di Santa Caterina Valfurva, Bormio, Valdidentro e Valdisotto per un fantastico soggiorno.<br/>Per informazioni e prenotazioni, invia la tua richiesta qui: <a href=\"booking@bormio.eu\" target=\"_blank\"><strong>booking@bormio.eu</strong></a><br/></p><p><strong>NOLEGGI PARTNER<br/></strong><em>Compagnoni Ski Service</em><br/><strong>Prodotti disponibili: </strong>Sci, scarponi, pelli e bastoni. Kit ARTVA, sonda, pala.<br/><strong>Contatti: </strong>Pietro: 0342-935383 / <a href=\"mailto:info@santacaterinaski.it\" target=\"_blank\">info@santacaterinaski.it</a><br/><strong>Indirizzo:</strong> via Magliaga 26/C, Santa Caterina Valfurva (SO)<br/><strong>Prezzi:</strong> 30 euro/giorno - 50 euro/due giorni<br/><strong>ARTVA:</strong> 10 euro/giorno, 20 euro/due giorni</p><p><em>Celso Sport</em><br/><strong>Prodotti disponibili:</strong> Sci, scarponi, pelli e bastoni. Kit ARTVA, sonda, pala.<br/><strong>Contatti:</strong> Giacomo: 0342 901459 / <a href=\"mailto:info@celsosport.it\" target=\"_blank\">info@celsosport.it</a><br/><strong>Indirizzo:</strong> via Vallecetta 5, Bormio (SO)<br/><strong>Prezzi:</strong> 30 euro/giorno - 50 euro/due giorni<br/><strong>ARTVA:</strong> 10 euro/giorno, 20 euro/due giorni</p><p><em>Noleggio La Fonte</em><br/><strong>Prodotti disponibili:</strong> Sci, scarponi, pelli e bastoni.<br/><strong>Contatti:</strong> Giulio: 329-7262001 / Tiziana: 329-7262005<br/><strong>Indirizzo: </strong>via Magliaga 3, Santa Caterina Valfurva (SO)<br/><strong>Prezzi:</strong> 30 euro/giorno - 50 euro/due giorni</p><p><em>Ski Trab<br/>(si consiglia di prenotare in anticipo)<br/></em><strong>Prodotti disponibili:</strong> Sci, scarponi, pelli e bastoni, ARTVA<br/><strong>Contatti: </strong>Adriano: 0342 901650 / info@skitrab.com<br/><strong>Indirizzo:</strong> via Alu 39, Valdisotto (SO)<br/><strong>Prezzi:</strong> 30 euro/giorno, 50 euro/due giorni<br/><strong>ARTVA:</strong> 10 euro/giorno, 20 euro/due giorni</p><p><em>Cecco Sport<br/></em><strong>Prodotti disponibili: </strong>Sci, scarponi, pelli e bastoni,  ARTVA<br/><strong>Contatti:</strong> Devid: 0342 904361  / info@ceccosport.it<br/><strong>Indirizzo:</strong> via Funivie 55, Bormio (SO)<br/><strong>Prezzi:</strong> 30 euro/giorno 50 euro/due giorni<br/><strong>ARTVA:</strong> 10 euro/giorno, 20 euro/due giorni</p>",
+        "text_alignment": "text-left"
+      }
+    }
+  },
+  "order": [
+    "richtext_rtBgzy"
+  ]
+}

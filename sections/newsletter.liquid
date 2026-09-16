@@ -1,0 +1,72 @@
+<section class="bg-dark text-white py-[216px] md:py-32">
+  <div class="max-w-2xl mx-auto text-center px-4">
+    <div class="mb-12">
+      <h3 class="text-4xl md:text-7xl font-bold">{{ section.settings.title }}</h3>
+      <p class="text-gray-300 mb-8">{{ section.settings.subtitle }}</p>
+      <p class="font-semibold">{{ section.settings.description }}</p>
+    </div>
+    <div class="space-y-4">
+      <p id="newsletter-message" class="text-center text-green-600 font-semibold" style="display: none;"></p>
+      <form
+        id="newsletter_form"
+        class="flex flex-col space-y-4 text-left newsletter-activecampaign"
+        onsubmit="return false;"
+      >
+        <input type="hidden" name="nesletter[tags]" value="newsletter">
+        <input class="form-input bg-transparent" name="nesletter[first_name]" placeholder="Nome">
+        <input class="form-input bg-transparent" name="nesletter[last_name]" placeholder="Cognome">
+        <input class="form-input bg-transparent" type="email" name="nesletter[email]" placeholder="Email" required>
+        <p class="text-xs text-gray-400">{{ section.settings.privacy_text }}</p>
+        <div class="text-left">
+          <button class="btn btn-primary" type="submit">
+            {{ section.settings.button_label }}
+            {% render 'icon', icon: 'arrow-top-right' %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter Skimofestival",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Il programma di Skimofestival"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Un weekend per testare le ultime novità tecniche con i migliori brand e partecipare a Experience emozionanti con le Guide alpine al tuo fianco"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "Il programma è ancora in fase di aggiornamento.<br>Iscriviti per rimanere aggiornato."
+    },
+    {
+      "type": "textarea",
+      "id": "privacy_text",
+      "label": "Testo Privacy",
+      "default": "Cliccando su \"Resta aggiornato\" acconsenti al trattamento dei tuoi dati personali e dichiari di aver preso visione della nostra privacy policy."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Testo bottone",
+      "default": "Resta aggiornato"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter Skimofestival"
+    }
+  ]
+}
+{% endschema %}

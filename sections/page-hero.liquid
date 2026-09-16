@@ -1,0 +1,290 @@
+<section id="page-hero-{{ section.id }}" class="relative overflow-hidden">
+  {% liquid
+    assign section_height = 'h-[500px]'
+    case section.settings.section_size
+      when 'small'
+        assign section_height = 'h-[40vh] md:h-[400px]'
+      when 'medium'
+        assign section_height = 'h-[40vh] md:h-[600px]'
+      when 'large'
+        assign section_height = 'h-[calc(100dvh-80px)]'
+      else
+        assign section_height = 'h-[500px]'
+    endcase
+  %}
+
+  <!-- Background Image -->
+  <div class="absolute inset-0">
+    {% if section.settings.background_image %}
+      <div
+        class="w-full h-full bg-cover bg-center bg-no-repeat"
+        style="background-image: url('{{ section.settings.background_image | image_url: width: 1920 }}');"
+      ></div>
+      <!-- Pixelated reveal overlay (canvas) -->
+      <canvas
+        id="pixel-canvas-{{ section.id }}"
+        aria-hidden="true"
+        class="absolute inset-0 w-full h-full pointer-events-none"
+        style="display:block;"
+        data-pixel-canvas="true"
+        data-bg-src="{{ section.settings.background_image | image_url: width: 24 }}"
+      ></canvas>
+    {% else %}
+      <!-- Fallback background -->
+      <div class="w-full h-full bg-gray-200"></div>
+    {% endif %}
+
+    <!-- Overlay -->
+    {% if section.settings.overlay_opacity > 0 %}
+      <div
+        class="absolute inset-0 bg-{{ section.settings.overlay_color }}"
+        style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+      ></div>
+    {% endif %}
+  </div>
+
+  <!-- Content -->
+  <div class="relative z-10">
+    <div class="container {{ section_height }} text-center max-w-6xl">
+      <div class="flex items-center justify-center h-full py-16 lg:py-24">
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 text-center md:text-left w-full max-w-6xl">
+          <!-- Text Content -->
+          <div class="flex-1">
+            <!-- Title -->
+            {% assign display_title = section.settings.custom_title | default: page_title %}
+            {% if display_title != blank %}
+              <h1 class="text-4xl md:text-8xl text-center font-bold text-white mb-10" data-scroll="slide-rotate-up">
+                {{ display_title }}
+              </h1>
+            {% endif %}
+
+            <!-- Subtitle -->
+            {% assign display_subtitle = section.settings.custom_subtitle %}
+            {% unless display_subtitle %}
+              {% if page.content and page.content != blank %}
+                {% assign display_subtitle = page.content | strip_html | truncate: 200 %}
+              {% elsif collection.description and collection.description != blank %}
+                {% assign display_subtitle = collection.description | strip_html | truncate: 200 %}
+              {% elsif blog.description and blog.description != blank %}
+                {% assign display_subtitle = blog.description | strip_html | truncate: 200 %}
+              {% endif %}
+            {% endunless %}
+
+            {% if display_subtitle != blank %}
+              <div class="text-xl md:text-2xl text-center text-white mb-8">
+                {{ display_subtitle }}
+              </div>
+            {% endif %}
+
+            <!-- CTA Buttons -->
+            {% if section.blocks.size > 0 %}
+              <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                {% for block in section.blocks %}
+                  {% if block.settings.button_text != blank and block.settings.button_url != blank %}
+                    <a
+                      href="{{ block.settings.button_url }}"
+                      class="btn btn-{{ block.settings.button_style }} btn-lg"
+                      {{ block.shopify_attributes }}
+                    >
+                      {{ block.settings.button_text }}
+                      {% if block.settings.button_icon != blank %}
+                        {% render 'icon', icon: block.settings.button_icon, class: 'size-5 ml-2', aria_hidden: 'true' %}
+                      {% endif %}
+                    </a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Optional Right Content Area -->
+          {% if section.settings.show_secondary_content %}
+            <div class="flex-1 md:max-w-md">
+              <!-- Placeholder for additional content -->
+              <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                <div class="text-white/80 text-base">Secondary content area</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  {% if section.settings.show_scroll_indicator %}
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+      <div class="animate-bounce">
+        {% render 'icon', icon: 'chevron-down', class: 'text-white/60' %}
+      </div>
+    </div>
+  {% endif %}
+  <script src="{{ 'page-hero-canvas.js' | asset_url }}" defer></script>
+</section>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    #page-hero-{{ section.id }} canvas[id="pixel-canvas-{{ section.id }}"] {
+      opacity: 0 !important;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Page Hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Titolo personalizzato",
+      "info": "Lascia vuoto per usare il titolo della pagina"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_subtitle",
+      "label": "Sottotitolo personalizzato",
+      "info": "Lascia vuoto per usare la descrizione della pagina"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Allineamento testo",
+      "options": [
+        { "value": "left", "label": "Sinistra" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Destra" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Mostra breadcrumb",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Immagine di background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Immagine di background"
+    },
+    {
+      "type": "select",
+      "id": "section_size",
+      "label": "Dimensione sezione",
+      "options": [
+        { "value": "small", "label": "Small (400px)" },
+        { "value": "medium", "label": "Medium (500px)" },
+        { "value": "large", "label": "Full Height" }
+      ],
+      "default": "medium",
+      "info": "Altezza della sezione"
+    },
+    {
+      "type": "header",
+      "content": "Overlay"
+    },
+    {
+      "type": "select",
+      "id": "overlay_color",
+      "label": "Colore overlay",
+      "options": [
+        { "value": "black", "label": "Nero" },
+        { "value": "gray-900", "label": "Grigio scuro" },
+        { "value": "blue-900", "label": "Blu scuro" },
+        { "value": "purple-900", "label": "Viola scuro" },
+        { "value": "green-900", "label": "Verde scuro" }
+      ],
+      "default": "black"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Opacità overlay (%)",
+      "min": 0,
+      "max": 80,
+      "step": 10,
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_content",
+      "label": "Mostra area contenuto secondario",
+      "default": false,
+      "info": "Abilita un'area aggiuntiva nel layout flex row"
+    },
+    {
+      "type": "header",
+      "content": "Elementi aggiuntivi"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Mostra indicatore scroll",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Pulsante CTA",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Testo pulsante",
+          "default": "Scopri di più"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Link pulsante"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Stile pulsante",
+          "options": [
+            { "value": "primary", "label": "Primary" },
+            { "value": "secondary", "label": "Secondary" },
+            { "value": "outline", "label": "Outline" }
+          ],
+          "default": "primary"
+        },
+        {
+          "type": "select",
+          "id": "button_icon",
+          "label": "Icona pulsante",
+          "options": [
+            { "value": "", "label": "Nessuna" },
+            { "value": "arrow-right", "label": "Freccia destra" },
+            { "value": "external-link", "label": "Link esterno" },
+            { "value": "download", "label": "Download" },
+            { "value": "phone", "label": "Telefono" },
+            { "value": "mail", "label": "Email" }
+          ],
+          "default": ""
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page Hero"
+    }
+  ]
+}
+{% endschema %}

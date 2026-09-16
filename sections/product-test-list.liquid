@@ -1,0 +1,132 @@
+<section class="py-16 lg:py-24" x-data="productsFilter()">
+  <div class="container">
+    <!-- Section Title -->
+    {% if section.settings.section_title != blank %}
+      <div class="mb-12">
+        <h2 class="text-5xl md:text-7xl font-semibold text-gray-900" data-scroll="slide-rotate-up">
+          {{ section.settings.section_title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% assign collection = collections[section.settings.collection] %}
+
+    <!-- Filters -->
+    <div class="mb-12 flex flex-wrap items-center gap-4">
+      <span class="text-gray-700 font-medium">Filtra per:</span>
+
+      <!-- Brand Filter -->
+      <div class="relative flex">
+        <select
+          x-model="selectedBrand"
+          class="appearance-none px-4 py-2 pr-8 text-gray-700 hover:border-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+        >
+          <option value="">Tutti i brand</option>
+          <template x-for="brand in brands" :key="brand">
+            <option :value="brand" x-text="brand"></option>
+          </template>
+        </select>
+      </div>
+
+      <!-- Clear Filters -->
+      <button
+        x-show="selectedBrand"
+        @click="clearFilters()"
+        class="inline-flex items-center px-3 py-2 text-base text-primary hover:text-teal-700 font-medium"
+      >
+        <svg class="size-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+        Cancella filtri
+      </button>
+    </div>
+
+    <!-- Results Counter -->
+    <div class="mb-6">
+      <p class="text-gray-600">
+        <span x-text="filteredProducts.length"></span>
+        <span x-text="filteredProducts.length === 1 ? 'prodotto trovato' : 'prodotti trovati'"></span>
+      </p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-20">
+      {% for product in collection.products %}
+        <div x-show="isVisible({{ forloop.index0 }})" class="transition-all duration-200">
+          {% render 'card-test-product', product: product %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="filteredProducts.length === 0" class="text-center py-16">
+      <svg class="mx-auto w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Nessun prodotto corrisponde ai filtri</h3>
+      <p class="text-gray-500 mb-4">Prova a modificare i criteri di ricerca.</p>
+      <button
+        @click="clearFilters()"
+        class="inline-flex items-center px-4 py-2 text-primary hover:text-teal-700 font-medium text-base"
+      >
+        Reset filtri
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  function productsFilter() {
+    return {
+      selectedBrand: '',
+      products: {{ collection.products | json }},
+
+      get brands() {
+        return [...new Set(this.products.map(p => p.vendor).filter(b => b))];
+      },
+
+      get filteredProducts() {
+        return this.products.filter(product => {
+          const brandMatch = !this.selectedBrand || product.vendor === this.selectedBrand;
+          return brandMatch;
+        });
+      },
+
+      isVisible(index) {
+        const product = this.products[index];
+        if (!product) return false;
+        return this.filteredProducts.includes(product);
+      },
+
+      clearFilters() {
+        this.selectedBrand = '';
+      }
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Lista Prodotti Test",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Prodotti da Testare - SkimoFestival"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collezione Prodotti",
+      "info": "Seleziona la collezione di prodotti da mostrare"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista Prodotti Test"
+    }
+  ]
+}
+{% endschema %}

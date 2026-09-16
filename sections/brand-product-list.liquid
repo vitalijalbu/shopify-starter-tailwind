@@ -1,0 +1,64 @@
+<section class="py-16 lg:py-24">
+  <div class="container">
+    <!-- Section Title -->
+    {% if section.settings.section_title != blank %}
+      <div class="mb-12">
+        <h2 class="text-5xl md:text-7xl font-semibold text-gray-900" data-scroll="slide-rotate-up">
+          {{ section.settings.section_title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% assign selected_brand_name = section.settings.selected_brand %}
+    {% assign brand_products = collections.all.products%}
+    
+    <div class="mb-6">
+      <p class="text-gray-600">
+        {{ brand_products.size }}
+        {% if brand_products.size == 1 %}prodotto trovato{% else %}prodotti trovati{% endif %}
+        per {{ selected_brand_name }}
+      </p>
+    </div>    <!-- Products Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-20">
+      {% for product in brand_products %}
+        <div class="transition-all duration-200 h-full">
+          {% render 'card-test-product', product: product %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if brand_products.size == 0 %}
+      <div class="text-center py-16">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Nessun prodotto trovato</h3>
+        <p class="text-gray-500">Non ci sono prodotti per {{ selected_brand_name }}.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lista Prodotti Brand",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Prodotti del Brand"
+    },
+    {
+      "type": "text",
+      "id": "selected_brand",
+      "label": "Nome del Brand",
+      "info": "Inserisci il nome esatto del brand (es. Patagonia, Arva, Polartec)",
+      "placeholder": "Patagonia"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista Prodotti Brand"
+    }
+  ]
+}
+{% endschema %}

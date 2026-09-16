@@ -1,0 +1,703 @@
+<footer class="bg-gray-900 text-white">
+  <div class="container-fluid py-12 md:py-20">
+    <!-- Prima grid: Newsletter -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+      {% for block in section.blocks %}
+        {% if block.type == 'newsletter_block' %}
+          <div class="space-y-4" {{ block.shopify_attributes }}>
+            {% render 'footer-newsletter', block: block %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Seconda grid: Block -->
+      <div class="grid grid-cols-1 lg:grid-cols-3">
+        {% for block in section.blocks %}
+          {% unless block.type == 'newsletter_block' %}
+            <div class="my-4 md:m-0" {{ block.shopify_attributes }}>
+              {% case block.type %}
+                {% when 'text_block' %}
+                  {% if block.settings.title %}
+                    <h3 class="text-gray-50 font-semibold mb-3">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  {% if block.settings.content %}
+                    <div class="text-gray-300 text-base prose prose-invert max-w-none mb-2">
+                      {{ block.settings.content }}
+                    </div>
+                  {% endif %}
+
+                {% when 'menu_block' %}
+                  {% if block.settings.title %}
+                    <h3 class="text-gray-50 font-semibold mb-3">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  {% if block.settings.menu != blank %}
+                    <ul class="space-y-2 text-base">
+                      {% for link in linklists[block.settings.menu].links %}
+                        <li>
+                          <a href="{{ link.url }}" class="text-gray-300 hover:underline transition-colors">
+                            {{ link.title }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                    {% comment %} Nascondi menu accedi/iscriviti e carrello {% endcomment %}
+                     {% comment %}
+                    {% if block.settings.page_link != blank and block.settings.page_title != blank %}
+                      <a
+                        href="{{ block.settings.page_link }}"
+                        class="block uppercase font-bold text-green-500"
+                      >
+                        {{ block.settings.page_title }}
+                      </a>
+                    {% endif %}
+                     {% endcomment %}
+                  {% endif %}
+
+                {% when 'image_block' %}
+                  {% if block.settings.image %}
+                    {% assign image_width = block.settings.image_width | default: 200 %}
+                    <div class="{% if block.settings.image_alignment %}text-{{ block.settings.image_alignment }}{% endif %}">
+                      <img
+                        src="{{ block.settings.image | image_url: width: image_width }}"
+                        alt="{{ block.settings.image.alt | default: block.settings.title | escape }}"
+                        width="{{ image_width }}"
+                        height="auto"
+                        class="{% if block.settings.image_alignment == 'center' %}mx-auto{% endif %}"
+                        loading="lazy"
+                      >
+                    </div>
+                  {% endif %}
+                  {% if block.settings.title %}
+                    <h3 class="text-lg font-semibold mt-3">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  {% if block.settings.description %}
+                    <p class="text-gray-300 text-base">{{ block.settings.description }}</p>
+                  {% endif %}
+
+                {% when 'newsletter_block' %}
+                  {% render 'footer-newsletter', block: block %}
+
+                {% when 'social_block' %}
+                  {% if block.settings.title %}
+                    <h3 class="text-gray-50 font-semibold mb-3">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  <ul class="space-y-2 text-base">
+                    {% if block.settings.facebook_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.facebook_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'facebook' %}
+                          <span>{{ block.settings.facebook_text | default: 'Facebook' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.instagram_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.instagram_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'instagram' %}
+                          <span>{{ block.settings.instagram_text | default: 'Instagram' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.twitter_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.twitter_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'twitter' %}
+                          <span>{{ block.settings.twitter_text | default: 'Twitter' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.linkedin_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.linkedin_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'linkedin' %}
+                          <span>{{ block.settings.linkedin_text | default: 'LinkedIn' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.youtube_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.youtube_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'youtube' %}
+                          <span>{{ block.settings.youtube_text | default: 'YouTube' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.tiktok_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.tiktok_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'tiktok' %}
+                          <span>{{ block.settings.tiktok_text | default: 'TikTok' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+
+                    {% if block.settings.whatsapp_url != blank %}
+                      <li>
+                        <a
+                          href="{{ block.settings.whatsapp_url }}"
+                          class="flex items-center gap-2 text-gray-300 hover:underline transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {% render 'icon', icon: 'whatsapp' %}
+                          <span>{{ block.settings.whatsapp_text | default: 'WhatsApp' }}</span>
+                        </a>
+                      </li>
+                    {% endif %}
+                  </ul>
+
+                {% when 'contact_block' %}
+                  {% if block.settings.title %}
+                    <h3 class="text-lg font-semibold">{{ block.settings.title }}</h3>
+                  {% endif %}
+                  <div class="space-y-3 text-base text-gray-300">
+                    {% if block.settings.address != blank %}
+                      <div class="flex items-start gap-2">
+                        {% render 'icon', icon: 'map-pin', class: 'size-5 mt-0.5 shrink-0' %}
+                        <span>{{ block.settings.address }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% if block.settings.phone != blank %}
+                      <div class="flex items-center gap-2">
+                        {% render 'icon', icon: 'phone' %}
+                        <a
+                          href="tel:{{ block.settings.phone | replace: ' ', '' }}"
+                          class="hover:text-white transition-colors"
+                        >
+                          {{ block.settings.phone }}
+                        </a>
+                      </div>
+                    {% endif %}
+
+                    {% if block.settings.email != blank %}
+                      <div class="flex items-center gap-2">
+                        {% render 'icon', icon: 'mail' %}
+                        <a href="mailto:{{ block.settings.email }}" class="hover:text-white transition-colors">
+                          {{ block.settings.email }}
+                        </a>
+                      </div>
+                    {% endif %}
+
+                    {% if block.settings.hours != blank %}
+                      <div class="flex items-start gap-2">
+                        {% render 'icon', icon: 'clock', class: 'size-5 mt-0.5 shrink-0' %}
+                        <span>{{ block.settings.hours }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+              {% endcase %}
+            </div>
+          {% endunless %}
+        {% endfor %}
+
+        <!-- Payment Methods -->
+        {% if section.settings.show_payment_methods %}
+          <div class="col-span-full mt-4 pt-4">
+            <div class="space-y-4">
+              <h3 class="text-lg font-semibold">Metodi di pagamento accettati</h3>
+              <div class="flex flex-wrap gap-3">
+                {% for type in shop.enabled_payment_types %}
+                  {{ type | payment_type_svg_tag: class: 'h-[30px]' }}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  {% if section.settings.show_payment_methods
+    or section.settings.copyright_text != blank
+    or section.blocks contains 'legal_link'
+  %}
+    <div class="py-6 border-t border-zinc-700">
+      <div class="container-fluid">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0 gap-6">
+          <!-- Logo and Copyright -->
+          <div class="flex items-center gap-4 text-base text-gray-50">
+            <!-- Logo -->
+            {% if section.settings.logo != blank %}
+              <img
+                src="{{ section.settings.logo | image_url: width: 120 }}"
+                alt="{{ shop.name }}"
+                width="120"
+                height="auto"
+                class="h-[58px] w-auto"
+                loading="lazy"
+              >
+            {% endif %}
+
+            <span class="whitespace-nowrap">
+              &copy; {{ 'now' | date: '%Y' }}
+              {{ shop.name }}.
+              {{ section.settings.copyright_text | default: 'Tutti i diritti riservati.' }}
+            </span>
+          </div>
+
+          <!-- Legal Links - Privacy, Cookie, Termini -->
+          <div class="flex flex-wrap items-center gap-4 text-base text-gray-50">
+            {% if section.settings.terms_url != blank %}
+              <a
+                href="{{ section.settings.terms_url }}"
+                class="hover:text-white transition-colors whitespace-nowrap underline"
+              >
+                {{ section.settings.terms_text | default: 'Termini e Condizioni' }}
+              </a>
+            {% endif %}
+
+            {% if section.settings.privacy_url != blank %}
+              <a
+                href="{{ section.settings.privacy_url }}"
+                class="hover:text-white transition-colors whitespace-nowrap underline"
+              >
+                {{ section.settings.privacy_text | default: 'Privacy Policy' }}
+              </a>
+            {% endif %}
+
+            {% if section.settings.cookie_url != blank %}
+              <a
+                href="{{ section.settings.cookie_url }}"
+                class="hover:text-white transition-colors whitespace-nowrap underline"
+              >
+                {{ section.settings.cookie_text | default: 'Cookie Policy' }}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Numero di colonne (desktop)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Logo da mostrare accanto al copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Testo copyright",
+      "default": "Tutti i diritti riservati."
+    },
+    {
+      "type": "header",
+      "content": "Link Legali"
+    },
+    {
+      "type": "url",
+      "id": "privacy_url",
+      "label": "URL Privacy Policy"
+    },
+    {
+      "type": "text",
+      "id": "privacy_text",
+      "label": "Testo Privacy Policy",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "cookie_url",
+      "label": "URL Cookie Policy"
+    },
+    {
+      "type": "text",
+      "id": "cookie_text",
+      "label": "Testo Cookie Policy",
+      "default": "Cookie Policy"
+    },
+    {
+      "type": "url",
+      "id": "terms_url",
+      "label": "URL Termini e Condizioni"
+    },
+    {
+      "type": "text",
+      "id": "terms_text",
+      "label": "Testo Termini e Condizioni"
+    },
+    {
+      "type": "header",
+      "content": "Metodi di pagamento accettati"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_methods",
+      "label": "Mostra metodi di pagamento",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text_block",
+      "name": "Blocco Testo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenuto"
+        }
+      ]
+    },
+    {
+      "type": "menu_block",
+      "name": "Blocco Menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        },
+        {
+          "type": "url",
+          "id": "page_link",
+          "label": "Pagina"
+        },
+        {
+          "type": "text",
+          "id": "page_title",
+          "label": "Titolo pagina"
+        }
+      ]
+    },
+    {
+      "type": "image_block",
+      "name": "Blocco Immagine",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descrizione"
+        },
+        {
+          "type": "range",
+          "id": "image_width",
+          "label": "Larghezza immagine (px)",
+          "min": 50,
+          "max": 300,
+          "step": 10,
+          "default": 200
+        },
+        {
+          "type": "select",
+          "id": "image_alignment",
+          "label": "Allineamento immagine",
+          "options": [
+            { "value": "left", "label": "Sinistra" },
+            { "value": "center", "label": "Centro" },
+            { "value": "right", "label": "Destra" }
+          ],
+          "default": "left"
+        }
+      ]
+    },
+    {
+      "type": "newsletter_block",
+      "name": "Blocco Newsletter",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Newsletter"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descrizione",
+          "default": "Iscriviti per ricevere offerte speciali e novità."
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Placeholder email",
+          "default": "La tua email"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Testo pulsante",
+          "default": "Iscriviti"
+        }
+      ]
+    },
+    {
+      "type": "social_block",
+      "name": "Blocco Social Media",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Seguici"
+        },
+        {
+          "type": "header",
+          "content": "Facebook"
+        },
+        {
+          "type": "url",
+          "id": "facebook_url",
+          "label": "Facebook URL"
+        },
+        {
+          "type": "text",
+          "id": "facebook_text",
+          "label": "Testo Facebook",
+          "default": "Facebook"
+        },
+        {
+          "type": "header",
+          "content": "Instagram"
+        },
+        {
+          "type": "url",
+          "id": "instagram_url",
+          "label": "Instagram URL"
+        },
+        {
+          "type": "text",
+          "id": "instagram_text",
+          "label": "Testo Instagram",
+          "default": "Instagram"
+        },
+        {
+          "type": "header",
+          "content": "Twitter"
+        },
+        {
+          "type": "url",
+          "id": "twitter_url",
+          "label": "Twitter URL"
+        },
+        {
+          "type": "text",
+          "id": "twitter_text",
+          "label": "Testo Twitter",
+          "default": "Twitter"
+        },
+        {
+          "type": "header",
+          "content": "LinkedIn"
+        },
+        {
+          "type": "url",
+          "id": "linkedin_url",
+          "label": "LinkedIn URL"
+        },
+        {
+          "type": "text",
+          "id": "linkedin_text",
+          "label": "Testo LinkedIn",
+          "default": "LinkedIn"
+        },
+        {
+          "type": "header",
+          "content": "YouTube"
+        },
+        {
+          "type": "url",
+          "id": "youtube_url",
+          "label": "YouTube URL"
+        },
+        {
+          "type": "text",
+          "id": "youtube_text",
+          "label": "Testo YouTube",
+          "default": "YouTube"
+        },
+        {
+          "type": "header",
+          "content": "TikTok"
+        },
+        {
+          "type": "url",
+          "id": "tiktok_url",
+          "label": "TikTok URL"
+        },
+        {
+          "type": "text",
+          "id": "tiktok_text",
+          "label": "Testo TikTok",
+          "default": "TikTok"
+        },
+        {
+          "type": "header",
+          "content": "WhatsApp"
+        },
+        {
+          "type": "url",
+          "id": "whatsapp_url",
+          "label": "WhatsApp URL"
+        },
+        {
+          "type": "text",
+          "id": "whatsapp_text",
+          "label": "Testo WhatsApp",
+          "default": "WhatsApp"
+        }
+      ]
+    },
+    {
+      "type": "contact_block",
+      "name": "Blocco Contatti",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Contatti"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Indirizzo"
+        },
+        {
+          "type": "text",
+          "id": "phone",
+          "label": "Telefono"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email"
+        },
+        {
+          "type": "textarea",
+          "id": "hours",
+          "label": "Orari di apertura"
+        }
+      ]
+    },
+    {
+      "type": "legal_link",
+      "name": "Link Legale",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Testo del link"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "URL del link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "text_block",
+          "settings": {
+            "title": "Chi siamo",
+            "content": "<p>La tua descrizione aziendale qui.</p>"
+          }
+        },
+        {
+          "type": "menu_block",
+          "settings": {
+            "title": "Link utili"
+          }
+        },
+        {
+          "type": "contact_block",
+          "settings": {
+            "title": "Contatti"
+          }
+        },
+        {
+          "type": "social_block",
+          "settings": {
+            "title": "Seguici"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

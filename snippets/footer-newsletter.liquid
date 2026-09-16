@@ -1,0 +1,45 @@
+<div class="space-y-4" {{ block.shopify_attributes }}>
+  {% if block.settings.title %}
+    <h3 class="text-lg font-semibold">{{ block.settings.title }}</h3>
+  {% endif %}
+
+  {% if block.settings.description %}
+    <p class="text-white text-xl md:text-2xl mb-4">{{ block.settings.description }}</p>
+  {% endif %}
+
+  <p id="footer-newsletter-message" class="text-center text-green-600 font-semibold" style="display: none;"></p>
+  <form class="space-y-3 newsletter-activecampaign max-w-[400px]" id="footer-newsletter" onsubmit="return false;">
+    <input type="hidden" name="nesletter[tags]" value="newsletter">
+
+    <div class="flex flex-col gap-2">
+      <input
+        type="text"
+        name="nesletter[first_name]"
+        placeholder="Nome"
+        class="form-input border-0 border-b bg-transparent rounded-none"
+      >
+      <input
+        type="text"
+        name="nesletter[last_name]"
+        placeholder="Cognome"
+        class="form-input border-0 border-b bg-transparent rounded-none"
+      >
+      <input
+        type="email"
+        name="nesletter[email]"
+        placeholder="Email"
+        required
+        class="form-input border-0 border-b bg-transparent rounded-none"
+      >
+    </div>
+    <p class="text-base">
+      *Iscrivendoti accetti la nostra Informativa sulla Privacy e acconsenti a ricevere aggiornamenti.
+    </p>
+    <button
+      type="submit"
+      class="btn btn-secondary"
+    >
+      Invia {% render 'icon', icon: 'arrow-top-right' %}
+    </button>
+  </form>
+</div>

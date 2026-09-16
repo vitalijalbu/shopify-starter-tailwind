@@ -1,0 +1,91 @@
+{% render 'vite-tag', entry: 'blog-posts.js' %}
+
+<section class="blog-posts-section py-12 md:py-16 lg:py-20">
+  <div class="container mx-auto px-4">
+    {% if section.settings.show_heading %}
+      <div class="text-center mb-12">
+        {% if section.settings.heading != blank %}
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+        {% if section.settings.subheading != blank %}
+          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            {{ section.settings.subheading }}
+          </p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div id="blog-posts-container">
+      <div id="posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        <div class="col-span-full flex items-center justify-center py-12">
+          <div class="flex flex-col items-center gap-4">
+            <div class="size-10 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <p class="text-gray-600">Caricamento delle news...</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="posts-pagination" class="hidden justify-center items-center gap-4 mt-12">
+        <button
+          id="prev-page"
+          class="btn btn-outline border-dark text-dark"
+        >
+          Precedente
+        </button>
+
+        <span id="page-info" class="text-gray-700 font-medium px-4"> Pagina 1 di 1 </span>
+
+        <button
+          id="next-page"
+          class="btn btn-outline border-dark text-dark"
+        >
+          Successiva
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Blog Posts",
+  "tag": "section",
+  "class": "blog-posts-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Mostra intestazione",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo",
+      "default": "Dal Blog di Outdoor Magazine"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Sottotitolo",
+      "default": "Scopri gli ultimi articoli, guide e consigli dal mondo outdoor"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Posts"
+    }
+  ]
+}
+{% endschema %}

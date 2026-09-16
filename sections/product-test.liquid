@@ -1,0 +1,133 @@
+{% comment %}
+  Product template section with gallery, details, and add to cart
+{% endcomment %}
+
+<div class="container pt-12 pb-36">
+  <div class="mb-4 md:flex md:justify-between items-center">
+    <div class="">
+      <nav class="mb-4">
+        <ol class="breadcrumbs">
+          <li><a href="{{ routes.root_url }}" class="breadcrumb-item">Home</a></li>
+          {% if product.collections.first %}
+            <li class="breadcrumb-separator">{% render 'icon', icon: 'chevron-right', class: 'size-5' %}</li>
+            <li>
+              <a href="/pages/test-prodotti/" class="breadcrumb-item"> Test prodotti </a>
+            </li>
+          {% endif %}
+          {% if product.metafields.custom.brand.value != blank %}
+           <li>
+              <a href="/pages/brands/{{ product.metafields.custom.brand.value.name | handle }}" class="breadcrumb-item">{{ product.metafields.custom.brand.value.name }}</a>
+            </li>
+            {% endif %}
+          <li class="breadcrumb-separator">{% render 'icon', icon: 'chevron-right', class: 'size-5' %}</li>
+          <li>{{ product.title }}</li>
+        </ol>
+      </nav>
+
+      <h1 class="text-3xl md:text-5xl font-bold mb-2">{{ product.title }}</h1>
+    </div>
+    <button class="flex items-center border border-zinc-200 rounded-xl py-3 px-4">
+      Salva {% render 'icon', icon: 'star-outline' %}
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+    <!-- Product Gallery -->
+    <div class="order-1">
+      {% render 'product-media-gallery', product: product %}
+    </div>
+
+    <!-- Product Details -->
+    <div class="order-2">
+      <!-- Info Fields -->
+      <div>
+        {% liquid
+          assign info_items = ''
+
+          if product.metafields.custom.brand.value != blank
+            assign info_items = info_items | append: 'Brand::' | append: product.metafields.custom.brand.value.name | append: '||'
+          endif
+
+          if product.collections.size > 1
+            assign collection_titles = ''
+            for collection in product.collections offset: 1
+              if collection_titles != blank
+                assign collection_titles = collection_titles | append: ', '
+              endif
+              assign collection_titles = collection_titles | append: collection.title
+            endfor
+            if collection_titles != blank
+              assign info_items = info_items | append: 'Categoria prodotto::' | append: collection_titles | append: '||'
+            endif
+          endif
+
+          assign items = info_items | split: '||'
+        %}
+
+        {% if items.size > 0 %}
+          <ul class="divide-y divide-zinc-200">
+            {% for item in items %}
+              {% if item != blank %}
+                {% assign parts = item | split: '::' %}
+                <li class="flex justify-between items-center py-3">
+                  <span class="text-gray-600 font-semibold">{{ parts[0] }}</span>
+                  <span class="text-gray-900">{{ parts[1] }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div class="space-y-6">
+        <!-- Product Description -->
+        {% if product.variants != blank %}
+          <div class="flex justify-between pt-6 border-t border-zinc-200">
+            <h3 class="font-semibold text-gray-900 mb-3">Date disponibili</h3>
+            <div class="prose prose-sm text-gray-900 text-end">
+              <ul>
+                {% for variant in product.variants %}
+                  <li>{{ variant.title }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+        {% if product.description != blank %}
+          <div class="py-6 border-t border-zinc-200">
+            <h3 class="font-semibold text-gray-900 mb-3">Dettagli</h3>
+            <div class="prose prose-sm text-gray-500">
+              {{ product.description }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Product Form -->
+        {% render 'product-form-test', product: product, show_quantity: true %}
+
+        <!-- Product Details -->
+        {% if product.metafields.custom.details %}
+          <div class="pt-6 border-t border-zinc-200">
+            <h3 class="text-lg font-medium text-gray-900 mb-3">Dettagli</h3>
+            <div class="prose prose-sm text-gray-600">
+              {{ product.metafields.custom.details }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Test",
+  "settings": [
+  ],
+  "presets": [
+    {
+      "name": "Product Test"
+    }
+  ]
+}
+{% endschema %}

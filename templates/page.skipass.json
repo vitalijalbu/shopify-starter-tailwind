@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_fUXepD": {
+      "type": "page-hero",
+      "blocks": {
+        "button_Dm8KQ9": {
+          "type": "button",
+          "settings": {
+            "button_text": "Scopri di più",
+            "button_url": "",
+            "button_style": "primary",
+            "button_icon": ""
+          }
+        }
+      },
+      "block_order": [
+        "button_Dm8KQ9"
+      ],
+      "disabled": true,
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "{{ page.title }}",
+        "custom_subtitle": "Organizza la tua esperienza",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/36ef84137ed200b22006ad58e740a90c15e79399.jpg",
+        "section_size": "large",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "skipass_products_9mK2aL": {
+      "type": "skipass-product-list",
+      "blocks": {
+        "product_xKjhhq": {
+          "type": "product",
+          "settings": {
+            "product": "risalita-singola-seggiovia-cevedale"
+          }
+        },
+        "product_zkX6Ji": {
+          "type": "product",
+          "settings": {
+            "product": "skipass-giornaliero"
+          }
+        }
+      },
+      "block_order": [
+        "product_xKjhhq",
+        "product_zkX6Ji"
+      ],
+      "name": "Skipass product list",
+      "settings": {
+        "heading": "",
+        "columns_desktop": 2,
+        "show_add_to_cart": false,
+        "add_to_cart_label": "Aggiungi al carrello",
+        "sold_out_label": "Esaurito",
+        "empty_state": "Nessun prodotto con tipo “Skipass” trovato."
+      }
+    },
+    "richtext_rtBgzy": {
+      "type": "richtext",
+      "name": "Rich Text",
+      "settings": {
+        "content": "<p>Grazie alla convenzione con Santa Caterina Impianti, il prezzo dello skipass giornaliero per tutti gli iscritti a Skimofestival è di 15,00 euro.</p><p>Per le experience in cui è previsto l’avvicinamento in seggiovia, puoi usare il giornaliero o acquistare la singola risalita al costo di 8,00 euro.</p><p>Scegli l’opzione migliore per te, noi ti suggeriamo di approfittare dello Skipass giornaliero! </p>",
+        "text_alignment": "text-left"
+      }
+    }
+  },
+  "order": [
+    "page_hero_fUXepD",
+    "skipass_products_9mK2aL",
+    "richtext_rtBgzy"
+  ]
+}

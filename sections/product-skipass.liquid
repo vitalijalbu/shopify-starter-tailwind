@@ -1,0 +1,111 @@
+{% comment %}
+  Product template section with gallery, details, and add to cart
+{% endcomment %}
+
+<div class="container sm:px-6 lg:px-8 py-8">
+  <div class="mb-4 flex justify-between items-center">
+    <div>
+      {% if section.settings.show_breadcrumb %}
+        <nav class="mb-4">
+          <ol class="breadcrumbs">
+            <li><a href="{{ routes.root_url }}" class="breadcrumb-item">Home</a></li>
+            {% if product.collections.first %}
+              <li class="breadcrumb-separator">{% render 'icon', icon: 'chevron-right' %}</li>
+              <li>
+                <a href="{{ product.collections.first.url }}" class="breadcrumb-item">
+                  {{- product.collections.first.title -}}
+                </a>
+              </li>
+            {% endif %}
+          </ol>
+        </nav>
+      {% endif %}
+      <h1 class="text-3xl md:text-5xl font-bold mb-2" data-scroll="slide-rotate-up">{{ product.title }}</h1>
+    </div>
+    {% render 'price', product: product, class: 'text-3xl md:text-5xl [&>span:not(.sr-only)]:text-primary-400 font-semibold' %}
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+    <!-- Product Gallery -->
+    <div class="order-1">
+      {% render 'product-media-gallery', product: product %}
+    </div>
+
+    <!-- Product Details -->
+    <div class="order-2">
+      <!-- Info Fields -->
+      <div>
+        {% liquid
+          assign info_items = ''
+
+          if product.type != blank
+            assign info_items = info_items | append: 'Categoria::' | append: product.type | append: '||'
+          endif
+
+          if product.metafields.custom.livello.value != blank
+            assign info_items = info_items | append: 'Livello::' | append: product.metafields.custom.livello.value | append: '||'
+          endif
+
+          if product.metafields.custom.durata.value != blank
+            assign info_items = info_items | append: "Durata dell'experience::" | append: product.metafields.custom.durata.value | append: '||'
+          endif
+
+          assign items = info_items | split: '||'
+        %}
+
+        {% if items.size > 0 %}
+          <ul class="divide-y divide-zinc-200">
+            {% for item in items %}
+              {% if item != blank %}
+                {% assign parts = item | split: '::' %}
+                <li class="flex justify-between items-center py-3">
+                  <span class="text-gray-600 font-semibold">{{ parts[0] }}</span>
+                  <span class="text-gray-900">{{ parts[1] }}</span>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div class="space-y-6">
+        <!-- Product Description -->
+        
+        {% if product.description != blank %}
+          <div class="py-6 border-t border-zinc-200">
+            <h3 class="font-semibold text-gray-900 mb-3">Dettagli</h3>
+            <div class="prose prose-sm text-gray-500">
+              {{ product.description }}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Product Form -->
+        {% render 'product-form', product: product, show_quantity: true %}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product page settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumb",
+      "label": "Show breadcrumb",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_benefits",
+      "label": "Show product benefits",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

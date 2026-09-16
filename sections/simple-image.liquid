@@ -1,0 +1,63 @@
+<section class="simple-image-section py-16">
+  <div class="container">
+    {% if section.settings.image != blank %}
+      <div
+        class="simple-image-wrapper"
+        style="text-align: {{ section.settings.alignment }};"
+      >
+        {{
+          section.settings.image
+          | image_url: width: 2000
+          | image_tag:
+            loading: 'lazy',
+            alt: section.settings.alt_text,
+            class: 'simple-image'
+        }}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Simple Image",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Immagine"
+    },
+    {
+      "type": "text",
+      "id": "alt_text",
+      "label": "Alt text",
+      "default": "Immagine sezione"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Larghezza immagine (%)",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Allineamento",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Sinistra" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Destra" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Simple Image"
+    }
+  ]
+}
+{% endschema %}

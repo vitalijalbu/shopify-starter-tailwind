@@ -1,0 +1,297 @@
+<!doctype html>
+<html class="no-js scroll-smooth" lang="{{ request.locale.iso_code }}" dir="{{ settings.text_direction }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {% if settings.favicon %}
+      <link rel="icon" href="{{ settings.favicon | image_url: width: 32, height: 32 }}" sizes="32x32">
+      <link rel="icon" href="{{ settings.favicon | image_url: width: 192, height: 192 }}" sizes="192x192">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {% endif %}
+    <title>
+      {%- liquid
+        if template contains 'product'
+          echo product.title | append: ' | ' | append: shop.name
+        elsif template contains 'collection'
+          echo collection.title | append: ' | ' | append: shop.name
+        elsif template contains 'blog'
+          echo blog.title | append: ' | ' | append: shop.name
+        elsif template contains 'article'
+          echo article.title | append: ' | ' | append: blog.title | append: ' | ' | append: shop.name
+        else
+          echo page_title
+          if current_tags
+            assign meta_tags = current_tags | join: ', '
+            echo ' - ' | append: meta_tags
+          endif
+          if current_page != 1
+            echo ' - ' | append: 'general.meta.page' | t: page: current_page
+          endif
+          unless page_title contains shop.name
+            echo ' | ' | append: shop.name
+          endunless
+        endif
+      -%}
+    </title>
+
+    <meta
+      name="description"
+      content="{{ page_description | default: shop.description | default: shop.name | escape | truncate: 160 }}"
+    >
+
+    <!-- Additional SEO meta tags -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-video-preview:-1, max-image-preview:large">
+    {% if template contains 'product' and product %}
+      <meta name="keywords" content="{{ product.tags | join: ', ' | escape }}">
+    {% endif %}
+    <meta name="author" content="{{ shop.name }}">
+    <meta name="theme-color" content="#{{ settings.colors_primary }}">
+
+    <!-- Language and geo targeting -->
+    <meta name="language" content="{{ request.locale.iso_code }}">
+    <link rel="alternate" hreflang="{{ request.locale.iso_code }}" href="{{ canonical_url }}">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ 'manifest.json' | asset_url }}">
+
+    <!-- Google Fonts - Additional Syne weights -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Mobile optimizations -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="{{ shop.name }}">
+    <meta name="msapplication-TileColor" content="#{{ settings.colors_primary }}">
+    <meta name="msapplication-config" content="none">
+
+    <!-- Performance hints -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Open Graph ottimizzati -->
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    {% if template contains 'product' and product %}
+      <meta property="og:title" content="{{ product.title | escape }}">
+      <meta property="og:type" content="product">
+      <meta property="og:description" content="{{ product.description | strip_html | truncate: 300 | escape }}">
+      <meta property="product:price:amount" content="{{ product.price | money_without_currency }}">
+      <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+      <meta
+        property="product:availability"
+        content="{% if product.available %}in stock{% else %}out of stock{% endif %}"
+      >
+      {% if product.featured_media %}
+        <meta property="og:image" content="{{ product.featured_media | image_url: width: 1200, height: 630 }}">
+        <meta
+          property="og:image:secure_url"
+          content="{{ product.featured_media | image_url: width: 1200, height: 630 }}"
+        >
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ product.featured_media.alt | default: product.title | escape }}">
+      {% endif %}
+    {% elsif template contains 'collection' and collection %}
+      <meta property="og:title" content="{{ collection.title | escape }}">
+      <meta property="og:type" content="product.group">
+      <meta property="og:description" content="{{ collection.description | strip_html | truncate: 300 | escape }}">
+      {% if collection.featured_image %}
+        <meta property="og:image" content="{{ collection.featured_image | image_url: width: 1200, height: 630 }}">
+        <meta
+          property="og:image:secure_url"
+          content="{{ collection.featured_image | image_url: width: 1200, height: 630 }}"
+        >
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta
+          property="og:image:alt"
+          content="{{ collection.featured_image.alt | default: collection.title | escape }}"
+        >
+      {% endif %}
+    {% else %}
+      <meta property="og:title" content="{{ page_title | default: shop.name | escape }}">
+      <meta property="og:type" content="website">
+      <meta
+        property="og:description"
+        content="{{ page_description | default: shop.description | default: shop.name | strip_html | truncate: 300 | escape }}"
+      >
+      {% if page_image %}
+        <meta property="og:image" content="{{ page_image | image_url: width: 1200, height: 630 }}">
+        <meta property="og:image:secure_url" content="{{ page_image | image_url: width: 1200, height: 630 }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="{{ page_title | default: shop.name | escape }}">
+      {% endif %}
+    {% endif %}
+
+    <!-- Twitter Card ottimizzati -->
+    <meta name="twitter:card" content="summary_large_image">
+    {% if template contains 'product' and product %}
+      <meta name="twitter:title" content="{{ product.title | escape }}">
+      <meta name="twitter:description" content="{{ product.description | strip_html | truncate: 200 | escape }}">
+      {% if product.featured_media %}
+        <meta name="twitter:image" content="{{ product.featured_media | image_url: width: 1200, height: 630 }}">
+        <meta name="twitter:image:alt" content="{{ product.featured_media.alt | default: product.title | escape }}">
+      {% endif %}
+    {% elsif template contains 'collection' and collection %}
+      <meta name="twitter:title" content="{{ collection.title | escape }}">
+      <meta name="twitter:description" content="{{ collection.description | strip_html | truncate: 200 | escape }}">
+      {% if collection.featured_image %}
+        <meta name="twitter:image" content="{{ collection.featured_image | image_url: width: 1200, height: 630 }}">
+        <meta
+          name="twitter:image:alt"
+          content="{{ collection.featured_image.alt | default: collection.title | escape }}"
+        >
+      {% endif %}
+    {% else %}
+      <meta name="twitter:title" content="{{ page_title | default: shop.name | escape }}">
+      <meta
+        name="twitter:description"
+        content="{{ page_description | default: shop.description | default: shop.name | strip_html | truncate: 200 | escape }}"
+      >
+      {% if page_image %}
+        <meta name="twitter:image" content="{{ page_image | image_url: width: 1200, height: 630 }}">
+        <meta name="twitter:image:alt" content="{{ page_title | default: shop.name | escape }}">
+      {% endif %}
+    {% endif %}
+
+    <!-- Schema.org JSON-LD ottimizzati -->
+    {% comment %} Organization Schema {% endcomment %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }},
+        {% if shop.description != blank %}"description": {{ shop.description | json }},{% endif %}
+        {% if settings.logo %}
+        "logo": {
+          "@type": "ImageObject",
+          "url": {{ settings.logo | image_url: width: 512 | prepend: "https:" | json }},
+          "width": 512,
+          "height": 512
+        },
+        {% endif %}
+        "sameAs": [
+          {% if settings.social_twitter_url != blank %}"{{ settings.social_twitter_url }}",{% endif %}
+          {% if settings.social_facebook_url != blank %}"{{ settings.social_facebook_url }}",{% endif %}
+          {% if settings.social_instagram_url != blank %}"{{ settings.social_instagram_url }}",{% endif %}
+          {% if settings.social_youtube_url != blank %}"{{ settings.social_youtube_url }}",{% endif %}
+          {% if settings.social_linkedin_url != blank %}"{{ settings.social_linkedin_url }}",{% endif %}
+          {{ shop.url | json }}
+        ]
+      }
+    </script>
+
+    {% comment %} WebSite Schema with Search Action {% endcomment %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }},
+        {% if shop.description != blank %}"description": {{ shop.description | json }},{% endif %}
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "{{ routes.search_url }}?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Critical CSS -->
+    {%- liquid
+      render 'colors'
+      render 'typography'
+    -%}
+
+    <!-- Content For Header -->
+    {{ content_for_header }}
+
+    <!-- Theme Assets -->
+    {%- liquid
+      render 'vite-tag' with 'critical.css', preload_stylesheet: true
+      render 'vite-tag' with 'theme.css'
+      render 'vite-tag' with 'theme.js'
+    -%}
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PQJ5NXWW');</script>
+    <!-- End Google Tag Manager -->
+  </head>
+
+  <body class="font-sans template-{{ request.page_type | handle }} bg-gray" x-data="themeApp()" x-init="init()">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQJ5NXWW"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+     
+    <!-- Skip to content link -->
+    <a class="skip-to-content visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_text' | t }}
+    </a>
+
+    <!-- ScrollSmoother wrapper -->
+   
+        {% sections 'header-group' %}
+
+        <main id="MainContent" tabindex="-1" role="main">
+          {{ content_for_layout }}
+        </main>
+
+        {% sections 'footer-group' %}
+      
+
+    <script>
+      window.shopUrl = {{ request.origin | json }};
+      window.routes = {
+        cart_add_url: {{ routes.cart_add_url | json }},
+        cart_change_url: {{ routes.cart_change_url | json }},
+        cart_update_url: {{ routes.cart_update_url | json }},
+        cart_url: {{ routes.cart_url | json }}
+      };
+
+      window.theme = {
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }}
+        }
+      };
+
+      // Auto-redirect: /en -> Global market, / or /it -> Italian market
+      (function() {
+        const path = window.location.pathname;
+        const locale = {{ request.locale.iso_code | json }};
+        
+        // Se l'URL contiene /en ma la lingua non è EN, vai a /en
+        if (path.includes('/en') && locale !== 'en') {
+          window.location.href = path.replace(/^\/(it|it-it)/, '/en');
+        }
+        // Se l'URL non contiene /en ma la lingua è EN, torna a /
+        else if (!path.includes('/en') && locale === 'en') {
+          window.location.href = path.replace(/^\/en/, '');
+        }
+      })();
+    </script>
+
+    <!-- Ajax Cart Drawer -->
+    {% render 'ajax-cart' %}
+  </body>
+</html>

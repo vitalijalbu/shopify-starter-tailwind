@@ -1,0 +1,32 @@
+{
+  "src/entrypoints/blog-posts.js": {
+    "file": "blog-posts.7clJ-FDq.js",
+    "name": "blog-posts",
+    "src": "src/entrypoints/blog-posts.js",
+    "isEntry": true
+  },
+  "src/entrypoints/scroll-effects.js": {
+    "file": "scroll-effects.D5j_h0PZ.js",
+    "name": "scroll-effects",
+    "src": "src/entrypoints/scroll-effects.js",
+    "isDynamicEntry": true
+  },
+  "src/entrypoints/theme.css": {
+    "file": "theme.B_qReayf.css",
+    "src": "src/entrypoints/theme.css",
+    "isEntry": true,
+    "name": "theme",
+    "names": [
+      "theme.css"
+    ]
+  },
+  "src/entrypoints/theme.js": {
+    "file": "app.C9h_NQM9.js",
+    "name": "app",
+    "src": "src/entrypoints/theme.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "src/entrypoints/scroll-effects.js"
+    ]
+  }
+}

@@ -1,0 +1,209 @@
+<section class="py-16">
+  <div class="container mx-auto px-4">
+    {% if customer and order %}
+      <!-- Order Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">Ordine {{ order.name }}</h1>
+      </div>
+
+      <!-- Order Items -->
+      <div class="bg-white rounded-lg shadow-sm border border-zinc-200 mb-8">
+        <div class="px-6 py-4 border-b border-zinc-200">
+          <h2 class="text-lg font-semibold">Articoli ordinati</h2>
+        </div>
+        <div class="p-6">
+          {% for line_item in order.line_items %}
+            <div class="flex items-center py-4 {% unless forloop.last %}border-b border-zinc-200{% endunless %}">
+              <!-- Product Image -->
+              <div class="w-16 h-16 mr-4 shrink-0">
+                {% if line_item.image %}
+                  <img
+                    src="{{ line_item.image | image_url: width: 80 }}"
+                    alt="{{ line_item.title | escape }}"
+                    class="w-full h-full object-cover rounded"
+                    width="80"
+                    height="80"
+                  >
+                {% else %}
+                  <div class="w-full h-full bg-gray-200 rounded flex items-center justify-center">
+                    {% render 'icon', icon: 'image', class: 'text-gray-400' %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Product Details -->
+              <div class="flex-grow">
+                <h3 class="font-medium">{{ line_item.title }}</h3>
+                {% if line_item.variant_title %}
+                  <p class="text-base text-gray-600">{{ line_item.variant_title }}</p>
+                {% endif %}
+                {% if line_item.properties %}
+                  {% for property in line_item.properties %}
+                    {% unless property.last == blank %}
+                      <p class="text-base text-gray-600">{{ property.first }}: {{ property.last }}</p>
+                    {% endunless %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+
+              <!-- Quantity and Price -->
+              <div class="text-right">
+                <p class="font-medium">{{ line_item.final_price | money }}</p>
+                <p class="text-base text-primay">Qtà: {{ line_item.quantity }}</p>
+                {% if line_item.original_price != line_item.final_price %}
+                  <p class="text-base text-red-700">Sconto: {{ line_item.total_discount | money }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Order Summary and Addresses -->
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- Billing Address -->
+        {% if order.billing_address %}
+          <div class="bg-white rounded-lg shadow-sm border border-zinc-200 p-6">
+            <h3 class="text-lg font-semibold mb-4">Indirizzo di fatturazione</h3>
+            <div class="space-y-1 text-base">
+              {% if order.billing_address.company %}
+                <p class="font-medium">{{ order.billing_address.company }}</p>
+              {% endif %}
+              <p>
+                {{ order.billing_address.first_name }}
+                {{ order.billing_address.last_name }}
+              </p>
+              <p>{{ order.billing_address.address1 }}</p>
+              {% if order.billing_address.address2 %}
+                <p>{{ order.billing_address.address2 }}</p>
+              {% endif %}
+              <p>
+                {{ order.billing_address.zip }}
+                {{ order.billing_address.city }}
+              </p>
+              <p>
+                {{ order.billing_address.province }}
+                {{ order.billing_address.country }}
+              </p>
+              {% if order.billing_address.phone %}
+                <p>Tel: {{ order.billing_address.phone }}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Shipping Address -->
+        {% if order.shipping_address %}
+          <div class="bg-white rounded-lg shadow-sm border border-zinc-200 p-6">
+            <h3 class="text-lg font-semibold mb-4">Indirizzo di spedizione</h3>
+            <div class="space-y-1 text-base">
+              {% if order.shipping_address.company %}
+                <p class="font-medium">{{ order.shipping_address.company }}</p>
+              {% endif %}
+              <p>
+                {{ order.shipping_address.first_name }}
+                {{ order.shipping_address.last_name }}
+              </p>
+              <p>{{ order.shipping_address.address1 }}</p>
+              {% if order.shipping_address.address2 %}
+                <p>{{ order.shipping_address.address2 }}</p>
+              {% endif %}
+              <p>
+                {{ order.shipping_address.zip }}
+                {{ order.shipping_address.city }}
+              </p>
+              <p>
+                {{ order.shipping_address.province }}
+                {{ order.shipping_address.country }}
+              </p>
+              {% if order.shipping_address.phone %}
+                <p>Tel: {{ order.shipping_address.phone }}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Order Totals -->
+      <div class="mt-8 bg-white rounded-lg shadow-sm border border-zinc-200 p-6">
+        <h3 class="text-lg font-semibold mb-4">Riepilogo ordine</h3>
+        <div class="space-y-2">
+          <div class="flex justify-between">
+            <span>Subtotale:</span>
+            {% render 'price-tag', price: order.line_items_subtotal_price %}
+          </div>
+
+          {% for discount in order.discounts %}
+            <div class="flex justify-between text-red-700">
+              <span>Sconto ({{ discount.code }}):</span>
+              <span>-{{ discount.amount | money }}</span>
+            </div>
+          {% endfor %}
+
+          {% for tax_line in order.tax_lines %}
+            <div class="flex justify-between">
+              <span>{{ tax_line.title }}:</span>
+              <span>{{ tax_line.price | money }}</span>
+            </div>
+          {% endfor %}
+
+          <div class="border-t border-zinc-200 pt-2 mt-2">
+            <div class="flex justify-between font-bold text-lg">
+              <span>Totale:</span>
+              {% render 'price-tag', price: order.total_price %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back to Orders Link -->
+      <div class="mt-8 text-center">
+        <a
+          href="{{ routes.account_url }}"
+          class="inline-flex items-center text-primary hover:text-primary-dark transition-colors underline"
+        >
+          Torna al tuo account
+        </a>
+      </div>
+
+    {% else %}
+      <!-- Not logged in or order not found -->
+      <div class="text-center py-16">
+        <h1 class="text-xl md:text-2xl font-bold mb-4">Ordine non trovato</h1>
+        <p class="text-gray-600 mb-8">Non hai effettuato l'accesso o l'ordine non esiste.</p>
+        <a href="{{ routes.account_login_url }}" class="btn btn-primary">Accedi al tuo account </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Order",
+  "tag": "section",
+  "class": "customer-order-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Aspetto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_fulfillment_details",
+      "label": "Mostra dettagli spedizione",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_images",
+      "label": "Mostra immagini prodotti",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Order"
+    }
+  ]
+}
+{% endschema %}

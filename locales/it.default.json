@@ -1,0 +1,197 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "social": {
+      "links": {
+        "twitter": "Twitter",
+        "facebook": "Facebook",
+        "pinterest": "Pinterest",
+        "instagram": "Instagram",
+        "tumblr": "Tumblr",
+        "snapchat": "Snapchat",
+        "youtube": "YouTube",
+        "vimeo": "Vimeo",
+        "tiktok": "TikTok"
+      }
+    },
+    "continue_shopping": "Continua lo shopping"
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "loading": "Loading",
+    "close": "Close",
+    "link_messages": {
+      "new_window": "Opens in a new window."
+    }
+  },
+  "products": {
+    "product": {
+      "quantity": {
+        "label": "Quantity",
+        "input_label": "Quantity for {{ product }}",
+        "increase": "Increase quantity for {{ product }}",
+        "decrease": "Decrease quantity for {{ product }}"
+      },
+      "price": {
+        "regular_price": "Regular price",
+        "sale_price": "Sale price",
+        "from_price_html": "Da {{ min_price }}",
+        "unit_price": "Unit price"
+      },
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out", 
+      "unavailable": "Unavailable",
+      "product_variants": "Product variants",
+      "new": "Nuovo",
+      "add_to_wishlist": "Aggiungi alla wishlist"
+    }
+  },
+  "templates": {
+    "404": {
+      "title": "404 Page Not Found",
+      "subtext": "The page you requested does not exist."
+    }
+  },
+  "customer": {
+    "login": {
+      "title": "Accedi al tuo account",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Accedi",
+      "forgot_password": "Hai dimenticato la password?",
+      "new_customer": "Non sei ancora iscritto?",
+      "register_text": "Crea un account per accedere ai tuoi ordini e accelerare il checkout.",
+      "register": "Iscriviti"
+    },
+    "register": {
+      "title": "Crea account",
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "email": "Email",
+      "password": "Password",
+      "submit": "INVIA",
+      "returning_customer": "Cliente esistente?",
+      "login": "Accedi"
+    },
+    "reset_password": {
+      "title": "Reimposta password",
+      "subtext": "Ti invieremo un'email per reimpostare la password",
+      "email": "Email",
+      "submit": "Resetta password",
+      "cancel": "Annulla"
+    },
+    "recover_password": {
+      "success": "Ti abbiamo inviato un'email con le istruzioni per reimpostare la password.",
+      "submit": "Recupera"
+    },
+    "account": {
+      "title": "Il mio account",
+      "welcome": "Ciao, {{ first_name }}!",
+      "orders_title": "Le mie attività",
+      "no_orders": "Non hai ancora effettuato ordini.",
+      "order_number": "Ordine {{ name }}",
+      "order_date": "Effettuato il {{ date }}",
+      "order_payment_status": "{{ status }}",
+      "order_fulfillment_status": "{{ status }}",
+      "order_total": "{{ price }}",
+      "view_order": "Visualizza ordine",
+      "addresses_title": "I miei indirizzi",
+      "default_address": "Indirizzo predefinito",
+      "add_new_address": "Aggiungi nuovo indirizzo",
+      "edit_address": "Modifica indirizzo",
+      "delete_address": "Elimina",
+      "logout": "Esci"
+    },
+    "addresses": {
+      "title": "I miei indirizzi",
+      "default": "Predefinito",
+      "add_new": "Aggiungi nuovo indirizzo",
+      "edit_address": "Modifica indirizzo",
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "company": "Azienda",
+      "address1": "Indirizzo",
+      "address2": "Appartamento, suite, ecc.",
+      "city": "Città",
+      "country": "Paese",
+      "province": "Provincia",
+      "zip": "CAP",
+      "phone": "Telefono",
+      "set_default": "Imposta come indirizzo predefinito",
+      "add": "Aggiungi indirizzo",
+      "update": "Aggiorna indirizzo",
+      "cancel": "Annulla",
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "delete_confirm": "Sei sicuro di voler eliminare questo indirizzo?"
+    },
+    "orders": {
+      "title": "Cronologia attività",
+      "order_number": "Ordine",
+      "order_number_link": "Ordine {{ number }}",
+      "date": "Data",
+      "payment_status": "Stato pagamento",
+      "fulfillment_status": "Stato evasione",
+      "total": "Totale",
+      "none": "Non hai ancora acquistato un'attività."
+    },
+    "order": {
+      "title": "Ordine {{ name }}",
+      "date_html": "Effettuato il {{ date }}",
+      "cancelled_html": "Ordine annullato il {{ date }}",
+      "cancelled_reason": "Motivo: {{ reason }}",
+      "billing_address": "Indirizzo di fatturazione",
+      "payment_status": "Stato pagamento",
+      "shipping_address": "Indirizzo di spedizione",
+      "fulfillment_status": "Stato evasione",
+      "discount": "Sconto",
+      "shipping": "Spedizione",
+      "tax": "Tasse",
+      "product": "Prodotto",
+      "sku": "SKU",
+      "price": "Prezzo",
+      "quantity": "Quantità",
+      "total": "Totale",
+      "fulfilled_at_html": "Evaso il {{ date }}",
+      "track_shipment": "Traccia spedizione",
+      "tracking_url": "Link di tracciamento",
+      "tracking_company": "Corriere",
+      "tracking_number": "Numero di tracciamento",
+      "subtotal": "Subtotale"
+    },
+    "activate_account": {
+      "title": "Attiva account",
+      "subtext": "Crea la tua password per attivare l'account.",
+      "password": "Password",
+      "password_confirm": "Conferma password",
+      "submit": "Attiva account",
+      "cancel": "Rifiuta invito"
+    },
+    "errors": {
+      "title": "Si è verificato un errore"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card for {{ shop }}!",
+      "subtext": "Your gift card",
+      "gift_card_code": "Gift card code",
+      "shop_link": "Continue shopping",
+      "remaining_html": "Remaining {{ balance }}",
+      "add_to_apple_wallet": "Add to Apple Wallet",
+      "qr_image_alt": "QR code — scan to redeem gift card",
+      "copy_code": "Copy code",
+      "expired": "Expired",
+      "copy_code_success": "Code copied successfully",
+      "print_gift_card": "Print"
+    }
+  }
+}

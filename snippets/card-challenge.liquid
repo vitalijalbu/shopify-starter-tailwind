@@ -1,0 +1,44 @@
+<div class="h-full">
+  <!-- Product Image -->
+  <div class="overflow-hidden rounded-xl">
+    {% render 'picture', image: product.featured_media, class: 'rounded-xl w-auto h-[200px] object-cover w-full' %}
+  </div>
+
+  <div class="py-6">
+    <!-- Product Title -->
+    <h3 class="text-3xl font-bold text-gray-900 mb-3">
+      {{ product.title }}
+    </h3>
+
+    <ul class="divide-y divide-zinc-200">
+      <li class="flex justify-between items-center py-3">
+        <span class="text-gray-600 font-semibold">Date</span>
+        <span class="text-gray-500">{{ product.metafields.custom.challenge_date | default: '-' }}</span>
+      </li>
+      <li class="flex justify-between items-center py-3">
+        <span class="text-gray-600 font-semibold">Zona Attività</span>
+        <span class="text-gray-500">{{ product.metafields.custom.challenge_zone |  default: '-' }}</span>
+      </li>
+      <li class="flex flex-col py-3">
+        <span class="text-gray-600 font-semibold">Info</span>
+        <p class="text-gray-500 text-base leading-relaxed mb-4 line-clamp-4 block">
+          {{ product.description | strip_html }}
+        </p>
+      </li>
+    </ul>
+
+    <!-- CTA Button -->
+    <div class="flex justify-start">
+      <a
+        href="{{ product.url }}"
+        class="btn btn-secondary"
+      >
+        {{ cta_text | default: 'Scopri la gara' }}
+        {% render 'icon',
+          icon: 'arrow-top-right',
+          class: 'size-5 ml-2 transition-transform duration-200 group-hover:translate-x-1'
+        %}
+      </a>
+    </div>
+  </div>
+</div>

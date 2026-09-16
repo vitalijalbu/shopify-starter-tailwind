@@ -1,0 +1,50 @@
+<section class="py-16 lg:py-24">
+  <div class="container">
+    <!-- Section Title -->
+    {% if section.settings.section_title != blank %}
+      <div class="mb-[120px] text-center">
+        <h2 class="text-5xl md:text-7xl font-semibold text-gray-900">
+          {{ section.settings.section_title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% assign collection = collections[section.settings.collection] %}
+
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+      {% for product in collection.products %}
+        <div>
+          {% render 'card-challenge', product: product %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Lista Gare e Sfide",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Prodotti da Testare - SkimoFestival"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collezione Prodotti",
+      "info": "Seleziona la collezione di prodotti da mostrare"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista Gare e Sfide"
+    }
+  ]
+}
+{% endschema %}

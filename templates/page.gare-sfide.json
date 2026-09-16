@@ -1,0 +1,31 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_2_TxMjWM": {
+      "type": "page-hero-2",
+      "name": "Page Hero 2",
+      "settings": {
+        "custom_title": "",
+        "custom_subtitle": "",
+        "split_layout": false,
+        "section_size": "medium",
+        "show_breadcrumb": true,
+        "image_caption": "",
+        "button_text": "",
+        "button_url": "",
+        "button_icon": ""
+      }
+    }
+  },
+  "order": [
+    "page_hero_2_TxMjWM"
+  ]
+}

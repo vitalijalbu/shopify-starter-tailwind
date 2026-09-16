@@ -1,0 +1,143 @@
+<section class="py-[216px] md:py-[108px] flex flex-col gap-[120px] bg-gray-50">
+  {% if section.settings.title != blank %}
+    <div class="container">
+      <div class="md:max-w-4xl flex flex-col gap-6 mb-[54px]">
+        <h2 class="text-5xl md:text-7xl font-bold" data-scroll="slide-rotate-up">{{ section.settings.title }}</h2>
+        {% if section.settings.subtitle != blank %}
+          <p class="text-xl leading-[30px] md:text-2xl md:leading-7">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+      {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+        <a
+          href="{{ section.settings.button_url }}"
+          class="w-fit btn btn-{{ section.settings.button_style | default: 'primary' }}"
+        >
+          {{ section.settings.button_text }}
+          <span>{% render 'icon', icon: 'arrow-top-right', class: 'ml-4 size-5', aria_hidden: 'true' %}</span>
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="space-y-8">
+    {% assign products = shop.metaobjects.brands.values %}
+
+    <!-- Riga 1 (prima metà) -->
+    <div class="overflow-hidden w-full">
+      <div class="logos-track" id="logos-track-1-{{ section.id }}">
+        {% for i in (1..10) %}
+          {% for product in products %}
+            {% render 'logo-item', product: product %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Riga 2 (seconda metà) -->
+    <div class="overflow-hidden w-full">
+      <div class="logos-track" id="logos-track-2-{{ section.id }}">
+        {% for i in (11..20) %}
+          {% for product in products %}
+            {% render 'logo-item', product: product %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const track1 = document.getElementById('logos-track-1-{{ section.id }}');
+    const track2 = document.getElementById('logos-track-2-{{ section.id }}');
+
+    if (track1) {
+      const trackWidth1 = track1.scrollWidth / 4;
+      gsap.to(track1, {
+        x: -trackWidth1,
+        ease: 'none',
+        duration: 200,
+        repeat: -1,
+        modifiers: {
+          x: gsap.utils.unitize((x) => parseFloat(x) % trackWidth1),
+        },
+      });
+    }
+
+    if (track2) {
+      const trackWidth2 = track2.scrollWidth / 4;
+      gsap.fromTo(
+        track2,
+        { x: -trackWidth2 },
+        {
+          x: 0,
+          ease: 'none',
+          duration: 200,
+          repeat: -1,
+        }
+      );
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Logos Carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo sezione",
+      "default": "I nostri partner"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        },
+        {
+          "value": "outline",
+          "label": "Outline"
+        }
+      ],
+      "default": "primary"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logos Carousel"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,209 @@
+<section class="py-16 lg:py-24" x-data="guidesFilter()">
+  <div class="container">
+    <!-- Section Title -->
+    {% if section.settings.section_title != blank %}
+      <div class="mb-12">
+        <h2 class="text-5xl md:text-7xl font-bold text-gray-900" data-scroll="slide-rotate-up">
+          {{ section.settings.section_title }}
+        </h2>
+      </div>
+    {% endif %}
+
+    <!-- Filters -->
+    {% if section.settings.show_filters %}
+      <div class="mb-12 flex flex-wrap items-center gap-4">
+        <span class="text-gray-700 font-medium">{{ section.settings.filter_label | default: 'Filtra per:' }}</span>
+
+        <!-- Zone Filter -->
+        <div class="relative">
+          <select
+            x-model="selectedZone"
+            class="appearance-none px-4 py-2 pr-8 text-gray-700 hover:border-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+          >
+            <option value="">{{ section.settings.zone_filter_label | default: 'Tutte le zone' }}</option>
+            <template x-for="zone in zones" :key="zone">
+              <option :value="zone" x-text="zone"></option>
+            </template>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            {% render 'icon' icon: 'chevron-down' class: 'size-4' %}
+          </div>
+        </div>
+
+        <!-- Experience Filter -->
+        <div class="relative">
+          <select
+            x-model="selectedEsperienza"
+            class="appearance-none px-4 py-2 pr-8 text-gray-700 hover:border-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-colors"
+          >
+            <option value="">Tutte le esperienze</option>
+            <template x-for="exp in esperienze" :key="exp">
+              <option :value="exp" x-text="exp"></option>
+            </template>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+            {% render 'icon' icon: 'chevron-down' class: 'size-4' %}
+          </div>
+        </div>
+
+        <!-- Clear Filters -->
+        <button
+          x-show="selectedZone || selectedEsperienza"
+          @click="clearFilters()"
+          class="inline-flex items-center px-3 py-2 text-base text-primary hover:text-teal-700 font-medium"
+        >
+          <svg class="size-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Cancella filtri
+        </button>
+      </div>
+    {% endif %}
+
+    <!-- Results Counter -->
+    <div class="mb-6">
+      <p class="text-gray-600">
+        <span x-text="filteredGuides.length"></span>
+        <span x-text="filteredGuides.length === 1 ? 'guida trovata' : 'guide trovate'"></span>
+      </p>
+    </div>
+
+    <!-- Guides Grid -->
+    <div class="grid md:grid-cols-2 gap-x-6 gap-y-20">
+      {% assign guides = shop.metaobjects.guide_alpine.values %}
+
+      {% for guide in guides %}
+        <div
+          x-show="isVisible({{ forloop.index0 }})"
+          class="transition-all duration-200"
+        >
+          {% render 'card-guide',
+            guide: guide,
+            cta_text: section.settings.cta_text,
+            default_cta_link: section.settings.default_cta_link
+          %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="filteredGuides.length === 0">
+      {% render 'empty-state',
+        title: 'Nessuna guida corrisponde ai filtri',
+        subtitle: 'Prova a modificare i criteri di ricerca o rimuovi i filtri.',
+        icon: 'user',
+        show_button: true,
+        button_text: 'Reset filtri',
+        button_action: '@click="clearFilters()"'
+      %}
+    </div>
+  </div>
+</section>
+
+<script>
+  function guidesFilter() {
+    return {
+      selectedZone: '',
+      selectedEsperienza: '',
+      guides: [
+        {% for guide in guides %}
+          {
+            nome: "{{ guide.nome.value }}",
+            zona: "{{ guide.zona.value }}",
+            esperienza: "{{ guide.esperienza.value }}"
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+
+      get zones() {
+        return [...new Set(this.guides.map(g => g.zona).filter(z => z))];
+      },
+
+      get esperienze() {
+        return [...new Set(this.guides.map(g => g.esperienza).filter(e => e))];
+      },
+
+      get filteredGuides() {
+        return this.guides.filter(guide => {
+          const zoneMatch = !this.selectedZone || guide.zona === this.selectedZone;
+          const expMatch = !this.selectedEsperienza || guide.esperienza === this.selectedEsperienza;
+          return zoneMatch && expMatch;
+        });
+      },
+
+      isVisible(index) {
+        const guide = this.guides[index];
+        if (!guide) return false;
+        return this.filteredGuides.includes(guide);
+      },
+
+      clearFilters() {
+        this.selectedZone = '';
+        this.selectedEsperienza = '';
+      }
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Lista Guide Alpine",
+  "tag": "section",
+  "class": "guides-list-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto Principale"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Scopri le guide alpine che partecipano a SkimoFestival"
+    },
+    {
+      "type": "header",
+      "content": "Filtri"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Mostra Filtri",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Etichetta Filtri",
+      "default": "Filtra per:"
+    },
+    {
+      "type": "text",
+      "id": "zone_filter_label",
+      "label": "Etichetta Filtro Zona",
+      "default": "Tutte le zone"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo Bottone",
+      "default": "Scopri le experience"
+    },
+    {
+      "type": "url",
+      "id": "default_cta_link",
+      "label": "Link Default CTA",
+      "info": "Usato quando la guida non ha un link specifico"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista Guide Alpine"
+    }
+  ]
+}
+{% endschema %}

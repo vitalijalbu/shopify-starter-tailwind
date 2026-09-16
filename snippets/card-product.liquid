@@ -1,0 +1,125 @@
+{% liquid
+  assign card_id = 'product-card-' | append: product.id
+  assign loading = loading | default: 'lazy'
+  assign livello = product.metafields.custom.livello.value | default: ''
+  assign durata = product.metafields.custom.durata.value | default: ''
+%}
+<article
+  class="group hover:scale-102 transition-transform duration-200 relative"
+  aria-labelledby="{{ card_id }}-title"
+  data-product-card
+  data-scroll="product-card"
+  data-livello="{{ livello }}"
+  data-durata="{{ durata }}"
+>
+  <a href="{{ product.url }}" class="block" style="opacity:0; transform: translateY(24px); will-change: transform, opacity;">
+    <div class="relative overflow-hidden rounded-xl h-[437px] bg-gray-100">
+      {% if product.featured_media %}
+        <!-- Main Image -->
+        <img
+          srcset="
+            {%- if product.featured_media.width >= 165 -%}{{ product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+            {%- if product.featured_media.width >= 360 -%}{{ product.featured_media | image_url: width: 360 }} 360w,{%- endif -%}
+            {%- if product.featured_media.width >= 533 -%}{{ product.featured_media | image_url: width: 533 }} 533w,{%- endif -%}
+            {%- if product.featured_media.width >= 720 -%}{{ product.featured_media | image_url: width: 720 }} 720w,{%- endif -%}
+            {%- if product.featured_media.width >= 940 -%}{{ product.featured_media | image_url: width: 940 }} 940w,{%- endif -%}
+            {%- if product.featured_media.width >= 1066 -%}{{ product.featured_media | image_url: width: 1066 }} 1066w,{%- endif -%}
+            {{ product.featured_media | image_url }} {{ product.featured_media.width }}w
+          "
+          src="{{ product.featured_media | image_url: width: 533 }}"
+          sizes="(min-width: 1280px) 300px, (min-width: 1024px) calc((100vw - 120px) / 4), (min-width: 768px) calc((100vw - 80px) / 3), calc((100vw - 32px) / 2)"
+          alt="{{ product.featured_media.alt | default: product.title | escape }}"
+          class="absolute inset-0 w-full h-full object-cover object-center"
+          {% unless loading == false %}
+            loading="{{ loading }}"
+          {% endunless %}
+          width="{{ product.featured_media.width }}"
+          height="{{ product.featured_media.height }}"
+        >
+
+        <!-- Overlay gradient -->
+        <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent"></div>
+      {% else %}
+        <div
+          class="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-200"
+          aria-label="{{ 'products.product.no_image' | t }}"
+        >
+          {% render 'icon', icon: 'image-placeholder', class: 'size-8 text-gray-400' %}
+        </div>
+      {% endif %}
+
+      <!-- Tags in alto a sinistra -->
+      {% if product.tags.size > 0 %}
+        <div class="absolute top-3 left-3 flex flex-wrap gap-2 z-10">
+          {% for tag in product.tags limit: 3 %}
+            <span class="badge text-sm">
+              {{ tag }}
+            </span>
+          {% endfor %}
+          {% if product.tags.size > 3 %}
+            <span class="badge"> +{{ product.tags.size | minus: 3 }} </span>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Discount badge in alto a destra -->
+      {% if product.compare_at_price > product.price %}
+        {% assign discount = product.compare_at_price
+          | minus: product.price
+          | times: 100
+          | divided_by: product.compare_at_price
+          | round
+        %}
+        <div class="absolute top-3 right-3 z-10">
+          <span
+            class="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded"
+            aria-label="{{ 'products.product.on_sale' | t }}"
+          >
+            -{{ discount }}%
+          </span>
+        </div>
+      {% endif %}
+
+      <!-- Sold out badge in alto a destra -->
+      {% unless product.available %}
+        <div class="absolute top-3 right-3 z-10">
+          <span class="badge">
+            {{ 'products.product.sold_out' | t }}
+          </span>
+        </div>
+      {% endunless %}
+    </div>
+  </a>
+  <div class="mt-3" style="opacity:0; transform: translateY(24px); will-change: transform, opacity;">
+    <p class="text-gray-500 text-base">{{ product.metafields.custom.livello }}</p>
+    <h3 id="{{ card_id }}-title" class="text-2xl font-semibold text-gray-900 mb-2 line-clamp-2">
+      <a
+        href="{{ product.url }}"
+        class="focus:outline-none hover:text-gray-700 transition-colors"
+        aria-describedby="{{ card_id }}-price"
+      >
+        {{ product.title }}
+      </a>
+    </h3>
+
+    <!-- Price -->
+    <div id="{{ card_id }}-price" class="flex items-center gap-2">
+      {% if product.compare_at_price > product.price %}
+        <span class="text-lg text-green-700" aria-label="{{ 'products.product.sale_price' | t }}">
+          {{ product.price | money }}
+        </span>
+        <span class="text-base text-gray-400 line-through" aria-label="{{ 'products.product.regular_price' | t }}">
+          {{ product.compare_at_price | money }}
+        </span>
+      {% else %}
+        <span class="text-lg text-gray-900">
+          {% if product.price_varies %}
+            {{ 'products.product.price.from_price_html' | t: price: product.price_min | money }}
+          {% else %}
+            {{ product.price | money }}
+          {% endif %}
+        </span>
+      {% endif %}
+    </div>
+  </div>
+</article>

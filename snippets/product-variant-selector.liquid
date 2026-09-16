@@ -1,0 +1,134 @@
+{% comment %}
+  Product variant selector
+  Usage: {% render 'product-variant-selector', product: product, selected_variant: product.selected_or_first_available_variant %}
+{% endcomment %}
+
+<div x-data="productVariants('{{ product.id }}', {{ product.variants | json | escape }})" class="product-variant-selector space-y-4">
+  {% for option in product.options_with_values %}
+    <div class="variant-option">
+      <label class="block text-base font-medium text-gray-700 mb-2">
+        {{ option.name }}
+      </label>
+      
+      {% if option.name == 'Color' or option.name == 'Colore' %}
+        <!-- Color swatches -->
+        <div class="flex flex-wrap gap-2">
+          {% for value in option.values %}
+            <button
+              type="button"
+              @click="selectOption('{{ option.name }}', '{{ value | escape }}')"
+              :class="isOptionSelected('{{ option.name }}', '{{ value | escape }}') ? 'ring-2 ring-primary' : 'ring-1 ring-gray-300'"
+              class="size-8 rounded-full border-2 border-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              style="background-color: {{ value | downcase | replace: ' ', '' }};"
+              aria-label="{{ option.name }}: {{ value }}"
+            >
+              {% if value == 'White' or value == 'Bianco' %}
+                <span class="sr-only">{{ value }}</span>
+              {% endif %}
+            </button>
+          {% endfor %}
+        </div>
+      
+      {% elsif option.name == 'Size' or option.name == 'Taglia' %}
+        <!-- Size selector -->
+        <div class="flex flex-wrap gap-2">
+          {% for value in option.values %}
+            <button
+              type="button"
+              @click="selectOption('{{ option.name }}', '{{ value | escape }}')"
+              :class="isOptionSelected('{{ option.name }}', '{{ value | escape }}') ? 'bg-primary text-white border-primary' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-2 text-base font-medium border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+            >
+              {{ value }}
+            </button>
+          {% endfor %}
+        </div>
+      
+      {% else %}
+        <!-- Default dropdown -->
+        <select 
+          @change="selectOption('{{ option.name }}', $event.target.value)"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+        >
+          {% for value in option.values %}
+            <option 
+              value="{{ value | escape }}"
+              :selected="isOptionSelected('{{ option.name }}', '{{ value | escape }}')"
+            >
+              {{ value }}
+            </option>
+          {% endfor %}
+        </select>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <!-- Variant info -->
+  <div x-show="currentVariant" class="variant-info pt-4 border-t border-zinc-200">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-lg font-semibold text-gray-900" x-text="currentVariant?.price ? formatPrice(currentVariant.price) : ''"></span>
+      <span 
+        x-show="currentVariant?.compare_at_price && currentVariant.compare_at_price > currentVariant.price"
+        x-text="currentVariant?.compare_at_price ? formatPrice(currentVariant.compare_at_price) : ''"
+        class="text-base text-gray-500 line-through"
+      ></span>
+    </div>
+  </div>
+  
+  <!-- Hidden input for form submission -->
+  <input type="hidden" name="id" :value="currentVariant?.id || ''" required>
+</div>
+
+<script>
+function productVariants(productId, variants) {
+  return {
+    variants: variants,
+    selectedOptions: {},
+    currentVariant: null,
+    
+    init() {
+      // Set initial variant (first available)
+      const firstAvailable = this.variants.find(v => v.available) || this.variants[0];
+      if (firstAvailable) {
+        this.selectedOptions = {};
+        firstAvailable.options.forEach((option, index) => {
+          const optionName = this.getOptionName(index);
+          this.selectedOptions[optionName] = option;
+        });
+        this.updateCurrentVariant();
+      }
+    },
+    
+    selectOption(optionName, value) {
+      this.selectedOptions[optionName] = value;
+      this.updateCurrentVariant();
+    },
+    
+    isOptionSelected(optionName, value) {
+      return this.selectedOptions[optionName] === value;
+    },
+    
+    updateCurrentVariant() {
+      this.currentVariant = this.variants.find(variant => {
+        return variant.options.every((option, index) => {
+          const optionName = this.getOptionName(index);
+          return this.selectedOptions[optionName] === option;
+        });
+      });
+    },
+    
+    getOptionName(index) {
+      // This should match the actual option names from Shopify
+      const optionNames = ['Color', 'Size', 'Material']; // Adjust as needed
+      return optionNames[index] || `Option${index + 1}`;
+    },
+    
+    formatPrice(price) {
+      return new Intl.NumberFormat('it-IT', {
+        style: 'currency',
+        currency: 'EUR'
+      }).format(price / 100);
+    }
+  }
+}
+</script>

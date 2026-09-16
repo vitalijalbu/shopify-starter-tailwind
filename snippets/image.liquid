@@ -1,0 +1,37 @@
+{% if image != blank %}
+  {% assign image_height = height | default: image.height %}
+  {% assign image_height_2x = height | default: image_height | times: 2 %}
+  {% assign image_height_3x = height | default: image_height | times: 3 %}
+
+  {% comment %} Generate responsive srcset {% endcomment %}
+  {% capture image_srcset -%}
+    {{ image | image_url: height: image_height }} 1x, {{ image | image_url: height: image_height_2x }} 2x, {{ image | image_url: height: image_height_3x }} 3x
+  {%- endcapture %}
+
+  {% assign style_value = style | default: '' %}
+  {% assign loading_value = loading | default: 'lazy' %}
+  {% assign sizes_value = sizes | default: '(min-width: 1024px) 50vw, 100vw' %}
+
+  {% if unset_image_tag %}
+    {% assign style_value = style_value | append: 'object-position: inherit;' %}
+  {% endif %}
+
+  {% comment %} Generate optimized image tag {% endcomment %}
+  <img
+    src="{{ image | image_url: height: image_height }}"
+    srcset="{{ image_srcset }}"
+    sizes="{{ sizes_value }}"
+    alt="{{ image.alt | default: '' | escape }}"
+    width="{{ image.width }}"
+    height="{{ image_height }}"
+    class="{{ class }}"
+    {% if style_value != blank %}style="{{ style_value }}"{% endif %}
+    loading="{{ loading_value }}"
+    {% if preload %}fetchpriority="high"{% endif %}
+    decoding="async"
+  >
+{% elsif text_fallback %}
+  <div class="image-fallback bg-gray-100 flex items-center justify-center" role="img" aria-label="{{ text_fallback }}">
+    <span class="text-gray-500">{{ text_fallback }}</span>
+  </div>
+{% endif %}

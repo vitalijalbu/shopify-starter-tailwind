@@ -1,0 +1,98 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_2_TxMjWM": {
+      "type": "page-hero-2",
+      "name": "Page Hero 2",
+      "settings": {
+        "custom_title": "Il programma di skimofestival",
+        "custom_subtitle": "Il programma dell'edizione 2027 sarà aggiornato prossimamente",
+        "split_layout": true,
+        "section_size": "small",
+        "show_breadcrumb": true,
+        "image_caption": "",
+        "button_text": "",
+        "button_url": "",
+        "button_icon": ""
+      }
+    },
+    "simple_image_1": {
+      "type": "simple-image",
+      "disabled": true,
+      "name": "Immagine singola",
+      "settings": {
+        "alt_text": "Immagine sezione",
+        "image_width": 100,
+        "alignment": "center"
+      }
+    },
+    "program_6mGDCx": {
+      "type": "program",
+      "disabled": true,
+      "name": "Calendario Programma",
+      "settings": {
+        "section_title": "",
+        "section_subtitle": "",
+        "is_dark": false,
+        "show_more": false,
+        "collection": "experience"
+      }
+    },
+    "hero_q4fi83": {
+      "type": "hero",
+      "blocks": {
+        "heading_Dz8bMz": {
+          "type": "heading",
+          "settings": {
+            "heading": "Partecipa a Skimofestival",
+            "heading_color": "#ffffff"
+          }
+        },
+        "text_e9cEYA": {
+          "type": "text",
+          "settings": {
+            "text": "Siamo alla ricerca di aziende che vogliono unirsi a noi in questa avventura, scopri esperienze indimenticabili di scialpinismo.",
+            "text_color": "",
+            "text_color_hex": "#ffffff"
+          }
+        },
+        "button_CU8tix": {
+          "type": "button",
+          "settings": {
+            "button_text": "Contattaci",
+            "button_url": "shopify://pages/contatti",
+            "button_style": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_Dz8bMz",
+        "text_e9cEYA",
+        "button_CU8tix"
+      ],
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": true,
+        "text_position": "bottom",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "right",
+        "background_color": "#40444c"
+      }
+    }
+  },
+  "order": [
+    "page_hero_2_TxMjWM",
+    "simple_image_1",
+    "program_6mGDCx",
+    "hero_q4fi83"
+  ]
+}

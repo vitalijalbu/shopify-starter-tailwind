@@ -1,0 +1,451 @@
+<div class="container">
+  <div class="customer-addresses-container">
+    
+    <header class="customer-addresses__header">
+      <h1 class="customer-addresses__title">{{ 'customer.addresses.title' | t }}</h1>
+      <a href="{{ routes.account_url }}" class="customer-addresses__back">
+        ← Torna all'account
+      </a>
+    </header>
+
+    {% paginate customer.addresses by 10 %}
+      
+      <div class="customer-addresses__content">
+        
+        <!-- Add New Address Form -->
+        <section class="customer-addresses__form-section">
+          <h2>
+            {% if template contains 'edit' %}
+              {{ 'customer.addresses.edit_address' | t }}
+            {% else %}
+              {{ 'customer.addresses.add_new' | t }}
+            {% endif %}
+          </h2>
+          
+          {% form 'customer_address', customer.new_address, class: 'customer-addresses__form' %}
+            
+            {%- if form.errors -%}
+              <div class="customer-addresses__errors" role="alert">
+                <h3 class="text-4xl md:text-7xl">{{ 'customer.errors.title' | t }}</h3>
+                <ul>
+                  {%- for field in form.errors -%}
+                    <li>
+                      {{ form.errors.translated_fields[field] | capitalize }}
+                      {{ form.errors.messages[field] }}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            <div class="customer-addresses__form-row">
+              <div class="w-full">
+                <label for="AddressFirstName" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.first_name' | t }}
+                </label>
+                <input
+                  type="text"
+                  id="AddressFirstName"
+                  name="address[first_name]"
+                  value="{{ form.first_name | escape }}"
+                  class="form-input{% if form.errors contains 'first_name' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                >
+                {% if form.errors contains 'first_name' %}
+                  <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.first_name | capitalize }} {{ form.errors.messages.first_name }}.</p>
+                {% endif %}
+              </div>
+
+              <div class="w-full">
+                <label for="AddressLastName" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.last_name' | t }}
+                </label>
+                <input
+                  type="text"
+                  id="AddressLastName"
+                  name="address[last_name]"
+                  value="{{ form.last_name | escape }}"
+                  class="form-input{% if form.errors contains 'last_name' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                >
+                {% if form.errors contains 'last_name' %}
+                  <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.last_name | capitalize }} {{ form.errors.messages.last_name }}.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="w-full">
+              <label for="AddressCompany" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.addresses.company' | t }}
+              </label>
+              <input
+                type="text"
+                id="AddressCompany"
+                name="address[company]"
+                value="{{ form.company | escape }}"
+                class="form-input"
+              >
+            </div>
+
+            <div class="w-full">
+              <label for="AddressAddress1" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.addresses.address1' | t }}
+                <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="AddressAddress1"
+                name="address[address1]"
+                value="{{ form.address1 | escape }}"
+                class="form-input{% if form.errors contains 'address1' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                required
+              >
+              {% if form.errors contains 'address1' %}
+                <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.address1 | capitalize }} {{ form.errors.messages.address1 }}.</p>
+              {% endif %}
+            </div>
+
+            <div class="w-full">
+              <label for="AddressAddress2" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.addresses.address2' | t }}
+              </label>
+              <input
+                type="text"
+                id="AddressAddress2"
+                name="address[address2]"
+                value="{{ form.address2 | escape }}"
+                class="form-input"
+              >
+            </div>
+
+            <div class="customer-addresses__form-row">
+              <div class="w-full">
+                <label for="AddressCity" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.city' | t }}
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="AddressCity"
+                  name="address[city]"
+                  value="{{ form.city | escape }}"
+                  class="form-input{% if form.errors contains 'city' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                  required
+                >
+                {% if form.errors contains 'city' %}
+                  <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.city | capitalize }} {{ form.errors.messages.city }}.</p>
+                {% endif %}
+              </div>
+
+              <div class="w-full">
+                <label for="AddressZip" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.zip' | t }}
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="AddressZip"
+                  name="address[zip]"
+                  value="{{ form.zip | escape }}"
+                  class="form-input{% if form.errors contains 'zip' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                  required
+                >
+                {% if form.errors contains 'zip' %}
+                  <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.zip | capitalize }} {{ form.errors.messages.zip }}.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="customer-addresses__form-row">
+              <div class="w-full">
+                <label for="AddressCountry" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.country' | t }}
+                  <span class="text-red-500">*</span>
+                </label>
+                <select
+                  id="AddressCountry"
+                  name="address[country]"
+                  class="form-input{% if form.errors contains 'country' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                  required
+                >
+                  {{ all_country_option_tags }}
+                </select>
+                {% if form.errors contains 'country' %}
+                  <p class="mt-1 text-base text-red-700">{{ form.errors.translated_fields.country | capitalize }} {{ form.errors.messages.country }}.</p>
+                {% endif %}
+              </div>
+
+              <div class="w-full">
+                <label for="AddressProvince" class="block text-base font-medium text-gray-700 mb-1">
+                  {{ 'customer.addresses.province' | t }}
+                </label>
+                <input
+                  type="text"
+                  id="AddressProvince"
+                  name="address[province]"
+                  value="{{ form.province | escape }}"
+                  class="form-input"
+                >
+              </div>
+            </div>
+
+            <div class="w-full">
+              <label for="AddressPhone" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.addresses.phone' | t }}
+              </label>
+              <input
+                type="tel"
+                id="AddressPhone"
+                name="address[phone]"
+                value="{{ form.phone | escape }}"
+                class="form-input"
+              >
+            </div>
+
+            <div class="customer-addresses__checkbox">
+              <label class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="address_default"
+                  name="address[default]"
+                  value="1"
+                  {% if form.default %}checked{% endif %}
+                  class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                >
+                <span class="text-base text-gray-700">{{ 'customer.addresses.set_default' | t }}</span>
+              </label>
+            </div>
+
+            <div class="customer-addresses__actions">
+              <button type="submit" class="btn btn-primary">
+                {% if form.id %}{{ 'customer.addresses.update' | t }}{% else %}{{ 'customer.addresses.add' | t }}{% endif %}
+              </button>
+              <a href="{{ routes.account_url }}" class="btn btn-outline">
+                {{ 'customer.addresses.cancel' | t }}
+              </a>
+            </div>
+
+          {% endform %}
+        </section>
+
+        <!-- Existing Addresses -->
+        {% comment %} {% if customer.addresses.size > 0 %}
+          <section class="customer-addresses__list-section">
+            <h2>Indirizzi salvati</h2>
+            
+            <div class="customer-addresses__list">
+              {% for address in customer.addresses %}
+                <div class="customer-address-card">
+                  {% if address == customer.default_address %}
+                    <div class="customer-address-card__badge">
+                      {{ 'customer.addresses.default' | t }}
+                    </div>
+                  {% endif %}
+                  
+                  <div class="customer-address-card__content">
+                    {% if address.name != blank %}
+                      <p class="customer-address-card__name">{{ address.name }}</p>
+                    {% endif %}
+                    {% if address.company != blank %}
+                      <p>{{ address.company }}</p>
+                    {% endif %}
+                    <p>{{ address.address1 }}</p>
+                    {% if address.address2 != blank %}
+                      <p>{{ address.address2 }}</p>
+                    {% endif %}
+                    <p>{{ address.city }}{% if address.province != blank %}, {{ address.province }}{% endif %} {{ address.zip }}</p>
+                    <p>{{ address.country }}</p>
+                    {% if address.phone != blank %}
+                      <p>{{ address.phone }}</p>
+                    {% endif %}
+                  </div>
+
+                  <div class="customer-address-card__actions">
+                    <a href="{{ routes.account_addresses_url | append: '/' | append: address.id }}" class="btn btn-ghost btn-sm">
+                      {{ 'customer.addresses.edit' | t }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %} {% endcomment %}
+
+      </div>
+
+      {% if paginate.pages > 1 %}
+        <nav class="customer-addresses__pagination">
+          {{ paginate | default_pagination }}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .customer-addresses-container {
+    max-width: 700px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+  }
+
+  .customer-addresses__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .customer-addresses__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .customer-addresses__back {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .customer-addresses__back:hover {
+    text-decoration: underline;
+  }
+
+  .customer-addresses__content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .customer-addresses__form-section {
+    padding: 2rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .customer-addresses__form-section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .customer-addresses__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .customer-addresses__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .customer-addresses__checkbox {
+    margin: 1rem 0;
+  }
+
+  .customer-addresses__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .customer-addresses__errors {
+    padding: 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #dc2626;
+    margin-bottom: 1.5rem;
+  }
+
+  .customer-addresses__errors h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .customer-addresses__errors ul {
+    margin: 0;
+    padding-left: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .customer-addresses__list-section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .customer-addresses__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .customer-address-card {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+  }
+
+  .customer-address-card__badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .customer-address-card__content p {
+    margin: 0 0 0.25rem 0;
+    line-height: 1.4;
+  }
+
+  .customer-address-card__name {
+    font-weight: 600;
+  }
+
+  .customer-address-card__actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  @media (max-width: 640px) {
+    .customer-addresses-container {
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .customer-addresses__form-section {
+      padding: 1.5rem;
+    }
+
+    .customer-addresses__form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .customer-addresses__actions {
+      flex-direction: column;
+    }
+
+    .customer-addresses__list {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Customer Addresses",
+  "settings": []
+}
+{% endschema %}

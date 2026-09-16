@@ -1,0 +1,83 @@
+{% comment %}
+  Renders a specific image.
+
+  Adastra also teaches you stuff ✦
+  - Think of snippets like functions each time you are going
+  to reuse a code block, why not just make it a snippet ;)
+
+  Accepts:
+    - image: {object} Img object (required)
+    - lazyload: {boolean} Lazyload the image (optional)
+    - alt: {string} Custom image ALT (optional)
+    - fallback: {object} Fallback image object (optional)
+    - fallback_url: {string} Fallback image URL (optional)
+    - class: {string} Custom CSS classes (optional)
+    - width: {string|number} Image width attribute (optional)
+    - height: {string|number} Image height attribute (optional)
+
+  Usage:
+    {% render 'picture', image: product.featured_image, class: 'custom-class' %}
+    {% render 'picture', image: product.featured_image, fallback: settings.default_image, class: 'custom-class' %}
+    {% render 'picture', image: product.featured_image, fallback_url: 'https://example.com/image.jpg', class: 'custom-class' %}
+    {% render 'picture', image: product.featured_image, width: 600, height: 400, class: 'custom-class' %}
+    {% render 'picture', image: product.featured_image, width: '100%', height: 'auto', class: 'custom-class' %}
+{% endcomment %}
+
+{% liquid
+  assign final_image = image
+  assign use_fallback_url = false
+
+  if image == blank and fallback != blank
+    assign final_image = fallback
+  elsif image == blank and fallback_url != blank
+    assign use_fallback_url = true
+  endif
+
+  assign image_alt = alt | default: final_image.alt | escape
+  assign image_class = class | default: 'w-full h-full object-cover object-center rounded'
+  assign image_width = width | default: '800'
+  assign image_height = height | default: '800'
+  assign preload = false
+
+  if lazyload or lazyload == null
+    assign lazyload = 'lazy'
+  elsif lazyload == false
+    assign preload = true
+    assign lazyload = 'eager'
+  endif
+%}
+
+<picture>
+  {% if final_image != blank %}
+    {{
+      final_image
+      | image_url: width: image_width
+      | image_tag:
+        alt: image_alt,
+        class: image_class,
+        width: image_width,
+        height: image_height,
+        widths: '1280, 1500, 1800',
+        loading: lazyload,
+        preload: preload
+    }}
+  {% elsif use_fallback_url %}
+    <img
+      src="{{ fallback_url }}"
+      alt="{{ image_alt | default: 'Fallback image' }}"
+      class="{{ image_class }}"
+      width="{{ image_width }}"
+      height="{{ image_height }}"
+      loading="{{ lazyload }}"
+    >
+  {% else %}
+    <img
+      src="{{ 'placeholder.svg' | asset_url }}"
+      alt="{{ image_alt | default: 'Placeholder image' }}"
+      class="{{ image_class }}"
+      width="{{ image_width }}"
+      height="{{ image_height }}"
+      loading="{{ lazyload }}"
+    >
+  {% endif %}
+</picture>

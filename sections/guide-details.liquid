@@ -1,0 +1,177 @@
+{% comment %}
+  Guide Profile Section
+  Sezione per presentare guide/esperti
+{% endcomment %}
+
+{% if section.settings.guide_name != blank %}
+  <section class="bg-dark text-white py-24 md:py-[216px]">
+    <div class="max-w-6xl mx-auto">
+      <!-- Section Title -->
+      {% if section.settings.section_title != blank %}
+        <div class="text-center mb-26">
+          <h2 class="text-5xl md:text-7xl font-bold" data-scroll="slide-rotate-up">
+            {{ section.settings.section_title }}
+          </h2>
+        </div>
+      {% endif %}
+
+      <!-- Guide Profile -->
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-6 gap-8">
+          <!-- Guide Photo -->
+          <div class="md:col-span-2 flex justify-center md:justify-start">
+            <div class="size-48 md:size-[280px] rounded-full overflow-hidden">
+              {% render 'picture',
+                class: 'w-full h-full object-cover',
+                image: section.settings.guide_photo,
+                alt: section.settings.guide_name
+              %}
+            </div>
+          </div>
+
+          <!-- Guide Info -->
+          <div class="md:col-span-4">
+            <!-- Guide Name -->
+            {% if section.settings.guide_name != blank %}
+              <div>
+                <h3 class="text-3xl font-semibold mb-6">
+                  {{ section.settings.guide_name }}
+                </h3>
+              </div>
+            {% endif %}
+
+            <!-- Guide Details -->
+            <div class="space-y-4">
+              <!-- Group/Company -->
+              {% if section.settings.guide_group != blank %}
+                <div class="flex justify-between items-center py-3 border-b border-gray-700">
+                  <p class="font-semibold">Gruppo guide di appartenenza</p>
+                  <p class="text-gray-300">
+                    {{ section.settings.guide_group }}
+                  </p>
+                </div>
+              {% endif %}
+
+              <!-- Activity Zone -->
+              {% if section.settings.activity_zone != blank %}
+                <div class="flex justify-between items-center py-3 border-b border-gray-700">
+                  <p class="font-semibold">Zona Attività</p>
+                  <p class="text-gray-300">
+                    {{ section.settings.activity_zone }}
+                  </p>
+                </div>
+              {% endif %}
+
+              <!-- Bio -->
+              {% if section.settings.guide_bio != blank %}
+                <div class="pt-6">
+                  <h4 class="text-lg font-semibold mb-3">Bio</h4>
+                  <p class="text-gray-300 leading-relaxed prose prose-invert max-w-none">
+                    {{ section.settings.guide_bio }}
+                  </p>
+                </div>
+              {% endif %}
+
+              <!-- Contact/Action Button -->
+              {% if section.settings.cta_text != blank %}
+                <div class="pt-6">
+                  <a
+                    href="{{ section.settings.cta_link | default: '#' }}"
+                    class="inline-flex items-center px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-full font-semibold transition-colors duration-200"
+                  >
+                    {{ section.settings.cta_text }}
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Profilo Guida",
+  "tag": "section",
+  "class": "guide-profile-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Impostazioni Generali"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo Sezione",
+      "default": "Chi guiderà questa experience"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_multiple_guides",
+      "label": "Mostra Guide Multiple",
+      "default": false,
+      "info": "Abilita per mostrare più guide nella stessa sezione"
+    },
+    {
+      "type": "header",
+      "content": "Guida Principale"
+    },
+    {
+      "type": "paragraph",
+      "content": "💡 **Dynamic Sources**: Puoi collegare ogni campo qui sotto a un metaobject guida usando il pulsante 🔗 Dynamic source accanto ad ogni campo."
+    },
+    {
+      "type": "image_picker",
+      "id": "guide_photo",
+      "label": "Foto Guida"
+    },
+    {
+      "type": "text",
+      "id": "guide_name",
+      "label": "Nome Guida",
+      "default": "Giuseppe Rossi"
+    },
+    {
+      "type": "text",
+      "id": "guide_group",
+      "label": "Gruppo/Associazione",
+      "default": "Vette Libere"
+    },
+    {
+      "type": "text",
+      "id": "activity_zone",
+      "label": "Zona di Attività",
+      "default": "Bormio, Dolomiti"
+    },
+    {
+      "type": "richtext",
+      "id": "guide_bio",
+      "label": "Biografia",
+      "info": "Usa Dynamic source per collegare la biografia dal metaobject"
+    },
+    {
+      "type": "header",
+      "content": "Call to Action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo Bottone",
+      "placeholder": "Es: Contatta la guida"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link Bottone"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Profilo Guida",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

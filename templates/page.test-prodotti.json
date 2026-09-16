@@ -1,0 +1,83 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_2_TxMjWM": {
+      "type": "page-hero-2",
+      "name": "Page Hero 2",
+      "settings": {
+        "custom_title": "Esplora le nostre opzioni di test, trova il prodotto perfetto per le tue avventure",
+        "custom_subtitle": "",
+        "split_layout": false,
+        "section_size": "medium",
+        "show_breadcrumb": true,
+        "hero_image": "shopify://shop_images/d4be003652886348ebff7011c240e1e195ea3ffe.jpg",
+        "image_caption": "",
+        "button_text": "",
+        "button_url": "",
+        "button_icon": ""
+      }
+    },
+    "product_test_list_4aKzNc": {
+      "type": "brands-list",
+      "name": "Lista Brands Test",
+      "settings": {
+        "section_title": "Prodotti da Testare - SkimoFestival"
+      }
+    },
+    "hero_cmRiJd": {
+      "type": "hero",
+      "blocks": {
+        "heading_NTwjbB": {
+          "type": "heading",
+          "settings": {
+            "heading": "Partecipa a Skimofestival",
+            "heading_color": "#f7f8f8"
+          }
+        },
+        "text_8tNqe8": {
+          "type": "text",
+          "settings": {
+            "text": "Siamo alla ricerca di aziende che vogliono unirsi a noi in questa avventura, scopri esperienze indimenticabili di scialpinismo.",
+            "text_color": "",
+            "text_color_hex": "#f7f8f8"
+          }
+        },
+        "button_ga3CCU": {
+          "type": "button",
+          "settings": {
+            "button_text": "Contattaci",
+            "button_url": "shopify://pages/contatti",
+            "button_style": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_NTwjbB",
+        "text_8tNqe8",
+        "button_ga3CCU"
+      ],
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": true,
+        "text_position": "bottom",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "right",
+        "background_color": "#40444c"
+      }
+    }
+  },
+  "order": [
+    "page_hero_2_TxMjWM",
+    "product_test_list_4aKzNc",
+    "hero_cmRiJd"
+  ]
+}

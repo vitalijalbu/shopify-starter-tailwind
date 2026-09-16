@@ -1,0 +1,150 @@
+{%- assign guide_alpine = shop.metaobjects.guide_alpine.values -%}
+
+<section class="py-12 md:py-[216px]" x-data="{ activeGuide: 0 }">
+  <div class="container">
+    {%- comment -%} Header {%- endcomment -%}
+    <div class="mb-8 md:mb-[216px]">
+      <h2 class="text-4xl md:text-5xl lg:text-7xl md:max-w-4xl font-bold text-gray-900 mb-4 md:mb-6" data-scroll="slide-rotate-up">
+        {{ section.settings.title }}
+      </h2>
+      {% if section.settings.show_view_all and section.settings.view_all_link %}
+        <a
+          href="{{ section.settings.view_all_link }}"
+          class="btn btn-secondary inline-flex items-center gap-2"
+        >
+          {{ section.settings.view_all_text }}
+          {% render 'icon', icon: 'arrow-top-right' %}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if guide_alpine %}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 space-between">
+        <nav class="space-y-2 lg:space-y-2" role="tablist" aria-label="Guide Alpine">
+          {% for guida in guide_alpine %}
+            <div class="lg:contents">
+              <button
+                @click="activeGuide = {{ forloop.index0 }}"
+                :class="activeGuide === {{ forloop.index0 }} ? 'md:ml-6 lg:ml-10 text-gray-900' : 'text-gray-900/50 hover:text-gray-900'"
+                class="cursor-pointer font-semibold w-full text-left py-2 transition-all duration-300 text-2xl md:text-4xl lg:text-5xl"
+                role="tab"
+                :aria-selected="activeGuide === {{ forloop.index0 }}"
+                :aria-controls="'guide-panel-{{ forloop.index0 }}'"
+                id="guide-tab-{{ forloop.index0 }}"
+              >
+                {{ guida.nome.value | default: guida.name.value }}
+              </button>
+
+              <!-- Mobile Content - Appears directly under each name -->
+              <article
+                x-show="activeGuide === {{ forloop.index0 }}"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform translate-y-2"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+                class="lg:hidden p-4 mb-4 text-left!"
+                role="tabpanel"
+                id="guide-panel-mobile-{{ forloop.index0 }}"
+                aria-labelledby="guide-tab-{{ forloop.index0 }}"
+              >
+                <div class="max-w-[280px] mx-auto">
+                  <figure class="rounded-2xl overflow-hidden mb-4 w-full aspect-360/414">
+                    {% render 'picture',
+                      image: guida.profile_picture,
+                      class: 'rounded-2xl w-full h-full object-cover'
+                    %}
+                    {% if guida.nome.value or guida.name.value %}
+                      <figcaption class="sr-only">
+                        {{ guida.nome.value | default: guida.name.value }}
+                      </figcaption>
+                    {% endif %}
+                  </figure>
+
+                  {% if guida.bio %}
+                    <p class="text-gray-500 text-left! leading-relaxed">
+                      {{ guida.bio }}
+                    </p>
+                  {% endif %}
+                </div>
+              </article>
+            </div>
+          {% endfor %}
+        </nav>
+
+        {%- comment -%} Desktop Content - Appears on the right side {%- endcomment -%}
+        <div class="hidden lg:block relative overflow-hidden min-h-[500px] md:min-h-[600px] text-end">
+          {% for guida in guide_alpine %}
+            <article
+              x-show="activeGuide === {{ forloop.index0 }}"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0 transform translate-x-4"
+              x-transition:enter-end="opacity-100 transform translate-x-0"
+              role="tabpanel"
+              id="guide-panel-{{ forloop.index0 }}"
+              aria-labelledby="guide-tab-{{ forloop.index0 }}"
+            >
+              <div class="max-w-[360px] mx-auto lg:ml-auto lg:mr-0">
+                <figure class="rounded-[10px] overflow-hidden mb-6 w-[360px] h-[414px]">
+                  {% render 'picture',
+                    image: guida.profile_picture,
+                    class: 'rounded-[10px] h-[414px] w-[360px] object-cover'
+                  %}
+                  {% if guida.nome.value or guida.name.value %}
+                    <figcaption class="sr-only">
+                      {{ guida.nome.value | default: guida.name.value }}
+                    </figcaption>
+                  {% endif %}
+                </figure>
+
+                {% if guida.bio %}
+                  <p class="text-xl text-start leading-relaxed">
+                    {{ guida.bio }}
+                  </p>
+                {% endif %}
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="text-center py-12 md:py-16">
+        <p class="text-gray-600 text-base md:text-lg">Nessuna guida alpina disponibile al momento.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Intro Guide Alpine",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Scopri le nostre guide alpine, esperte e appassionate"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Mostra pulsante 'Visualizza tutto'",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "Testo pulsante",
+      "default": "Visualizza tutto"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Link 'Visualizza tutto'"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Intro Guide Alpine"
+    }
+  ]
+}
+{% endschema %}

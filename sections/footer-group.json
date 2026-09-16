@@ -1,0 +1,89 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "newsletter_block_6PAwbr": {
+          "type": "newsletter_block",
+          "settings": {
+            "title": "",
+            "description": "Iscriviti alla nostra newsletter per rimanere aggiornato su tutte le novità e funzionalià",
+            "placeholder": "La tua email",
+            "button_text": "Iscriviti"
+          }
+        },
+        "menu_block_k6PcTH": {
+          "type": "menu_block",
+          "settings": {
+            "title": "Skimo Festival",
+            "menu": "footer",
+            "page_link": "shopify://pages/iscriviti",
+            "page_title": "ISCRIVITI"
+          }
+        },
+        "menu_block_jW4AxN": {
+          "type": "menu_block",
+          "disabled": true,
+          "settings": {
+            "title": "Experience",
+            "menu": "experience",
+            "page_link": "",
+            "page_title": ""
+          }
+        },
+        "social_block_ikmQYd": {
+          "type": "social_block",
+          "settings": {
+            "title": "Seguici",
+            "facebook_url": "",
+            "facebook_text": "",
+            "instagram_url": "https://www.instagram.com/skimofestival/?hl=it",
+            "instagram_text": "Instagram",
+            "twitter_url": "",
+            "twitter_text": "Twitter",
+            "linkedin_url": "",
+            "linkedin_text": "LinkedIn",
+            "youtube_url": "",
+            "youtube_text": "YouTube",
+            "tiktok_url": "",
+            "tiktok_text": "TikTok",
+            "whatsapp_url": "",
+            "whatsapp_text": "WhatsApp"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_block_6PAwbr",
+        "menu_block_k6PcTH",
+        "menu_block_jW4AxN",
+        "social_block_ikmQYd"
+      ],
+      "settings": {
+        "columns": 3,
+        "logo": "shopify://shop_images/skimofestival.svg",
+        "copyright_text": "Tutti i diritti riservati.",
+        "privacy_url": "https://www.iubenda.com/privacy-policy/67728584",
+        "privacy_text": "Privacy Policy",
+        "cookie_url": "https://www.iubenda.com/privacy-policy/67728584/cookie-policy",
+        "cookie_text": "Cookie Policy",
+        "terms_url": "",
+        "terms_text": "",
+        "show_payment_methods": true
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

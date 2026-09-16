@@ -1,0 +1,495 @@
+<section
+  class="relative bg-gray-100 overflow-hidden pt-28"
+  aria-label="Sezione hero del festival"
+>
+  <!-- Hero Section -->
+  <div class="container py-10 lg:pt-12 2xl:pt-30">
+    <!-- Header Text -->
+    {% if section.settings.event_info != blank %}
+      <div class="mb-4">
+        <p class="text-xl md:text-2xl text-gray-900 tracking-wide" data-scroll="slide-rotate-up">
+          {{ section.settings.event_info }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Main Title -->
+    <div class="mb-12">
+      <h2 class="text-4xl md:text-8xl font-bold text-gray-900 mb-8" data-scroll="slide-rotate-up">
+        {{ section.settings.main_title | default: "Vivi l'emozione dello scialpinismo" }}
+      </h2>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col sm:flex-row gap-8 justify-start mb-20">
+        {% if section.settings.primary_button_text != blank %}
+          <a
+            href="{{ section.settings.primary_button_link }}"
+            class="btn btn-outline"
+            aria-label="{{ section.settings.primary_button_text }} - {{ section.settings.primary_button_link | replace: 'https://', '' | replace: 'http://', '' | truncate: 50 }}"
+          >
+            {{ section.settings.primary_button_text }}
+          </a>
+        {% endif %}
+
+        {% if section.settings.secondary_button_text != blank %}
+          <a
+            href="{{ section.settings.secondary_button_link }}"
+            class="btn btn-primary"
+            aria-label="{{ section.settings.secondary_button_text }} - {{ section.settings.secondary_button_link | replace: 'https://', '' | replace: 'http://', '' | truncate: 50 }}"
+          >
+            {{ section.settings.secondary_button_text }}
+            {% render 'icon', icon: 'arrow-top-right', class: 'ml-4 size-5', aria_hidden: 'true' %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Gallery -->
+  {% if section.blocks.size > 0 %}
+    <div class="overflow-hidden mb-16 pt-16 md:pt-30">
+      <div class="carousel-track flex" id="festival-carousel-{{ section.id }}">
+        {% for block in section.blocks limit: 8 %}
+          {% case block.type %}
+            {% when 'image' %}
+              <div class="carousel-item shrink-0 mr-10 w-[362px] h-[362px]">
+                <div class="relative w-full h-full rounded-2xl overflow-hidden group">
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 500, height: 362 }}"
+                      alt="{{ block.settings.image.alt | default: 'Immagine del festival' }}"
+                      class="w-full h-full object-cover"
+                      width="800"
+                      height="462"
+                      loading="lazy"
+                    >
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+
+        <!-- Duplicate images for seamless loop -->
+        {% for block in section.blocks limit: 8 %}
+          {% case block.type %}
+            {% when 'image' %}
+              <div class="carousel-item shrink-0 mr-8 w-[362px] h-[362px]">
+                <div class="relative w-full h-full rounded-2xl overflow-hidden group">
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 500, height: 362 }}"
+                      alt="{{ block.settings.image.alt | default: 'Immagine del festival' }}"
+                      class="w-full h-full object-cover transition-transform duration-200"
+                      width="500"
+                      height="362"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <div
+                      class="w-full h-full bg-gray-200 flex items-center justify-center"
+                      aria-label="Immagine placeholder"
+                    >
+                      <svg
+                        class="size-8 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Bottom Section -->
+  <div class="bg-gray-100 pt-[144px] pb-[216px]">
+    <div class="container">
+      <div class="grid grid-cols-12 gap-6 lg:gap-8 items-start">
+        <!-- Left Content -->
+        <div class="col-span-12 lg:col-span-8 mb-10">
+          <h3 class="text-4xl md:text-7xl text-green-500 font-semibold" data-scroll="slide-rotate-up">
+            {{- section.settings.subtitle_highlight -}}
+          </h3>
+        </div>
+
+        <!-- Right Content - Video/Image -->
+        <div class="col-span-12 lg:col-span-4 relative">
+          {% if section.settings.video_url != blank %}
+            <!-- Video Component with Alpine.js -->
+            <div x-data="{videoModalIsOpen: false}">
+              <!-- Mini Video Preview -->
+              <div class="flex justify-center">
+                <div class="relative w-[200px] h-[200px]" data-magnetic>
+                  <!-- Testo curvo rotante esterno -->
+                  <div class="absolute inset-0">
+                    <svg
+                      class="w-full h-full"
+                      viewBox="0 0 200 200"
+                      style="animation: rotate 20s linear infinite;"
+                    >
+                      <defs>
+                        <path id="circle-path-{{ section.id }}" d="M 100,100 m -85,0 a 85,85 0 1,1 170,0 a 85,85 0 1,1 -170,0"/>
+                      </defs>
+                      <!-- Primo testo -->
+                      <text class="fill-gray-800 font-bold uppercase" style="font-size: 20px; letter-spacing: 0.1em;">
+                        <textPath href="#circle-path-{{ section.id }}" startOffset="0%">
+                          PLAY VIDEO -
+                        </textPath>
+                      </text>
+                      <!-- Secondo testo -->
+                      <text class="fill-gray-800 font-bold uppercase" style="font-size: 20px; letter-spacing: 0.1em;">
+                        <textPath href="#circle-path-{{ section.id }}" startOffset="25%">
+                          PLAY VIDEO -
+                        </textPath>
+                      </text>
+                      <!-- Terzo testo -->
+                      <text class="fill-gray-800 font-bold uppercase" style="font-size: 20px; letter-spacing: 0.1em;">
+                        <textPath href="#circle-path-{{ section.id }}" startOffset="50%">
+                          PLAY VIDEO -
+                        </textPath>
+                      </text>
+                      <!-- Quarto testo -->
+                      <text class="fill-gray-800 font-bold uppercase" style="font-size: 20px; letter-spacing: 0.1em;">
+                        <textPath href="#circle-path-{{ section.id }}" startOffset="75%">
+                          PLAY VIDEO -
+                        </textPath>
+                      </text>
+                    </svg>
+                  </div>
+
+                  <!-- Video Button interno -->
+                  <button
+                    x-on:click="videoModalIsOpen = true, $refs.video.play()"
+                    type="button"
+                    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[148px] h-[148px] rounded-full overflow-hidden cursor-pointer group"
+                  >
+                    {% if section.settings.mini_video_url != blank %}
+                      <!-- Mini Video -->
+                      <video
+                        class="absolute inset-0 w-full h-full object-cover"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                      >
+                        <source src="{{ section.settings.mini_video_url }}" type="video/mp4">
+                      </video>
+                    {% elsif section.settings.video_thumbnail != blank %}
+                      <!-- Video Thumbnail -->
+                      {{
+                        section.settings.video_thumbnail
+                        | image_url: width: 148, height: 148
+                        | image_tag: alt: 'Video thumbnail', class: 'absolute inset-0 w-full h-full object-cover'
+                      }}
+                    {% elsif section.settings.video_url != blank and section.settings.video_url contains '.mp4' %}
+                      <!-- Direct MP4 Video as mini player -->
+                      <video
+                        class="absolute inset-0 w-full h-full object-cover"
+                        autoplay
+                        muted
+                        loop
+                        playsinline
+                      >
+                        <source src="{{ section.settings.video_url }}" type="video/mp4">
+                      </video>
+                    {% else %}
+                      <!-- Fallback - Gray background -->
+                      <div class="absolute inset-0 w-full h-full bg-gray-50"></div>
+                    {% endif %}
+
+                    <!-- Overlay scuro -->
+                    <div
+                      class="absolute inset-0 bg-black/20 group-hover:bg-opacity-30 transition-all duration-200"
+                    ></div>
+
+                    <!-- Play Icon al centro -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      {% render 'icon', icon: 'play', class: 'size-10 text-white drop-shadow-lg' %}
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Modal Video -->
+              <div
+                x-cloak
+                x-show="videoModalIsOpen"
+                x-transition.opacity.duration.200ms
+                x-trap.inert.noscroll="videoModalIsOpen"
+                x-on:keydown.esc.window="videoModalIsOpen = false, $refs.video.pause()"
+                x-on:click.self="videoModalIsOpen = false, $refs.video.pause()"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-8 overflow-hidden"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="videoModalTitle"
+              >
+                <!-- Modal Dialog -->
+                <div
+                  x-show="videoModalIsOpen"
+                  x-transition:enter="transition ease-out duration-200 delay-200"
+                  x-transition:enter-start="opacity-0 translate-y-8"
+                  x-transition:enter-end="opacity-100 translate-y-0"
+                  class="w-full h-full relative flex items-center justify-center"
+                >
+                  <!-- Close Button -->
+                  <button
+                    type="button"
+                    x-show="videoModalIsOpen"
+                    x-on:click="videoModalIsOpen = false, $refs.video.pause()"
+                    x-transition:enter="transition ease-out duration-200 delay-500"
+                    x-transition:enter-start="opacity-0 scale-0"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="fixed top-4 right-4 md:top-6 md:right-6 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm p-3 text-gray-800 hover:bg-white transition-colors duration-200 shadow-lg z-50"
+                    aria-label="Chiudi video"
+                  >
+                    {% render 'icon', icon: 'close' %}
+                  </button>
+
+                  <!-- Video Player Container -->
+                  <div class="w-auto max-w-[90vw] max-h-[70vh] aspect-video transform-none!">
+                    {% if section.settings.video_url contains 'youtube'
+                      or section.settings.video_url contains 'youtu.be'
+                    %}
+                      <!-- YouTube Iframe -->
+                      <iframe
+                        x-ref="video"
+                        class="w-full h-full rounded-lg shadow-2xl"
+                        :src="videoModalIsOpen ? '{{ section.settings.video_url | replace: 'watch?v=', 'embed/' | replace: 'youtu.be/', 'youtube.com/embed/' }}?autoplay=1' : ''"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                      ></iframe>
+                    {% elsif section.settings.video_url contains 'vimeo' %}
+                      <!-- Vimeo Iframe -->
+                      <iframe
+                        x-ref="video"
+                        class="w-full h-full rounded-lg shadow-2xl"
+                        :src="videoModalIsOpen ? '{{ section.settings.video_url | replace: 'vimeo.com/', 'player.vimeo.com/video/' }}?autoplay=1' : ''"
+                        frameborder="0"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowfullscreen
+                      ></iframe>
+                    {% else %}
+                      <!-- Direct Video -->
+                      <video
+                        x-ref="video"
+                        class="w-full h-full rounded-lg shadow-2xl"
+                        controls
+                      >
+                        <source src="{{ section.settings.video_url }}" type="video/mp4">
+                        Il tuo browser non supporta i video HTML5.
+                      </video>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% elsif section.settings.feature_image != blank %}
+            <div class="aspect-video rounded-lg overflow-hidden">
+              {{
+                section.settings.feature_image
+                | image_url: width: 600, height: 400
+                | image_tag: alt: section.settings.feature_image.alt, class: 'w-full h-full object-cover'
+              }}
+            </div>
+          {% else %}
+            <div class="aspect-video rounded-lg bg-gray-200 flex items-center justify-center">
+              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Hero Bottom Content (Column 5-12) -->
+        <div class="col-span-12 lg:col-start-5 lg:col-span-8">
+          {% if section.settings.description != blank %}
+            <p class="text-xl md:text-5xl/12 font-bold text-gray-900 mb-20">
+              {{ section.settings.description }}
+            </p>
+            {% if section.settings.bottom_button_text != blank %}
+              <a
+                href="{{ section.settings.bottom_button_link | default: '#' }}"
+                class="btn btn-primary btn-lg"
+              >
+                {{ section.settings.bottom_button_text }}
+                {% render 'icon', icon: 'arrow-top-right', class: 'ml-4 size-5', aria_hidden: 'true' %}
+              </a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Festival Hero",
+  "tag": "section",
+  "class": "festival-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto Principale"
+    },
+    {
+      "type": "text",
+      "id": "event_info",
+      "label": "Info Evento",
+      "default": "Skimo Festival, Marzo 2026 - Bormio",
+      "info": "Testo piccolo sopra il titolo principale"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Titolo Principale",
+      "default": "Vivi l'emozione dello scialpinismo"
+    },
+    {
+      "type": "header",
+      "content": "Bottoni CTA"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Testo Primo Bottone",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Link Primo Bottone"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Testo Secondo Bottone",
+      "default": "Iscriviti"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Link Secondo Bottone"
+    },
+    {
+      "type": "header",
+      "content": "Sezione Inferiore"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_highlight",
+      "label": "Sottotitolo Evidenziato",
+      "default": "Il festival dedicato allo scialpinismo più grande d'Italia"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "Testa le ultime novità tecniche con i migliori brand e partecipa ad experience con le migliori guide alpine."
+    },
+    {
+      "type": "text",
+      "id": "bottom_button_text",
+      "label": "Testo Bottone Finale",
+      "default": "Scopri l'evento"
+    },
+    {
+      "type": "url",
+      "id": "bottom_button_link",
+      "label": "Link Bottone Finale"
+    },
+    {
+      "type": "header",
+      "content": "Video/Immagine"
+    },
+    {
+      "type": "url",
+      "id": "mini_video_url",
+      "label": "URL Video Mini Player",
+      "info": "Video che appare nel cerchio piccolo (formato MP4 consigliato)"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "URL Video Modal",
+      "info": "Video principale che si apre nel modal (YouTube, Vimeo, etc.)"
+    },
+    {
+      "type": "image_picker",
+      "id": "video_thumbnail",
+      "label": "Anteprima Video"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_image",
+      "label": "Immagine Alternativa",
+      "info": "Usata se non c'è video"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Immagine",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Festival Hero",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Circular text styling */
+  .festival-hero-section svg text {
+    font-family: inherit;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .festival-hero-section svg textPath {
+    fill: #1f2937;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+  }
+</style>

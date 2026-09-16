@@ -1,0 +1,236 @@
+{% comment %}
+  Customer Login Section - Minimal
+{% endcomment %}
+
+<div class="container my-16">
+  <div class="max-w-xl m-auto">
+    <h1
+      class="text-center mb-8 text-3xl md:text-4xl font-bold text-gray-900"
+      x-text="isRecoverMode ? 'Recupera Password' : '{{ 'customer.login.title' | t }}'"
+    >
+      {{ 'customer.login.title' | t }}
+    </h1>
+
+    <div
+      x-data="
+        {
+          loading: false,
+          isRecoverMode: false,
+          init() {
+            // Controlla se il form di recupero è stato inviato con successo
+            const hasRecoverSuccess = document.querySelector('.recover-password-success');
+            
+            // Controlla se l'URL contiene #recover o se c'è un messaggio di successo
+            this.isRecoverMode = window.location.hash === '#recover' || hasRecoverSuccess !== null;
+
+            // Se siamo in modalità recover ma non c'è l'hash, aggiungilo
+            if (this.isRecoverMode && !window.location.hash) {
+              window.location.hash = '#recover';
+            }
+
+            // Ascolta i cambiamenti dell'hash
+            window.addEventListener('hashchange', () => {
+              this.isRecoverMode = window.location.hash === '#recover';
+              this.loading = false; // Reset loading quando si cambia tab
+            });
+
+            // Reset loading quando la pagina viene caricata (in caso di errori o reindirizzamenti)
+            this.loading = false;
+          }
+        }
+      "
+    >
+      <!-- Form di Login -->
+      <div x-show="!isRecoverMode" x-transition>
+        <div @submit="loading = true; setTimeout(() => { if (loading) loading = false; }, 10000)">
+          {%- form 'customer_login', novalidate: 'novalidate', class: 'flex flex-col gap-6' -%}
+            {%- if form.errors -%}
+              <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" role="alert">
+                <h2 class="mb-2 text-base font-semibold">{{ 'customer.errors.title' | t }}</h2>
+                <ul class="text-base list-disc pl-4">
+                  {%- for field in form.errors -%}
+                    <li>
+                      {%- if field == 'form' -%}
+                        {{ form.errors.messages[field] }}
+                      {%- else -%}
+                        {{ form.errors.translated_fields[field] | capitalize }}
+                        {{ form.errors.messages[field] }}
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            <div class="w-full">
+              <label for="customer_email" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.login.email' | t }}
+                <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="customer_email"
+                name="customer[email]"
+                value="{{ form.email | escape }}"
+                class="form-input {% if form.errors contains 'email' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                placeholder="{{ 'customer.login.email' | t }}"
+                required
+              >
+              {% if form.errors contains 'email' %}
+                <p class="mt-1 text-base text-red-700">
+                  {{ form.errors.translated_fields.email | capitalize }}
+                  {{ form.errors.messages.email }}.
+                </p>
+              {% endif %}
+            </div>
+
+            <div class="w-full">
+              <label for="customer_password" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.login.password' | t }}
+                <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                id="customer_password"
+                name="customer[password]"
+                class="form-input{% if form.errors contains 'password' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                placeholder="{{ 'customer.login.password' | t }}"
+                required
+              >
+              {% if form.errors contains 'password' %}
+                <p class="mt-1 text-base text-red-700">
+                  {{ form.errors.translated_fields.password | capitalize }}
+                  {{ form.errors.messages.password }}.
+                </p>
+              {% endif %}
+            </div>
+
+            <div class="flex flex-col gap-4 mt-6">
+              <button
+                type="submit"
+                class="btn btn-primary w-full"
+                :disabled="loading"
+                :class="{ 'opacity-75 cursor-not-allowed': loading }"
+              >
+                <span x-show="!loading">{{ 'customer.login.submit' | t }}</span>
+                <span x-show="loading" class="flex items-center justify-center gap-2">
+                  {% render 'icon', icon: 'spinner' %}
+                  Accesso in corso...
+                </span>
+              </button>
+
+              <a
+                href="#recover"
+                class="text-center text-base text-gray-600 hover:text-gray-800 transition-colors no-underline hover:underline"
+              >
+                {{ 'customer.login.forgot_password' | t }}
+              </a>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+
+      <!-- Form di Recupero Password -->
+      <div x-show="isRecoverMode" x-transition>
+        <div @submit="loading = true; setTimeout(() => { if (loading) loading = false; }, 10000)">
+          {%- form 'recover_customer_password', novalidate: 'novalidate', class: 'flex flex-col gap-6' -%}
+            {%- if form.posted_successfully? -%}
+              <div class="recover-password-success p-4 bg-green-50 border border-green-200 rounded-lg text-green-700" role="alert">
+                <p class="text-base">{{ 'customer.recover_password.success' | t }}</p>
+              </div>
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" role="alert">
+                <h2 class="mb-2 text-base font-semibold">{{ 'customer.errors.title' | t }}</h2>
+                <ul class="text-base list-disc pl-4">
+                  {%- for field in form.errors -%}
+                    <li>
+                      {%- if field == 'form' -%}
+                        {{ form.errors.messages[field] }}
+                      {%- else -%}
+                        {{ form.errors.translated_fields[field] | capitalize }}
+                        {{ form.errors.messages[field] }}
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            <div class="w-full">
+              <label for="recover_email" class="block text-base font-medium text-gray-700 mb-1">
+                {{ 'customer.login.email' | t }}
+                <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="recover_email"
+                name="email"
+                value="{{ form.email | escape }}"
+                class="form-input {% if form.errors contains 'email' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                placeholder="{{ 'customer.login.email' | t }}"
+                required
+              >
+              {% if form.errors contains 'email' %}
+                <p class="mt-1 text-base text-red-700">
+                  {{ form.errors.translated_fields.email | capitalize }}
+                  {{ form.errors.messages.email }}.
+                </p>
+              {% endif %}
+            </div>
+
+            <div class="flex flex-col gap-4 mt-6">
+              <button
+                type="submit"
+                class="btn btn-primary w-full"
+                :disabled="loading"
+                :class="{ 'opacity-75 cursor-not-allowed': loading }"
+              >
+                <span x-show="!loading">{{ 'customer.recover_password.submit' | t }}</span>
+                <span x-show="loading" class="flex items-center justify-center gap-2">
+                  {% render 'icon', icon: 'spinner' %}
+                  Loading...
+                </span>
+              </button>
+
+              <div class="text-center py-4">
+                <a
+                  href="#login"
+                  class="flex items-center text-base text-gray-600 hover:text-gray-800 transition-colors ml-2 no-underline hover:underline"
+                >
+                  {% render 'icon', icon: 'chevron-left' %} Torna al login
+                </a>
+              </div>
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+
+      <!-- Sezione di registrazione - mostrata solo in modalità login -->
+      <div x-show="!isRecoverMode" x-transition class="text-center pt-10 mt-10 border-t-2 border-zinc-200">
+        <h2 class="mb-3 text-xl font-semibold text-gray-900">
+          {{ 'customer.login.new_customer' | t }}
+        </h2>
+        <a href="/pages/iscriviti" class="btn btn-outline w-full">
+          {{ 'customer.login.register' | t }}
+        </a>
+      </div>
+
+      {% if shop.customer_accounts_enabled and shop.customer_accounts_optional %}
+        <div x-show="!isRecoverMode" x-transition class="mt-6 text-center">
+          <account-login-actions>
+            {{ shop | login_button }}
+          </account-login-actions>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer Login",
+  "settings": []
+}
+{% endschema %}

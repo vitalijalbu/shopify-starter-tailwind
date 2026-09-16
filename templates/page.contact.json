@@ -1,0 +1,54 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page-hero": {
+      "type": "page-hero",
+      "settings": {
+        "custom_title": "Contatti",
+        "custom_subtitle": "",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/4ca85833b3ba427123a13f6956c7fe02efc037a2.jpg",
+        "section_size": "medium",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "contact-form": {
+      "type": "contact-form",
+      "blocks": {
+        "heading_MRJiUe": {
+          "type": "heading",
+          "settings": {
+            "title": "Contattaci"
+          }
+        },
+        "richtext_jUxRPU": {
+          "type": "richtext",
+          "settings": {
+            "content": "<p><strong>Segreteria Skimofestival</strong></p><p><a href=\"mailto:iscrizioni@skiomofestival.com\" target=\"_blank\" title=\"mailto:iscrizioni@skiomofestival.com\">iscrizioni@skimofestival.com</a><br/>Tel.  +39 375 517 0570<br/><br/><strong>Seguici su Instagram</strong><br/><a href=\"https://www.instagram.com/skimofestival/\" target=\"_blank\" title=\"https://www.instagram.com/skimofestival/\">@skimofestival</a></p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_MRJiUe",
+        "richtext_jUxRPU"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "page-hero",
+    "contact-form"
+  ]
+}

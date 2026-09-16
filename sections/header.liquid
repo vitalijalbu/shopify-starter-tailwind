@@ -1,0 +1,642 @@
+<header
+  class="z-50 {% if template contains 'index' %}bg-gray-100 hover:bg-gray-50{% else %}bg-gray-50{% endif %} transition-colors duration-50"
+  x-data="mainHeader()"
+  :class="
+    {
+      'border-b border-zinc-200': mobileMenuOpen || $store.megamenu?.isOpen,
+      'fixed top-0 left-0 right-0': isScrolled,
+      'relative': !isScrolled,
+      '-translate-y-full': scrollingDown && !mobileMenuOpen && !navigationMenuOpen && isScrolled,
+      'translate-y-0': !scrollingDown || mobileMenuOpen || navigationMenuOpen || !isScrolled
+    }
+  "
+  role="banner"
+>
+  <!-- Announcement bar -->
+  {% if section.settings.announcement_text != blank %}
+    <div class="bg-dark text-white text-center py-2">
+      {{ section.settings.announcement_text }}
+    </div>
+  {% endif %}
+
+  <div class="container-fluid py-5">
+    <!-- Mobile header -->
+    <div class="lg:hidden flex items-center justify-between h-16">
+      <!-- Logo (left side) -->
+      <div class="flex items-center">
+        {% if section.settings.logo %}
+          <a href="{{ routes.root_url }}" class="flex items-center">
+            {{
+              section.settings.logo
+              | image_url: width: 120
+              | image_tag: alt: shop.name, class: 'h-10 w-auto', width: '120', height: '32'
+            }}
+          </a>
+        {% else %}
+          <a href="{{ routes.root_url }}" class="text-xl font-bold text-gray-900">
+            {{ shop.name }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile actions and burger menu (right side) -->
+      <div class="flex items-center space-x-3">
+        {% comment %} Nascondi menu accedi/iscriviti e carrello {% endcomment %}
+         {% comment %} 
+        {% if section.settings.partecipa and customer == blank %}
+          <a
+            href="/pages/iscriviti"
+            class="btn btn-primary btn-sm"
+            aria-label="Registrati per partecipare"
+          >
+            Iscriviti <span class="ml-4">{% render 'icon', icon: 'arrow-top-right', aria_hidden: 'true' %}</span>
+          </a>
+        {% endif %}
+        <!-- Cart Icon -->
+        <button
+          onclick="window.cartDrawer.open()"
+          class="btn-close relative"
+          aria-label="Apri carrello"
+        >
+          {% render 'icon', icon: 'cart', aria_hidden: 'true' %}
+          <span
+            x-show="$store.cart.itemCount > 0"
+            x-text="$store.cart.itemCount"
+            class="absolute -top-1 -left-2 bg-primary-400 text-white text-xs font-bold rounded-full size-5 flex items-center justify-center"
+          ></span>
+        </button>
+
+        {% if customer %}
+          <a
+            href="{{ routes.account_url }}"
+            class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+            aria-label="Il mio account"
+          >
+            {% render 'icon', icon: 'account', aria_hidden: 'true' %}
+          </a>
+        {% endif %}
+
+        {% endcomment %}
+
+        <!-- Mobile menu burger -->
+        <button
+          @click="toggleMobileMenu()"
+          class="btn-close"
+          aria-label="Apri menu di navigazione"
+          aria-expanded="false"
+          :aria-expanded="mobileMenuOpen"
+        >
+          {% render 'icon', icon: 'menu', aria_hidden: 'true' %}
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop header -->
+    <div class="hidden lg:flex items-center h-16 justify-between">
+      <!-- Logo (Left) -->
+      <div class="flex items-center flex-1">
+        {% if section.settings.logo %}
+          <a href="{{ routes.root_url }}" class="flex items-center">
+            {{
+              section.settings.logo
+              | image_url: width: 120
+              | image_tag: alt: shop.name, class: 'h-[58px] w-auto', width: '120', height: '32'
+            }}
+          </a>
+        {% else %}
+          <a href="{{ routes.root_url }}" class="text-xl font-bold text-gray-900">
+            {{ shop.name }}
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Desktop navigation (Center) -->
+      <nav
+        x-data="
+          {
+            navigationMenuOpen: false,
+            navigationMenu: '',
+            navigationMenuToggle(menu) {
+              if (this.navigationMenu === menu && this.navigationMenuOpen) {
+                this.navigationMenuClose();
+              } else {
+                this.navigationMenu = menu;
+                this.navigationMenuOpen = true;
+              }
+            },
+            navigationMenuClose(){
+              this.navigationMenuOpen = false;
+              this.navigationMenu = '';
+            }
+          }
+        "
+        @click.away="navigationMenuClose()"
+        class="relative z-10 shrink-0"
+        role="navigation"
+        aria-label="Menu principale"
+      >
+        <ul class="flex justify-center items-center space-x-10 list-none text-neutral-700 group">
+            {% for link in linklists[section.settings.menu].links %}
+              {% if link.links.size > 0 %}
+                <li class="menu-item {% if link.active or link.child_active %}active{% endif %}">
+                  <button
+                    @click="navigationMenuToggle('{{ link.handle }}')"
+                    class="menu-item_link flex items-center"
+                  >
+                    <span>{{ link.title }}</span>
+                  </button>
+                </li>
+              {% else %}
+                <li class="menu-item {% if link.active %}active{% endif %}">
+                  <a
+                    href="{{ link.url }}"
+                    class="menu-item_link"
+                  >
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+        </ul>
+
+        <!-- Mega menu dropdown wrapper with overlay -->
+        <div
+          x-ref="navigationDropdown"
+          x-show="navigationMenuOpen"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="fixed inset-0 top-[104px] bg-black/20 z-40 h-screen w-full"
+          @click="navigationMenuClose()"
+          x-cloak
+        >
+          <!-- Dropdown content con slide-down animation -->
+          <div
+            x-show="navigationMenuOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-4"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-4"
+            class="h-[470px] relative bg-gray-100 border-t border-zinc-200"
+            @click.stop
+          >
+            <div class="container py-16">
+              {% for link in linklists[section.settings.menu].links %}
+                {% if link.links.size > 0 %}
+                  <div
+                    x-show="navigationMenu == '{{ link.handle }}'"
+                    class="animate-fadeIn"
+                  >
+                    {% comment %} Check if this menu has any featured cards {% endcomment %}
+                    {% assign has_any_cards = false %}
+                    {% for child_link in link.links %}
+                      {% for block in section.blocks %}
+                        {% if block.settings.menu_item == child_link.title and block.settings.image != blank %}
+                          {% assign has_any_cards = true %}
+                          {% break %}
+                        {% endif %}
+                      {% endfor %}
+                      {% if has_any_cards %}
+                        {% break %}
+                      {% endif %}
+                    {% endfor %}
+
+                    {% if has_any_cards %}
+                      {% comment %} Layout WITH cards: Left sidebar + Right cards {% endcomment %}
+                      <div class="flex gap-8">
+                        <!-- Left Sidebar -->
+                        <div class="w-auto shrink-0 flex flex-col justify-between">
+                          <h3 class="text-5xl font-bold text-gray-900">{{ link.title }}</h3>
+
+                          {% comment %} Extra links from settings for this menu {% endcomment %}
+                          <ul class="space-y-6 mt-auto">
+                            {% for block in section.blocks %}
+                              {% if block.type == 'menu_extra_link' and block.settings.parent_menu == link.title %}
+                                <li {{ block.shopify_attributes }}>
+                                  <a
+                                    href="{{ block.settings.link }}"
+                                    @click="navigationMenuClose()"
+                                    class="underline text-xl flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors"
+                                  >
+                                    {{ block.settings.title }}
+                                    {% render 'icon', icon: 'arrow-top-right', class: 'size-4' %}
+                                  </a>
+                                </li>
+                              {% endif %}
+                            {% endfor %}
+                          </ul>
+                        </div>
+
+                        <!-- Right Cards Area -->
+                        <div class="flex-1 min-w-0 flex justify-end">
+                          <div class="flex gap-4 overflow-x-auto pb-2">
+                            {% for child_link in link.links %}
+                              {% assign has_card = false %}
+                              {% assign card_block = null %}
+                              {% for block in section.blocks %}
+                                {% if block.settings.menu_item == child_link.title and block.settings.image != blank %}
+                                  {% assign has_card = true %}
+                                  {% assign card_block = block %}
+                                  {% break %}
+                                {% endif %}
+                              {% endfor %}
+
+                              {% if has_card %}
+                                <a
+                                  href="{{ child_link.url }}"
+                                  @click="navigationMenuClose()"
+                                  class="group relative overflow-hidden rounded-2xl transition-all h-[300px] w-64 shrink-0"
+                                  {{ card_block.shopify_attributes }}
+                                >
+                                  <div class="absolute inset-0">
+                                    {{
+                                      card_block.settings.image
+                                      | image_url: width: 600
+                                      | image_tag:
+                                        loading: 'lazy',
+                                        alt: child_link.title,
+                                        class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-200'
+                                    }}
+                                  </div>
+                                  <div
+                                    class="absolute inset-0 bg-linear-to-b/shorter from-transparent via-transparent to-dark"
+                                  ></div>
+                                  <div class="absolute inset-0 flex flex-col justify-end p-6">
+                                    <h4 class="text-white text-2xl mb-2 underline flex items-center gap-6">
+                                      {{ child_link.title }}
+                                      {% render 'icon',
+                                        icon: 'arrow-top-right',
+                                        class: 'size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform'
+                                      %}
+                                    </h4>
+                                  </div>
+                                </a>
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    {% else %}
+                      {% comment %} Layout WITHOUT cards: Left title + Right list {% endcomment %}
+                      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <!-- Left: Parent Title -->
+                        <div>
+                          <h3 class="text-5xl font-bold text-gray-900">{{ link.title }}</h3>
+                        </div>
+
+                        <!-- Right: Links List -->
+                        <div class="md:col-span-2">
+                          <ul class="space-y-8 max-w-xl ml-auto">
+                            {% for child_link in link.links %}
+                              <li>
+                                <a
+                                  href="{{ child_link.url }}"
+                                  @click="navigationMenuClose()"
+                                  class="group flex items-start gap-3 hover:text-primary-600 transition-colors"
+                                >
+                                  <span class="flex items-center gap-2 text-lg font-semibold text-gray-900 group-hover:text-primary-600">
+                                    {{ child_link.title }}
+                                    {% render 'icon',
+                                      icon: 'arrow-top-right',
+                                      class: 'size-4 group-hover:translate-x-0.5 transition-transform'
+                                    %}
+                                  </span>
+                                </a>
+                                {% if child_link.object.description != blank %}
+                                  <p class="text-base text-gray-500 mt-1">
+                                    {{ child_link.object.description | truncate: 100 }}
+                                  </p>
+                                {% endif %}
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      
+      {% comment %} Nascondi menu accedi/iscriviti e carrello {% endcomment %}
+      {% comment %} 
+      <!-- CTA Actions (Right) -->
+      <div class="flex items-center justify-end flex-1 gap-2">
+        <!-- Cart Icon -->
+        <button
+          onclick="window.cartDrawer.open()"
+          class="btn-icon relative"
+          aria-label="Apri carrello"
+        >
+          {% render 'icon', icon: 'cart', aria_hidden: 'true' %}
+          <span
+            x-show="$store.cart.itemCount > 0"
+            x-text="$store.cart.itemCount"
+            class="absolute -top-2 -right-2 bg-primary-500 text-white text-base rounded-full size-5 flex items-center justify-center"
+          ></span>
+        </button>
+
+        {% if customer %}
+          <div
+            x-data="{ open: false }"
+            x-on:keydown.esc.prevent.stop="open = false"
+            class="relative inline-block"
+          >
+            <button
+              type="button"
+              class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 font-medium leading-5 text-gray-700 hover:border-gray-400 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
+              aria-haspopup="true"
+              x-bind:aria-expanded="open"
+              x-on:click="open = !open"
+            >
+              {% render 'icon', icon: 'account' %}
+              <span>{{ customer.first_name | default: 'Account' }}</span>
+              {% render 'icon', icon: 'chevron-down', class: 'size-5 transition-transform', style: 'x-bind:class="{ \'rotate-180\': open }"' %}
+            </button>
+
+            <div
+              x-cloak
+              x-show="open"
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="opacity-0 -translate-y-3"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 translate-y-0"
+              x-transition:leave-end="opacity-0 translate-y-10"
+              x-on:click.outside="open = false"
+              role="menu"
+              class="absolute right-0 z-10 mt-2 w-44 origin-top-right rounded-lg"
+            >
+              <div
+                class="divide-y divide-gray-100 rounded-lg bg-white ring-1 ring-black/5"
+              >
+                <div class="px-2.5 py-3">
+                  <a
+                    role="menuitem"
+                    href="{{ routes.account_url }}"
+                    class="group flex items-center justify-between gap-2.5 rounded-lg px-2.5 py-2 font-medium text-gray-600 hover:bg-gray-100/75 hover:text-gray-950"
+                  >
+                    {% render 'icon', icon: 'account' %}
+                    <span class="grow">Profilo</span>
+                  </a>
+                  <a
+                    role="menuitem"
+                    href="{{ routes.account_url }}#orders"
+                    class="group flex items-center justify-between gap-2.5 rounded-lg px-2.5 py-2 font-medium text-gray-600 hover:bg-gray-100/75 hover:text-gray-950"
+                  >
+                    {% render 'icon', icon: 'inbox' %}
+                    <span class="grow">Le mie attività</span>
+                  </a>
+                </div>
+                <div class="px-2.5 py-3">
+                  <a
+                    role="menuitem"
+                    href="{{ routes.account_logout_url }}"
+                    class="text-red-700 group flex w-full items-center justify-between gap-2.5 rounded-lg px-2.5 py-2 text-start font-medium hover:bg-gray-100/75 hover:text-gray-950"
+                  >
+                    {% render 'icon', icon: 'logout' %}
+                    <span class="grow">Esci</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <a
+            href="{{ routes.account_login_url }}"
+            class="px-3 py-2 text-gray-700 hover:text-gray-900 transition-colors text-xl"
+            aria-label="Account"
+          >
+            Accedi
+          </a>
+        {% endif %}
+
+        {% if section.settings.partecipa and customer == blank %}
+          <a
+            href="/pages/iscriviti"
+            class="btn btn-primary"
+          >
+            Iscriviti <span class="ml-4">{% render 'icon', icon: 'arrow-top-right' %}</span>
+          </a>
+        {% endif %}
+      </div>
+      {% endcomment %}
+    </div>
+  </div>
+
+  {% render 'header-drawer', section: section %}
+</header>
+
+<script>
+  function mainHeader() {
+    return {
+      mobileMenuOpen: false,
+      scrollingDown: false,
+      isScrolled: false,
+      headerHeight: 0,
+      lastScrollTop: 0,
+      scrollThreshold: 100,
+
+      toggleMobileMenu() {
+        this.mobileMenuOpen = !this.mobileMenuOpen;
+        // Reset tabs when opening menu
+        if (this.mobileMenuOpen) {
+          this.$dispatch('reset-mobile-tabs');
+        }
+      },
+
+      closeMobileMenu() {
+        this.mobileMenuOpen = false;
+        // Reset tabs when closing menu
+        this.$dispatch('reset-mobile-tabs');
+      },
+
+      init() {
+        // Calculate header height
+        this.headerHeight = this.$el.offsetHeight;
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!this.$el.contains(e.target)) {
+            this.mobileMenuOpen = false;
+          }
+        });
+
+        // Initialize megamenu store
+        if (typeof Alpine !== 'undefined') {
+          Alpine.store('megamenu', {
+            isOpen: false,
+          });
+        }
+
+        // Scroll direction detection
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+              // Set isScrolled based on scroll position
+              const wasScrolled = this.isScrolled;
+              this.isScrolled = scrollTop > 50;
+
+              // Manage body padding to prevent content jump
+              if (this.isScrolled && !wasScrolled) {
+                // Just became fixed - add padding
+                document.body.style.paddingTop = this.headerHeight + 'px';
+              } else if (!this.isScrolled && wasScrolled) {
+                // Just became relative - remove padding
+                document.body.style.paddingTop = '0px';
+              }
+
+              // Only hide header if scrolled past threshold and header is fixed
+              if (scrollTop > this.scrollThreshold && this.isScrolled) {
+                if (scrollTop > this.lastScrollTop) {
+                  // Scrolling down
+                  this.scrollingDown = true;
+                } else {
+                  // Scrolling up
+                  this.scrollingDown = false;
+                }
+              } else {
+                // Near top, always show
+                this.scrollingDown = false;
+              }
+
+              this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+              ticking = false;
+            });
+            ticking = true;
+          }
+        });
+
+        // Update header height on resize
+        window.addEventListener('resize', () => {
+          this.headerHeight = this.$el.offsetHeight;
+          if (this.isScrolled) {
+            document.body.style.paddingTop = this.headerHeight + 'px';
+          }
+        });
+      },
+    };
+  }
+</script>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Smooth transitions */
+  [x-cloak] {
+    display: none !important;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "partecipa",
+      "label": "Mostra pulsante partecipa",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_menu_item",
+      "name": "Featured Menu Item (Card)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Titolo link esatto",
+          "info": "Deve corrispondere ESATTAMENTE al titolo del link nel menu (es: 'Principiante', 'Intermedio')"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Featured Item"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Descrizione"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    },
+    {
+      "type": "menu_extra_link",
+      "name": "Extra Link (Megamenu)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "parent_menu",
+          "label": "Parent title",
+          "info": "L'handle del menu parent (es: 'esperienze', 'more'). Trovalo nell'URL dopo /admin/menus/"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo link",
+          "default": "Link extra"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "URL"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

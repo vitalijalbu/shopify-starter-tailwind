@@ -1,0 +1,54 @@
+{% comment %}
+  Renders a test product card.
+
+  Accepts:
+    - product: {object} Shopify product (required)
+    - cta_text: {string} CTA button text (optional)
+
+  Usage:
+    {% render 'card-test-product', product: product, cta_text: 'Vieni a provarli' %}
+{% endcomment %}
+
+<div class="bg-gray-200 rounded-xl transition-all duration-200 h-full" data-scroll="product-card">
+  <!-- Product Image -->
+  <div class="bg-white rounded-t-xl overflow-hidden">
+      {% render 'picture', image: product.featured_media, class: 'w-auto h-[300px] mx-auto' %}
+  </div>
+
+  <div class="p-6">
+   {% render 'image' image:product.custom.brand.logo class: 'h-10 w-full' %}
+
+    <!-- Product Title -->
+    <h3 class="text-xl font-bold text-gray-900 mb-3">
+      {{ product.title }}
+    </h3>
+
+    <!-- Description -->
+    {% if product.description != blank %}
+      <p class="text-gray-500 text-base leading-relaxed mb-4 line-clamp-4">
+        {{ product.description | strip_html }}
+      </p>
+    {% endif %}
+
+    <!-- Benefits -->
+    {% if product.metafields.custom.benefits != blank %}
+      <div class="mb-6">
+        <p class="text-base text-gray-700"><strong>Benefici:</strong> {{ product.metafields.custom.benefits }}</p>
+      </div>
+    {% endif %}
+
+    <!-- CTA Button -->
+    <div class="flex justify-start">
+      <a
+        href="{{ product.url }}"
+        class="inline-flex items-center text-gray-900 hover:text-primary font-medium text-base transition-colors duration-200 group border-b border-gray-300 hover:border-primary"
+      >
+        {{ cta_text | default: 'Vieni a provarli' }}
+        {% render 'icon',
+          icon: 'arrow-top-right',
+          class: 'size-5 ml-2 transition-transform duration-200 group-hover:translate-x-1'
+        %}
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+{% comment %}
+  Product Price Snippet
+{% endcomment %}
+
+{% assign variant = product %}
+{% if class == blank %}
+  {% assign class = 'product-price' %}
+{% endif %}
+
+<div class="product-price {{ class }}">
+  {% if variant.compare_at_price > variant.price %}
+    <span class="product-price__sale">{{ variant.price | money }}</span>
+    <span class="product-price__compare">{{ variant.compare_at_price | money }}</span>
+    <span class="product-price__badge">Sale</span>
+  {% else %}
+    <span class="product-price__regular">{{ variant.price | money }}</span>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+
+  .product-price__sale {
+    color: #dc2626;
+  }
+
+  .product-price__compare {
+    color: #6b7280;
+    text-decoration: line-through;
+    font-size: 0.875em;
+  }
+
+  .product-price__regular {
+    color: #111827;
+  }
+
+  .product-price__badge {
+    background: #dc2626;
+    color: white;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+{% endstylesheet %}

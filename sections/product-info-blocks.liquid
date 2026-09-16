@@ -1,0 +1,116 @@
+<section class="py-16">
+  <div class="container">
+    <!-- Blocco 1: Testo a sinistra, Immagine a destra -->
+    {% if section.settings.blocco_1_titolo != blank
+      or section.settings.blocco_1_descrizione != blank
+      or section.settings.blocco_1_foto != blank
+    %}
+      <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 mb-20 skimo-pdp-first-block">
+        <div class="flex-1">
+          {% if section.settings.blocco_1_titolo != blank %}
+            <h2 class="text-5xl lg:text-6xl font-bold leading-tight mb-6 text-gray-900" data-scroll="slide-rotate-up">
+              {{ section.settings.blocco_1_titolo }}
+            </h2>
+          {% endif %}
+          {% if section.settings.blocco_1_descrizione != blank %}
+            <div class="text-base leading-relaxed text-gray-800">
+              {{ section.settings.blocco_1_descrizione }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="flex-1 w-full" data-scroll="slide-up">
+          {% render 'picture',
+            fallback: product.featured_image,
+            image: section.settings.blocco_1_foto,
+            class: 'w-full md:w-[555px] h-full max-h-[470px] rounded-xl object-cover'
+          %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Blocco 2: Immagine a sinistra, Testo a destra -->
+    {% if section.settings.blocco_2_titolo != blank
+      or section.settings.blocco_2_descrizione != blank
+      or section.settings.blocco_2_foto != blank
+    %}
+      <div class="flex flex-col lg:flex-row-reverse items-center gap-8 lg:gap-10 skimo-pdp-second-block">
+        <div class="flex-1">
+          {% if section.settings.blocco_2_titolo != blank %}
+            <h2 class="text-4xl lg:text-5xl font-bold leading-tight mb-6 text-gray-900" data-scroll="slide-rotate-up">
+              {{ section.settings.blocco_2_titolo }}
+            </h2>
+          {% endif %}
+          {% if section.settings.blocco_2_descrizione != blank %}
+            <div class="text-base leading-relaxed text-gray-800">
+              {{ section.settings.blocco_2_descrizione }}
+            </div>
+          {% endif %}
+        </div>
+        <div class="flex-1 w-full flex justify-end" data-scroll="slide-up">
+          {% render 'picture',
+            image: section.settings.blocco_2_foto,
+            fallback: product.featured_image,
+            class: 'w-full md:w-[470px] h-full md:h-[470px] rounded-xl object-cover'
+          %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Info Blocks",
+  "tag": "section",
+  "class": "product-info-blocks",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Blocco 1 - Testo a sinistra, Immagine a destra"
+    },
+    {
+      "type": "text",
+      "id": "blocco_1_titolo",
+      "label": "Titolo blocco 1",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "richtext",
+      "id": "blocco_1_descrizione",
+      "label": "Descrizione blocco 1",
+      "default": "<p>Descrizione dettagliata del primo blocco informativo.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "blocco_1_foto",
+      "label": "Immagine blocco 1"
+    },
+    {
+      "type": "header",
+      "content": "Blocco 2 - Immagine a sinistra, Testo a destra"
+    },
+    {
+      "type": "text",
+      "id": "blocco_2_titolo",
+      "label": "Titolo blocco 2",
+      "default": "Caratteristiche"
+    },
+    {
+      "type": "richtext",
+      "id": "blocco_2_descrizione",
+      "label": "Descrizione blocco 2",
+      "default": "<p>Descrizione dettagliata del secondo blocco informativo.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "blocco_2_foto",
+      "label": "Immagine blocco 2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Info Blocks"
+    }
+  ]
+}
+{% endschema %}

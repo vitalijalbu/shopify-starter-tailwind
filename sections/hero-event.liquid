@@ -1,0 +1,230 @@
+<section
+  class="py-16 lg:py-[216px] relative bg-gray overflow-hidden"
+  aria-label="Sezione hero del event"
+>
+  <!-- Hero Section -->
+  <div class="container">
+    <!-- Header Text -->
+    {% if section.settings.event_info != blank %}
+      <div class="mb-8">
+        <p class="text-base font-medium text-gray-600 tracking-wide">
+          {{ section.settings.event_info }}
+        </p>
+      </div>
+    {% endif %}
+
+    <!-- Main Title -->
+    <div class="sm:mb-12 m-0">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        <div class="md:col-span-7">
+          <h1 class="text-4xl md:text-7xl font-bold text-gray-900 mb-8 md:m-0" data-scroll="slide-rotate-up">
+            {{ section.settings.main_title | default: "Vivi l'emozione dello scialpinismo" }}
+          </h1>
+        </div>
+        {% if section.settings.description != blank %}
+          <div class="md:col-span-5">
+            <p>
+              {{ section.settings.description }}
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Gallery -->
+  {% if section.blocks.size > 0 %}
+    <div class="overflow-hidden mb-16 pt-16 md:pt-[120px]">
+      <div class="carousel-track flex" id="event-carousel-{{ section.id }}">
+        {% for block in section.blocks limit: 8 %}
+          {% case block.type %}
+            {% when 'image' %}
+              <div class="carousel-item shrink-0 mr-10 w-[362px] h-[362px]">
+                <div class="relative w-full h-full rounded-2xl overflow-hidden group">
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 500, height: 362 }}"
+                      alt="{{ block.settings.image.alt | default: 'Immagine del event' }}"
+                      class="w-full h-full object-cover"
+                      width="500"
+                      height="362"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <div
+                      class="w-full h-full bg-gray-200 flex items-center justify-center"
+                      aria-label="Immagine placeholder"
+                    >
+                      <svg
+                        class="size-8 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+
+        <!-- Duplicate images for seamless loop -->
+        {% for block in section.blocks limit: 8 %}
+          {% case block.type %}
+            {% when 'image' %}
+              <div class="carousel-item shrink-0 mr-8 w-[362px] h-[362px]">
+                <div class="relative w-full h-full rounded-2xl overflow-hidden group">
+                  {% if block.settings.image != blank %}
+                    <img
+                      src="{{ block.settings.image | image_url: width: 500, height: 362 }}"
+                      alt="{{ block.settings.image.alt | default: 'Immagine del event' }}"
+                      class="w-full h-full object-cover"
+                      width="500"
+                      height="362"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <div
+                      class="w-full h-full bg-gray-200 flex items-center justify-center"
+                      aria-label="Immagine placeholder"
+                    >
+                      <svg
+                        class="size-8 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Event Hero",
+  "tag": "section",
+  "class": "event-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto Principale"
+    },
+    {
+      "type": "text",
+      "id": "event_info",
+      "label": "Info Evento",
+      "default": "Skimo Festival, Marzo 2026 - Bormio",
+      "info": "Testo piccolo sopra il titolo principale"
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "label": "Titolo Principale",
+      "default": "Vivi l'emozione dello scialpinismo"
+    },
+    {
+      "type": "header",
+      "content": "Bottoni CTA"
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Testo Primo Bottone",
+      "default": "Scopri di più"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_link",
+      "label": "Link Primo Bottone"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Testo Secondo Bottone",
+      "default": "Iscriviti"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_link",
+      "label": "Link Secondo Bottone"
+    },
+    {
+      "type": "header",
+      "content": "Sezione Inferiore"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_highlight",
+      "label": "Sottotitolo Evidenziato",
+      "default": "Il event dedicato"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_main",
+      "label": "Sottotitolo Principale",
+      "default": "allo scialpinismo più grande d'Italia"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "Testa le ultime novità tecniche con i migliori brand e partecipa ad experience con le migliori guide alpine."
+    },
+    {
+      "type": "text",
+      "id": "bottom_button_text",
+      "label": "Testo Bottone Finale",
+      "default": "Scopri l'evento"
+    },
+    {
+      "type": "url",
+      "id": "bottom_button_link",
+      "label": "Link Bottone Finale"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Immagine",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Event Hero",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

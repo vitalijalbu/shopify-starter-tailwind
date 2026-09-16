@@ -1,0 +1,89 @@
+{% comment %}
+  Quantity selector snippet
+  Usage: {% render 'quantity-selector', variant: variant, quantity: 1, size: 'default' %}
+{% endcomment %}
+
+{% liquid
+  assign qty_id = 'quantity-' | append: section.id
+  if variant
+    assign qty_id = qty_id | append: '-' | append: variant.id
+  endif
+  
+  assign size_classes = 'text-base'
+  if size == 'small'
+    assign size_classes = 'text-base'
+  elsif size == 'large'
+    assign size_classes = 'text-lg'
+  endif
+%}
+
+<div class="flex items-center border border-gray-300 rounded-md overflow-hidden {{ size_classes }}">
+  <button
+    type="button"
+    class="flex items-center justify-center w-10 h-10 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset disabled:opacity-50 disabled:cursor-not-allowed"
+    onclick="changeQuantity('{{ qty_id }}', -1)"
+    aria-label="{{ 'products.product.quantity.decrease' | t | default: 'Diminuisci quantità' }}"
+  >
+    {% render 'icon', icon: 'minus' %}
+  </button>
+  
+  <input
+    type="number"
+    id="{{ qty_id }}"
+    name="quantity"
+    value="{{ quantity | default: 1 }}"
+    min="1"
+    {% if variant and variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' %}
+      max="{{ variant.inventory_quantity }}"
+    {% endif %}
+    class="w-16 h-10 text-center border-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset {{ size_classes }}"
+    onchange="validateQuantity(this)"
+  >
+  
+  <button
+    type="button"
+    class="flex items-center justify-center w-10 h-10 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-inset disabled:opacity-50 disabled:cursor-not-allowed"
+    onclick="changeQuantity('{{ qty_id }}', 1)"
+    {% if variant and variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny' %}
+      data-max="{{ variant.inventory_quantity }}"
+    {% endif %}
+    aria-label="{{ 'products.product.quantity.increase' | t | default: 'Aumenta quantità' }}"
+  >
+    {% render 'icon', icon: 'plus' %}
+  </button>
+</div>
+
+<script>
+function changeQuantity(inputId, change) {
+  const input = document.getElementById(inputId);
+  const currentValue = parseInt(input.value) || 1;
+  const newValue = Math.max(1, currentValue + change);
+  
+  // Check max constraint
+  const button = event.target.closest('button');
+  const maxValue = button ? parseInt(button.dataset.max) : null;
+  
+  if (maxValue && newValue > maxValue) {
+    return;
+  }
+  
+  input.value = newValue;
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function validateQuantity(input) {
+  let value = parseInt(input.value) || 1;
+  const min = parseInt(input.min) || 1;
+  const max = parseInt(input.max);
+  
+  if (value < min) {
+    value = min;
+  }
+  
+  if (max && value > max) {
+    value = max;
+  }
+  
+  input.value = value;
+}
+</script>

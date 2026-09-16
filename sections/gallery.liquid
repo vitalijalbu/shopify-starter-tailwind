@@ -1,0 +1,81 @@
+<section class="py-16 lg:py-24 bg-gray overflow-hidden">
+  <div class="container">
+    {% if section.settings.title != blank or section.settings.subtitle != blank %}
+      <div class="mb-10 lg:mb-16 max-w-4xl">
+        {% if section.settings.title != blank %}
+          <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+            {{ section.settings.title }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.subtitle != blank %}
+          <div class="text-base md:text-lg text-gray-700">
+            {{ section.settings.subtitle }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% assign gallery_images = page.metafields.custom.gallery_images.value %}
+
+    {% if gallery_images != blank %}
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+        {% for image in gallery_images %}
+          {% assign mod = forloop.index0 | modulo: 4 %}
+
+          <div
+            class="
+              {% if mod == 1 %}
+                lg:pt-10
+              {% elsif mod == 3 %}
+                lg:pt-20
+              {% else %}
+                lg:pt-0
+              {% endif %}
+            "
+          >
+            <div class="relative aspect-square rounded-2xl overflow-hidden">
+              {{
+                image
+                | image_url: width: 900
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'w-full h-full object-cover',
+                  alt: image.alt
+              }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-gray-500">
+        Nessuna immagine selezionata. Collega il metafield <strong>custom.gallery_images</strong> alla pagina.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Gallery Grid",
+  "tag": "section",
+  "class": "gallery-grid-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gallery Grid"
+    }
+  ]
+}
+{% endschema %}

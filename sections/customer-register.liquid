@@ -1,0 +1,275 @@
+<section class="py-16 bg-gray-50" aria-labelledby="register-heading">
+  <div class="container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+      <!-- Colonna sinistra - Blocks content -->
+      <div class="space-y-8">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'heading' %}
+              <div class="block" {{ block.shopify_attributes }}>
+                {% if block.settings.title != blank %}
+                  <h2 class="text-4xl md:text-7xl font-bold text-gray-900 mb-4">
+                    {{ block.settings.title }}
+                  </h2>
+                {% endif %}
+              </div>
+            {% when 'richtext' %}
+              <div class="block prose prose-lg max-w-none" {{ block.shopify_attributes }}>
+                {% if block.settings.content != blank %}
+                  {{ block.settings.content }}
+                {% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+
+      <!-- Colonna destra - Register form -->
+      <div class="card" x-data="{ loading: false }">
+        {%- form 'create_customer', novalidate: 'novalidate', class: 'space-y-6' -%}
+          <input type="hidden" x-ref="submitTrigger" @click="loading = true">
+          <script>
+            document.querySelector('form[action*="create_customer"]')?.addEventListener('submit', function() {
+              Alpine.evaluate(this.closest('[x-data]'), 'loading = true');
+            });
+          </script>
+          {%- if form.errors -%}
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" role="alert" aria-live="polite">
+              <div class="flex">
+                <div class="shrink-0">
+                  {% render 'icon', icon: 'exclamation-triangle', class: 'size-5 text-red-400', aria_hidden: 'true' %}
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-base font-medium text-red-800">{{ 'customer.errors.title' | t }}</h3>
+                  <ul class="mt-2 text-base text-red-700 list-disc list-inside">
+                    {%- for field in form.errors -%}
+                      <li>
+                        {%- if field == 'form' -%}
+                          {{ form.errors.messages[field] }}
+                        {%- else -%}
+                          {{ form.errors.translated_fields[field] | capitalize }}
+                          {{ form.errors.messages[field] }}
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="RegisterForm-FirstName" class="block text-base font-medium text-gray-700 mb-2">
+                {{ 'customer.register.first_name' | t }}
+                <span class="text-red-500" aria-label="Campo obbligatorio">*</span>
+              </label>
+              <input
+                type="text"
+                id="RegisterForm-FirstName"
+                name="customer[first_name]"
+                value="{{ form.first_name | escape }}"
+                class="form-input{% if form.errors contains 'first_name' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                required
+                autocomplete="given-name"
+              >
+              {% if form.errors contains 'first_name' %}
+                <p class="mt-1 text-base text-red-700" role="alert">
+                  {{ form.errors.translated_fields.first_name | capitalize }}
+                  {{ form.errors.messages.first_name }}.
+                </p>
+              {% endif %}
+            </div>
+
+            <div>
+              <label for="RegisterForm-LastName" class="block text-base font-medium text-gray-700 mb-2">
+                {{ 'customer.register.last_name' | t }}
+                <span class="text-red-500" aria-label="Campo obbligatorio">*</span>
+              </label>
+              <input
+                type="text"
+                id="RegisterForm-LastName"
+                name="customer[last_name]"
+                value="{{ form.last_name | escape }}"
+                class="form-input{% if form.errors contains 'last_name' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+                required
+                autocomplete="family-name"
+              >
+              {% if form.errors contains 'last_name' %}
+                <p class="mt-1 text-base text-red-700" role="alert">
+                  {{ form.errors.translated_fields.last_name | capitalize }}
+                  {{ form.errors.messages.last_name }}.
+                </p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <label for="RegisterForm-email" class="block text-base font-medium text-gray-700 mb-2">
+              {{ 'customer.register.email' | t }}
+              <span class="text-red-500" aria-label="Campo obbligatorio">*</span>
+            </label>
+            <input
+              type="email"
+              id="RegisterForm-email"
+              name="customer[email]"
+              value="{{ form.email | escape }}"
+              class="form-input{% if form.errors contains 'email' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+              required
+              autocomplete="email"
+            >
+            {% if form.errors contains 'email' %}
+              <p class="mt-1 text-base text-red-700" role="alert">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}.
+              </p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label for="RegisterForm-password" class="block text-base font-medium text-gray-700 mb-2">
+              {{ 'customer.register.password' | t }}
+              <span class="text-red-500" aria-label="Campo obbligatorio">*</span>
+            </label>
+            <input
+              type="password"
+              id="RegisterForm-password"
+              name="customer[password]"
+              class="form-input{% if form.errors contains 'password' %} border-red-300 focus:border-red-500 focus:ring-red-500{% endif %}"
+              required
+              autocomplete="new-password"
+              minlength="8"
+            >
+            {% if form.errors contains 'password' %}
+              <p class="mt-1 text-base text-red-700" role="alert">
+                {{ form.errors.translated_fields.password | capitalize }}
+                {{ form.errors.messages.password }}.
+              </p>
+            {% endif %}
+            <p class="mt-1 text-xs text-gray-500">La password deve contenere almeno 8 caratteri.</p>
+          </div>
+
+          <!-- Campi nascosti per newsletter e SMS marketing -->
+          <input type="hidden" name="customer[accepts_marketing]" value="true" />
+          <button 
+            type="submit" 
+            class="btn btn-secondary uppercase w-full"
+            :disabled="loading"
+            :class="{ 'opacity-75 cursor-not-allowed': loading }"
+          >
+            <span x-show="!loading" class="flex items-center justify-center gap-2">
+              {{ 'customer.register.submit' | t }}
+              {% render 'icon', icon: 'arrow-top-right' %}
+            </span>
+            <span x-show="loading" class="flex items-center justify-center gap-2">
+              <svg class="animate-spin size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Caricamento...
+            </span>
+          </button>
+
+          {% comment %}
+            <div class="text-center pt-4 border-t border-zinc-200">
+              <p class="text-base text-gray-600 mb-3">
+                {{ 'customer.register.returning_customer' | t }}
+              </p>
+              <a href="{{ routes.account_login_url }}" class="btn btn-outline w-full">
+                {{ 'customer.register.login' | t }}
+              </a>
+            </div>
+          {% endcomment %}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Customer Register",
+  "tag": "section",
+  "class": "section-customer-register",
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Titolo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "Unisciti al Festival"
+        }
+      ]
+    },
+    {
+      "type": "richtext",
+      "name": "Testo",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Contenuto",
+          "default": "<p>Crea il tuo account per accedere a tutti i contenuti esclusivi del festival.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Register",
+      "blocks": [
+        {
+          "type": "heading",
+          "settings": {
+            "title": "Unisciti al Festival"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const registerForm = document.getElementById('create_customer');
+    if (!registerForm) {
+      console.log('Register form not found');
+      return;
+    }
+
+    registerForm.addEventListener('submit', function (e) {
+      const formData = new FormData(registerForm);
+      const customerData = {
+        email: formData.get('customer[email]'),
+        firstName: formData.get('customer[first_name]') || '',
+        lastName: formData.get('customer[last_name]') || ''
+      };
+      
+      
+      // Fai la chiamata API subito
+      if (customerData.email) {
+        fetch('https://sportbusinessmag.sport-press.it/skimofestival-shopify-middleware/shopify.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(customerData),
+        })
+        .catch(error => {
+          console.log('Newsletter subscription failed:', error);
+        });
+      }
+      
+      // Fallback redirect dopo 3 secondi se necessario
+      setTimeout(function() {
+        if (window.location.pathname.includes('/register')) {
+          window.location.href = '/account';
+        }
+      }, 3000);
+    });
+  });
+</script>

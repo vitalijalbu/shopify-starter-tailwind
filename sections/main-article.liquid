@@ -1,0 +1,16 @@
+<article class="py-16 container">
+  <!-- SEO Breadcrumbs -->
+  {% render 'breadcrumbs' %}
+  
+  <h1 class="text-4xl md:text-7xl font-bold mb-6">{{ article.title }}</h1>
+  <div class="prose max-w-none">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{
+  "name": "Main Article",
+  "tag": "section",
+  "class": "section-main-article",
+  "settings": []
+}
+{% endschema %}

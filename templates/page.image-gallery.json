@@ -1,0 +1,68 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "richtext_rtBgzy": {
+      "type": "richtext",
+      "name": "Rich Text",
+      "settings": {
+        "content": "<h1>{{ page.title }}</h1><p><strong>Rivivi le giornate di Skimofestival attraverso le foto più belle dell'evento.</strong></p>",
+        "text_alignment": "text-center"
+      }
+    },
+    "17733349972b098de2": {
+      "type": "apps",
+      "blocks": {
+        "nitro_lookbook_lookbook_block_VbB7DM": {
+          "type": "shopify://apps/nitro-lookbook/blocks/lookbook-block/cc1f7d0a-9bac-40f1-a181-859d84a3417f",
+          "settings": {
+            "lookbook_id": "22eee4ef-4062-4964-9bcd-32a4709c52f4",
+            "heading": "",
+            "sub_heading": "",
+            "heading_font_size": "1.2",
+            "heading_alignment": "center",
+            "padding_top": 0,
+            "padding_bottom": 48
+          }
+        }
+      },
+      "block_order": [
+        "nitro_lookbook_lookbook_block_VbB7DM"
+      ],
+      "settings": {}
+    },
+    "177339963457f31acb": {
+      "type": "apps",
+      "blocks": {
+        "nitro_lookbook_lookbook_block_A9ixTJ": {
+          "type": "shopify://apps/nitro-lookbook/blocks/lookbook-block/cc1f7d0a-9bac-40f1-a181-859d84a3417f",
+          "settings": {
+            "lookbook_id": "",
+            "heading": "",
+            "sub_heading": "",
+            "heading_font_size": "1.2",
+            "heading_alignment": "center",
+            "padding_top": 0,
+            "padding_bottom": 0
+          }
+        }
+      },
+      "block_order": [
+        "nitro_lookbook_lookbook_block_A9ixTJ"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "richtext_rtBgzy",
+    "17733349972b098de2",
+    "177339963457f31acb"
+  ]
+}

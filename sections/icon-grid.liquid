@@ -1,0 +1,178 @@
+<section class="py-16 lg:py-24">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <div class="text-center mb-12 lg:mb-16">
+        <h2 class="text-3xl md:text-6xl font-bold mb-4">
+          {{ section.settings.title }}
+        </h2>
+        {% if section.settings.subtitle != blank %}
+          <div class="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+            {{ section.settings.subtitle }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-{{ section.settings.columns }} gap-8 lg:gap-12">
+        {% for block in section.blocks %}
+          <div class="{{ block.settings.alignment | default: 'text-center' }}" {{ block.shopify_attributes }}>
+            {% render 'icon-text', settings: block.settings %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Icon Grid",
+  "tag": "section",
+  "class": "icon-grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Contenuto"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo sezione",
+      "default": "Le nostre caratteristiche"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Scopri cosa ci rende unici"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Colonne su desktop",
+      "options": [
+        { "value": "2", "label": "2 colonne" },
+        { "value": "3", "label": "3 colonne" },
+        { "value": "4", "label": "4 colonne" }
+      ],
+      "default": "3"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "icon_text",
+      "name": "Icona + Testo",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Contenuto"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Immagine icona"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Testo principale",
+          "default": "Caratteristica"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descrizione",
+          "default": "Descrivi questa caratteristica in dettaglio"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Link (opzionale)"
+        },
+        {
+          "type": "header",
+          "content": "Stile"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Allineamento",
+          "options": [
+            { "value": "text-left", "label": "Sinistra" },
+            { "value": "text-center", "label": "Centro" },
+            { "value": "text-right", "label": "Destra" }
+          ],
+          "default": "text-center"
+        },
+        {
+          "type": "select",
+          "id": "layout_style",
+          "label": "Layout",
+          "options": [
+            { "value": "flex flex-col items-center gap-3", "label": "Verticale (icona sopra)" },
+            { "value": "flex items-center gap-3", "label": "Orizzontale (icona a sinistra)" },
+            { "value": "flex flex-col-reverse items-center gap-3", "label": "Verticale invertito (testo sopra)" }
+          ],
+          "default": "flex flex-col items-center gap-3"
+        },
+        {
+          "type": "select",
+          "id": "icon_size",
+          "label": "Dimensione icona",
+          "options": [
+            { "value": "24", "label": "Piccola" },
+            { "value": "32", "label": "Media" },
+            { "value": "48", "label": "Grande" },
+            { "value": "64", "label": "Extra Grande" }
+          ],
+          "default": "32"
+        },
+        {
+          "type": "select",
+          "id": "text_style",
+          "label": "Stile testo",
+          "options": [
+            { "value": "text-gray-900 font-medium", "label": "Normale" },
+            { "value": "text-gray-900 font-semibold text-lg", "label": "Grassetto grande" },
+            { "value": "text-gray-600 font-normal", "label": "Grigio normale" }
+          ],
+          "default": "text-gray-900 font-medium"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icon Grid",
+      "blocks": [
+        {
+          "type": "icon_text",
+          "settings": {
+            "text": "Sci Alpinismo",
+            "description": "Esperienze uniche sulle montagne innevate"
+          }
+        },
+        {
+          "type": "icon_text",
+          "settings": {
+            "text": "Competizioni",
+            "description": "Gare e sfide per tutti i livelli"
+          }
+        },
+        {
+          "type": "icon_text",
+          "settings": {
+            "text": "Eventi",
+            "description": "Calendario ricco di appuntamenti"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

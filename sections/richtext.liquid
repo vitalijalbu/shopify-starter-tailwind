@@ -1,0 +1,48 @@
+<section 
+  class="py-16"
+  id="richtext-{{ section.id }}"
+>
+  <div class="container">
+    <div class="prose {{ section.settings.text_alignment }} {{ section.settings.prose_color }}">
+      {% if section.settings.content != blank %}
+        {{ section.settings.content }}
+      {% else %}
+        <h2>Sezione Rich Text</h2>
+        <p>Aggiungi il tuo contenuto personalizzato utilizzando l'editor rich text. Puoi includere HTML, styling personalizzato e qualsiasi contenuto desideri.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Rich Text",
+  "tag": "section",
+  "class": "richtext-section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Contenuto",
+      "info": "Utilizza l'editor per aggiungere testo, immagini, link e HTML personalizzato"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Allineamento testo",
+      "options": [
+        { "value": "text-left", "label": "Sinistra" },
+        { "value": "text-center", "label": "Centro" },
+        { "value": "text-right", "label": "Destra" }
+      ],
+      "default": "text-left"
+    },
+  ],
+  "presets": [
+    {
+      "name": "Rich Text"
+    }
+  ]
+}
+{% endschema %}

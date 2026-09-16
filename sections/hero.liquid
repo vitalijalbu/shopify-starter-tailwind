@@ -1,0 +1,329 @@
+<section
+  class="relative overflow-hidden{% if section.settings.full_width != true %} px-6 py-6{% endif %}"
+  id="hero-{{ section.id }}"
+  aria-label="Sezione hero principale"
+>
+  {% liquid
+    assign wrapper_classes = 'grid md:grid-cols-2 w-full max-w-full overflow-hidden'
+    assign padding_classes = ''
+
+    case section.settings.section_size
+      when 'small'
+        assign wrapper_classes = wrapper_classes | append: ' md:h-[600px]'
+        assign padding_classes = 'py-8 lg:py-20'
+      when 'medium'
+        assign wrapper_classes = wrapper_classes | append: ' md:h-[780px]'
+        assign padding_classes = 'py-10 md:py-26'
+      when 'large'
+        assign wrapper_classes = wrapper_classes | append: ' md:h-[960px]'
+        assign padding_classes = 'py-12 md:py-[216px]'
+      else
+        assign wrapper_classes = wrapper_classes | append: ' md:h-[780px]'
+        assign padding_classes = 'py-10 md:py-36'
+    endcase
+
+    if section.settings.full_width != true
+      assign wrapper_classes = wrapper_classes | append: ' rounded-xl overflow-hidden'
+    endif
+
+    assign content_order = ''
+    assign image_order = ''
+    if section.settings.image_position == 'left'
+      assign content_order = ' md:order-2'
+      assign image_order = ' md:order-1'
+    endif
+  %}
+
+  <div class="hero-wrapper {{ wrapper_classes }}">
+    <!-- Left: colored background with content -->
+    <div
+      class="flex items-center justify-center md:py-36 px-4 md:px-8 h-full max-md:order-last {{ padding_classes }}{{ content_order }}"
+      style="background-color: {{ section.settings.background_color | default: '#25272C' }};"
+    >
+      <div class="w-full h-full text-left flex flex-col items-start gap-20 justify-between max-w-full">
+        {% if section.settings.text_position == 'top' %}
+          <!-- Testo vicino al titolo -->
+          <div class="w-full space-y-4">
+            {% assign heading_rendered = false %}
+            {% for block in section.blocks %}
+              {% if block.type == 'heading' and heading_rendered == false %}
+                <h1
+                  data-scroll="slide-rotate-up"
+                  class="text-4xl md:text-7xl font-bold"
+                  style="color: {{ block.settings.heading_color | default: '#FFFFFF' }};"
+                >
+                  {{ block.settings.heading | default: 'Welcome to our store' }}
+                </h1>
+                {% assign heading_rendered = true %}
+              {% endif %}
+            {% endfor %}
+
+            <div class="max-w-prose overflow-hidden">
+              {% assign text_rendered = false %}
+              {% for block in section.blocks %}
+                {% if block.type == 'text' and text_rendered == false %}
+                  <p
+                    class="text-base md:text-base lg:text-lg {{ block.settings.text_color }}"
+                    style="color: {{ block.settings.text_color_hex | default: '#F7F8F8' }};"
+                  >
+                    {{ block.settings.text }}
+                  </p>
+                  {% assign text_rendered = true %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Pulsante in basso -->
+          <div class="w-full">
+            {% for block in section.blocks %}
+              {% if block.type == 'button' and block.settings.button_url and block.settings.button_text %}
+                {% assign button_style = block.settings.button_style | default: 'primary' %}
+                <a
+                  href="{{ block.settings.button_url }}"
+                  class="rounded-full btn btn-{{ button_style }}"
+                  aria-label="{{ block.settings.button_text }} - {{ block.settings.button_url | replace: 'https://', '' | replace: 'http://', '' | truncate: 50 }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.button_text }}
+                  {% render 'icon', icon: 'arrow-top-right', aria_hidden: 'true' %}
+                </a>
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <!-- Layout originale: titolo in alto, testo e pulsante in basso -->
+          <div class="w-full">
+            {% assign heading_rendered = false %}
+            {% for block in section.blocks %}
+              {% if block.type == 'heading' and heading_rendered == false %}
+                <h1
+                   data-scroll="slide-rotate-up"
+                  class="text-4xl md:text-6xl font-bold mb-4"
+                  style="color: {{ block.settings.heading_color | default: '#FFFFFF' }};"
+                >
+                  {{ block.settings.heading | default: 'Welcome to our store' }}
+                </h1>
+                {% assign heading_rendered = true %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Bottom: vertical stack with text + single button -->
+          <div class="w-full flex flex-col gap-4 md:gap-[48px]">
+            <div class="max-w-prose overflow-hidden">
+              {% assign text_rendered = false %}
+              {% for block in section.blocks %}
+                {% if block.type == 'text' and text_rendered == false %}
+                  <p
+                    class="lg:text-xl md:text-2xl {{ block.settings.text_color }}"
+                    style="color: {{ block.settings.text_color_hex | default: '#F7F8F8' }};"
+                  >
+                    {{ block.settings.text }}
+                  </p>
+                  {% assign text_rendered = true %}
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div>
+              {% for block in section.blocks %}
+                {% if block.type == 'button' and block.settings.button_url and block.settings.button_text %}
+                  {% assign button_style = block.settings.button_style | default: 'primary' %}
+                  <a
+                    href="{{ block.settings.button_url }}"
+                    class="rounded-full btn btn-{{ button_style }}"
+                    aria-label="{{ block.settings.button_text }} - {{ block.settings.button_url | replace: 'https://', '' | replace: 'http://', '' | truncate: 50 }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{ block.settings.button_text }}
+                    {% render 'icon', icon: 'arrow-top-right', aria_hidden: 'true' %}
+                  </a>
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if section.blocks.size == 0 %}
+          <h1 class="text-2xl md:text-6xl font-bold mb-4 text-white">Welcome to {{ shop.name }}</h1>
+          <p class="text-base md:text-base lg:text-lg mb-6 text-white max-w-prose overflow-hidden">
+            Scopri le emozioni delle gare e sfide
+          </p>
+          <a
+            href="{{ routes.all_products_collection_url }}"
+            class="btn btn-primary"
+            aria-label="Visualizza tutti i prodotti"
+          >
+            Shop Now
+            {% render 'icon', icon: 'arrow-top-right', aria_hidden: 'true' %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: image -->
+    <div class="relative w-full min-h-[40vh] md:min-h-[200px] h-full overflow-hidden{{ image_order }}" data-scroll="hero-image-scale">
+      {% if section.settings.image %}
+        <img
+          src="{{ section.settings.image | image_url: width: 1920 }}"
+          alt="{{ section.settings.image.alt | escape }}"
+          class="absolute inset-0 w-full h-full object-cover"
+          width="1920"
+          height="{{ 1920 | divided_by: section.settings.image.aspect_ratio | round }}"
+        >
+      {% else %}
+        <div class="absolute inset-0 bg-linear-to-br from-gray-200 to-gray-300"></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "hero-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_size",
+      "label": "Dimensione sezione",
+      "options": [
+        { "value": "small", "label": "Small (600px)" },
+        { "value": "medium", "label": "Medium (780px)" },
+        { "value": "large", "label": "Large (960px)" }
+      ],
+      "default": "medium",
+      "info": "Altezza della sezione su desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Larghezza piena",
+      "default": true,
+      "info": "Se disabilitato, aggiunge padding e bordi arrotondati"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Posizione del testo",
+      "options": [
+        { "value": "bottom", "label": "Vicino al pulsante (in basso)" },
+        { "value": "top", "label": "Vicino al titolo (in alto)" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Content image"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#25272C",
+      "info": "Colore di sfondo"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Welcome to our store"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading color",
+          "default": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Scopri le emozioni delle gare e sfide"
+        },
+        {
+          "type": "text",
+          "id": "text_color",
+          "label": "Text color classes"
+        },
+        {
+          "type": "color",
+          "id": "text_color_hex",
+          "label": "Text color",
+          "default": "#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Shop now"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            { "value": "primary", "label": "Primary" },
+            { "value": "secondary", "label": "Secondary" }
+          ],
+          "default": "secondary"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "button"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

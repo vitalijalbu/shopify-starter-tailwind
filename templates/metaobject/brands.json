@@ -1,0 +1,34 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "brand_hero_b7RYan": {
+      "type": "brand-hero",
+      "name": "Brand Hero",
+      "settings": {
+        "image": "{{ metaobject.logo.value }}",
+        "title": "{{ metaobject.name.value }}",
+        "description": "<p>{{ metaobject.description | metafield_tag }}</p>"
+      }
+    },
+    "brand_product_list_9i94mf": {
+      "type": "brand-product-list",
+      "name": "Lista Prodotti Brand",
+      "settings": {
+        "section_title": "",
+        "selected_brand": "{{ metaobject.name.value }}"
+      }
+    }
+  },
+  "order": [
+    "brand_hero_b7RYan",
+    "brand_product_list_9i94mf"
+  ]
+}

@@ -1,0 +1,398 @@
+<!-- Toast Notification -->
+<div id="cart-toast" class="fixed top-4 right-4 z-[100] max-w-sm hidden">
+  <div class="p-4 rounded-lg shadow-xl text-white flex items-center gap-3">
+    <div class="flex-1" id="toast-message"></div>
+    <button
+      onclick="window.cartDrawer.hideToast()"
+      class="p-1 hover:bg-black/20 rounded transition-colors"
+    >
+      {% render 'icon', icon: 'close' %}
+    </button>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-black/50 transition-opacity"
+    onclick="window.cartDrawer.close()"
+  ></div>
+
+  <!-- Drawer Panel -->
+  <div
+    id="cart-drawer-panel"
+    class="absolute right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-xl flex flex-col transform translate-x-full transition-transform duration-300"
+    onclick="event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b border-zinc-200">
+      <span class="text-lg font-semibold text-gray-900">Il mio Carrello</span>
+      <button
+        onclick="window.cartDrawer.close()"
+        class="btn-close"
+        aria-label="Chiudi"
+      >
+        {% render 'icon', icon: 'close' %}
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-4">
+      <!-- Empty cart -->
+      <div id="cart-empty" class="text-center py-8">
+        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          {% render 'icon', icon: 'cart', class: 'size-8 text-gray-400' %}
+        </div>
+        <h3 class="text-lg font-medium text-gray-500 mb-2">Il tuo carrello è vuoto</h3>
+
+        <a
+          href="{{ routes.all_products_collection_url }}"
+          class="btn btn-primary"
+          onclick="window.cartDrawer.close()"
+        >
+          Scopri le experience
+        </a>
+      </div>
+
+      <!-- Cart items -->
+      <div id="cart-items" class="space-y-4 hidden">
+        <!-- Items will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="cart-footer" class="border-t border-zinc-200 p-4 bg-gray-50 hidden">
+      <div class="space-y-4">
+        <!-- Subtotal -->
+        <div class="flex justify-between items-center text-lg font-semibold">
+          <span>Subtotale:</span>
+          <span id="cart-total">{% render 'price-tag', price: cart.total_price %}</span>
+        </div>
+        <!-- Checkout button -->
+        <button
+          class="btn btn-primary w-full"
+          onclick="window.location.href='/checkout'"
+        >
+          {% if cart.total_price > 0 %}Procedi al checkout{% else %}Prenota ora{% endif %}
+        </button>
+
+        <!-- View cart link -->
+        <button
+          class="btn btn-outline w-full"
+          onclick="window.location.href='/cart'"
+        >
+          Visualizza carrello
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ajax Cart Script -->
+<script>
+  // Cart Drawer Manager - Vanilla JS
+  window.cartDrawer = {
+    drawer: null,
+    panel: null,
+    toast: null,
+    toastMessage: null,
+    cartItems: null,
+    cartTotal: null,
+    cartEmpty: null,
+    cartFooter: null,
+    cartData: null, // Store cart data
+
+    init() {
+      // Get DOM elements
+      this.drawer = document.getElementById('cart-drawer');
+      this.panel = document.getElementById('cart-drawer-panel');
+      this.toast = document.getElementById('cart-toast');
+      this.toastMessage = document.getElementById('toast-message');
+      this.cartItems = document.getElementById('cart-items');
+      this.cartTotal = document.getElementById('cart-total');
+      this.cartEmpty = document.getElementById('cart-empty');
+      this.cartFooter = document.getElementById('cart-footer');
+
+      // Add keyboard handler for ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !this.drawer.classList.contains('hidden')) {
+          this.close();
+        }
+      });
+
+      // Initial cart load
+      this.refreshCart();
+    },
+
+    open() {
+      this.drawer.classList.remove('hidden');
+      // Trigger reflow for animation
+      setTimeout(() => {
+        this.panel.classList.remove('translate-x-full');
+      }, 10);
+    },
+
+    close() {
+      this.panel.classList.add('translate-x-full');
+      setTimeout(() => {
+        this.drawer.classList.add('hidden');
+      }, 300);
+    },
+
+    showToast(message, type = 'success') {
+      const toastDiv = this.toast.querySelector('div');
+      let bgClass = 'bg-dark';
+
+      switch (type) {
+        case 'error':
+          bgClass = 'bg-red-700';
+          break;
+        case 'info':
+          bgClass = 'bg-primary';
+          break;
+        case 'warning':
+          bgClass = 'bg-yellow-600';
+          break;
+        default:
+          bgClass = 'bg-dark';
+      }
+
+      toastDiv.className = `p-4 rounded-lg shadow-xl text-white flex items-center gap-3 ${bgClass}`;
+      this.toastMessage.textContent = message;
+      this.toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        this.hideToast();
+      }, 3000);
+    },
+
+    hideToast() {
+      this.toast.classList.add('hidden');
+    },
+
+    // Add item to cart
+    async addItem(variantId, quantity = 1, properties = {}) {
+      try {
+        // Check if item already exists in cart
+        if (this.cartData && this.cartData.items) {
+          const existingItem = this.cartData.items.find((item) => item.variant_id === variantId);
+          if (existingItem) {
+            this.showToast('Questo prodotto è già nel carrello', 'info');
+            this.open();
+            return;
+          }
+        }
+
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: quantity,
+            properties: properties,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to add item');
+        }
+
+        const data = await response.json();
+        await this.refreshCart();
+        this.showToast('Prodotto aggiunto al carrello!', 'success');
+        this.open();
+        return data;
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        this.showToast("Errore durante l'aggiunta al carrello", 'error');
+      }
+    },
+
+    // Update cart item
+    async updateItem(variantId, quantity) {
+      try {
+        const response = await fetch('/cart/update.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            updates: {
+              [variantId]: quantity,
+            },
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update item');
+        }
+
+        const data = await response.json();
+        await this.refreshCart();
+        return data;
+      } catch (error) {
+        console.error('Error updating cart:', error);
+
+        // Try to get more specific error message
+        let errorMessage = "Errore durante l'aggiornamento";
+        if (error.message.includes('Failed to update')) {
+          errorMessage = 'Impossibile aggiornare il carrello. Riprova.';
+        }
+
+        this.showToast(errorMessage, 'error');
+      }
+    },
+
+    // Remove item from cart
+    async removeItem(variantId) {
+
+      try {
+        // First try using the line number approach
+        if (this.cartData && this.cartData.items) {
+          const itemIndex = this.cartData.items.findIndex((item) => item.variant_id === variantId);
+
+          if (itemIndex !== -1) {
+            const lineNumber = itemIndex + 1;
+            const response = await fetch('/cart/change.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                line: lineNumber,
+                quantity: 0,
+              }),
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              await this.refreshCart();
+              this.showToast('Prodotto rimosso dal carrello', 'success');
+              return data;
+            } else {
+              const errorText = await response.text();
+            }
+          }
+        }
+
+        return this.updateItem(variantId, 0);
+      } catch (error) {
+        console.error('Error removing item:', error);
+        this.showToast('Errore durante la rimozione', 'error');
+      }
+    },
+
+    // Get cart data
+    async getCart() {
+      try {
+        const response = await fetch('/cart.js');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const cart = await response.json();
+        return cart;
+      } catch (error) {
+        console.error('Error fetching cart:', error);
+        throw error;
+      }
+    },
+
+    // Refresh cart display
+    async refreshCart() {
+      try {
+        const cart = await this.getCart();
+        this.cartData = cart;
+        this.updateCartDisplay(cart);
+        this.updateCartCount(cart.item_count);
+        window.dispatchEvent(new CustomEvent('cart:updated', { detail: cart }));
+      } catch (error) {
+        console.error('Error refreshing cart:', error);
+      }
+    },
+
+    // Update cart count in Alpine store (for badge in header)
+    updateCartCount(count) {
+      if (typeof Alpine !== 'undefined' && Alpine.store('cart')) {
+        Alpine.store('cart').itemCount = count;
+      }
+    },
+
+    // Update cart display
+    updateCartDisplay(cart) {
+      if (this.cartTotal) {
+        this.cartTotal.textContent = this.formatMoney(cart.total_price);
+      }
+
+      // Show/hide empty state and footer
+      const isEmpty = cart.items.length === 0;
+
+      if (isEmpty) {
+        this.cartEmpty.classList.remove('hidden');
+        this.cartItems.classList.add('hidden');
+        this.cartFooter.classList.add('hidden');
+      } else {
+        this.cartEmpty.classList.add('hidden');
+        this.cartItems.classList.remove('hidden');
+        this.cartFooter.classList.remove('hidden');
+      }
+
+      // Render items
+      if (this.cartItems && cart.items.length > 0) {
+        this.cartItems.innerHTML = cart.items
+          .map(
+            (item) => `
+          <div class="flex items-center space-x-3 p-3 card">
+            <div class="shrink-0">
+              <img src="${item.featured_image?.url || ''}" alt="${
+              item.product_title
+            }" class="w-16 h-16 object-cover rounded-md">
+            </div>
+            <div class="flex-1 min-w-0">
+              ${item.product_type ? `<p class="badge text-sm uppercase">${item.product_type}</p>` : ''}
+              <h4 class="text-base font-medium text-gray-900 truncate">${item.product_title}</h4>
+              ${
+                item.variant_title && item.variant_title !== 'Default Title'
+                  ? `<p class="text-base text-gray-500">${item.variant_title}</p>`
+                  : ''
+              }
+              <p class="text-base font-medium text-gray-900">${this.formatMoney(item.final_price)}</p>
+            </div>
+            <div class="flex items-center">
+              <button onclick="window.cartDrawer.removeItem(${
+                item.variant_id
+              })" class="p-2 text-red-700 hover:bg-gray-50 rounded-full cursor-pointer" aria-label="Rimuovi ${
+              item.product_title
+            }">
+                <svg class="size-5" fill="none" viewBox="0 0 24 24">
+                  <path fill="currentColor" fill-rule="evenodd" d="M10.31 2.25h3.38c.217 0 .406 0 .584.028a2.25 2.25 0 0 1 1.64 1.183c.084.16.143.339.212.544l.111.335l.03.085a1.25 1.25 0 0 0 1.233.825h3a.75.75 0 0 1 0 1.5h-17a.75.75 0 0 1 0-1.5h3.09a1.25 1.25 0 0 0 1.173-.91l.112-.335c.068-.205.127-.384.21-.544a2.25 2.25 0 0 1 1.641-1.183c.178-.028.367-.028.583-.028m-1.302 3a3 3 0 0 0 .175-.428l.1-.3c.091-.273.112-.328.133-.368a.75.75 0 0 1 .547-.395a3 3 0 0 1 .392-.009h3.29c.288 0 .348.002.392.01a.75.75 0 0 1 .547.394c.021.04.042.095.133.369l.1.3l.039.112q.059.164.136.315z" clip-rule="evenodd"/><path fill="currentColor" d="M5.915 8.45a.75.75 0 1 0-1.497.1l.464 6.952c.085 1.282.154 2.318.316 3.132c.169.845.455 1.551 1.047 2.104s1.315.793 2.17.904c.822.108 1.86.108 3.146.108h.879c1.285 0 2.324 0 3.146-.108c.854-.111 1.578-.35 2.17-.904c.591-.553.877-1.26 1.046-2.104c.162-.813.23-1.85.316-3.132l.464-6.952a.75.75 0 0 0-1.497-.1l-.46 6.9c-.09 1.347-.154 2.285-.294 2.99c-.137.685-.327 1.047-.6 1.303c-.274.256-.648.422-1.34.512c-.713.093-1.653.095-3.004.095h-.774c-1.35 0-2.29-.002-3.004-.095c-.692-.09-1.066-.256-1.34-.512c-.273-.256-.463-.618-.6-1.302c-.14-.706-.204-1.644-.294-2.992z"/><path fill="currentColor" d="M9.425 10.254a.75.75 0 0 1 .821.671l.5 5a.75.75 0 0 1-1.492.15l-.5-5a.75.75 0 0 1 .671-.821m5.15 0a.75.75 0 0 1 .671.82l-.5 5a.75.75 0 0 1-1.492-.149l.5-5a.75.75 0 0 1 .82-.671"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `
+          )
+          .join('');
+      }
+    },
+
+    // Format money
+    formatMoney(cents) {
+      if(cents == 0){
+        return 'Gratis'
+      }
+      return '€' + (cents / 100).toFixed(2).replace('.', ',');
+    },
+  };
+
+  // Initialize cart on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    window.cartDrawer.init();
+
+    // Listen for custom cart events
+    window.addEventListener('cart:open', () => window.cartDrawer.open());
+    window.addEventListener('cart:close', () => window.cartDrawer.close());
+  });
+</script>

@@ -1,0 +1,88 @@
+{% comment %}
+  Pickup Availability Snippet
+{% endcomment %}
+
+{% if variant and variant.available %}
+  <div class="pickup-availability" data-variant-id="{{ variant.id }}">
+    <h4 class="pickup-availability__title">Ritiro in negozio</h4>
+    
+    {% if shop.pickup_locations.size > 0 %}
+      <div class="pickup-availability__info">
+        <svg class="pickup-availability__icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+        <span>Disponibile per il ritiro</span>
+      </div>
+      
+      <div class="pickup-availability__locations">
+        {% for location in shop.pickup_locations limit: 3 %}
+          <div class="pickup-availability__location">
+            <strong>{{ location.name }}</strong>
+            {% if location.address %}
+              <p class="pickup-availability__address">{{ location.address.street }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="pickup-availability__unavailable">
+        <span>Ritiro in negozio non disponibile</span>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .pickup-availability {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+  }
+
+  .pickup-availability__title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #374151;
+  }
+
+  .pickup-availability__info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: #059669;
+    font-size: 0.875rem;
+  }
+
+  .pickup-availability__icon {
+    flex-shrink: 0;
+  }
+
+  .pickup-availability__locations {
+    margin-top: 0.75rem;
+  }
+
+  .pickup-availability__location {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .pickup-availability__location strong {
+    display: block;
+    color: #374151;
+  }
+
+  .pickup-availability__address {
+    margin: 0.25rem 0 0 0;
+    color: #6b7280;
+    font-size: 0.8rem;
+  }
+
+  .pickup-availability__unavailable {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+{% endstylesheet %}

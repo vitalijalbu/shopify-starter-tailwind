@@ -1,0 +1,28 @@
+{
+  "name": "skimofestival-shopify-theme",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "vite build --mode production",
+    "shopify:dev": "shopify theme dev",
+    "shopify:push": "shopify theme push",
+    "shopify:pull": "shopify theme pull",
+    "setup": "node scripts/setup-hooks.js"
+  },
+  "dependencies": {
+    "@alpinejs/focus": "^3.15.0",
+    "@tailwindcss/vite": "^4.1.15",
+    "alpinejs": "^3.15.0",
+    "gsap": "^3.13.0",
+    "swiper": "^12.0.3",
+    "tailwindcss": "^4.1.15",
+    "vite-plugin-shopify": "^4.0.2"
+  },
+  "devDependencies": {
+    "vite": "^7.1.12"
+  }
+}

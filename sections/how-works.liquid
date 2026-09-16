@@ -1,0 +1,127 @@
+{% liquid
+  assign bg_color = section.settings.background_color
+  assign text_color = section.settings.text_color
+%}
+
+<section class="py-16 md:py-24 lg:py-32 xl:py-[216px]" style="background-color: {{ bg_color }}; color: {{ text_color }};">
+  <div class="container">
+    {% if section.settings.title != blank %}
+      <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-12 md:mb-16 lg:mb-20 tracking-wide">
+        {{ section.settings.title }}
+      </h2>
+    {% endif %}
+
+    <ul class="divide-y divide-white/20 text-white space-y-0">
+      {% for block in section.blocks %}
+        <li class="py-4 md:py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-6" {{ block.shopify_attributes }}>
+          <div class="flex gap-3 md:gap-4 items-start md:items-center shrink-0 md:grow">
+            {% if block.settings.icon != blank %}
+                <img
+                  src="{{ block.settings.icon | image_url: width: 80 }}"
+                  alt="{{ block.settings.title }}"
+                  class="size-6 md:size-8 shrink-0 mt-1 md:mt-0"
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                >
+            {% endif %}
+
+            <!-- Titolo -->
+            {% if block.settings.title != blank %}
+              <h3 class="text-lg font-bold tracking-wider text-white leading-tight">
+                {{ block.settings.title }}
+              </h3>
+            {% endif %}
+          </div>
+
+          <!-- Descrizione -->
+          {% if block.settings.description != blank %}
+            <div class="text-gray-200 leading-relaxed w-full md:max-w-[50%] lg:max-w-[60%] md:text-sm pl-9 md:pl-0">
+              {{ block.settings.description }}
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Come Funziona",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo Sezione",
+      "default": "come funziona"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore Sfondo",
+      "default": "#2d2d2d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore Testo",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icona"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "FREE SHIPPING"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Descrizione",
+          "default": "<p>Free shipping on orders above $99. <br>$5.49 or standard shipping 10 $4.95</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Come Funziona",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "FREE SHIPPING",
+            "description": "<p>Free shipping on orders above $99</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "FREE RETURNS",
+            "description": "<p>You can return unopened products within 10 days of delivery</p>"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "CUSTOMER CARE",
+            "description": "<p>Contact us for any issue or question. Reach out via email</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

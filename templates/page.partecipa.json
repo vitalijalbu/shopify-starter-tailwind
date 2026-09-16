@@ -1,0 +1,92 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "page_hero_ptzTAC": {
+      "type": "page-hero",
+      "name": "Page Hero",
+      "settings": {
+        "custom_title": "Iscriviti",
+        "custom_subtitle": "",
+        "text_alignment": "center",
+        "show_breadcrumb": true,
+        "background_image": "shopify://shop_images/4ca85833b3ba427123a13f6956c7fe02efc037a2_421db276-e8b4-47d0-8b25-f51d20d22de9.jpg",
+        "section_size": "small",
+        "overlay_color": "black",
+        "overlay_opacity": 40,
+        "show_secondary_content": false,
+        "show_scroll_indicator": false
+      }
+    },
+    "customer_register_F3bnN4": {
+      "type": "customer-register",
+      "blocks": {
+        "heading_tUt33n": {
+          "type": "heading",
+          "settings": {
+            "title": "Iscriviti ora a Skimofestival"
+          }
+        }
+      },
+      "block_order": [
+        "heading_tUt33n"
+      ],
+      "name": "Customer Register",
+      "settings": {}
+    },
+    "hero_GPUyJ6": {
+      "type": "hero",
+      "blocks": {
+        "heading_qfRcy9": {
+          "type": "heading",
+          "settings": {
+            "heading": "Hai bisogno di supporto?",
+            "heading_color": "#ffffff"
+          }
+        },
+        "text_whtKd7": {
+          "type": "text",
+          "settings": {
+            "text": "Entra in contato con noi",
+            "text_color": "text-white",
+            "text_color_hex": "#ffffff"
+          }
+        },
+        "button_i6rKGp": {
+          "type": "button",
+          "settings": {
+            "button_text": "Contattaci",
+            "button_url": "shopify://pages/contatti",
+            "button_style": "secondary"
+          }
+        }
+      },
+      "block_order": [
+        "heading_qfRcy9",
+        "text_whtKd7",
+        "button_i6rKGp"
+      ],
+      "name": "Hero",
+      "settings": {
+        "section_size": "medium",
+        "full_width": true,
+        "text_position": "top",
+        "image": "shopify://shop_images/Skimo-04.jpg",
+        "image_position": "right",
+        "background_color": "#40444c"
+      }
+    }
+  },
+  "order": [
+    "page_hero_ptzTAC",
+    "customer_register_F3bnN4",
+    "hero_GPUyJ6"
+  ]
+}
